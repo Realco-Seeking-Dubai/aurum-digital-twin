@@ -1,0 +1,22 @@
+{
+  "name": "aurum-digital-twin",
+  "version": "1.0.0",
+  "description": "Interactive holographic 3D digital sales twin of the AURUM commercial building in Al Sufouh, Dubai.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "echo 'Static deployment: no build step required.'",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.11"
+  },
+  "keywords": [
+    "threejs",
+    "digital-twin",
+    "interactive-3d",
+    "real-estate"
+  ],
+  "author": "Meteora / Realco",
+  "license": "MIT"
+}
