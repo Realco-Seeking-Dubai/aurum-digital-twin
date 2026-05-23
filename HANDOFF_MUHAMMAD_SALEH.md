@@ -4,7 +4,7 @@
 
 ## 1. The deliverable
 
-**`aurum_walkthrough.html`** is THE app — a single self-contained HTML file (Three.js, no build step).
+**`index.html`** is THE app — a single self-contained HTML file (Three.js, no build step).
 Open this one. (The files in `archive/` are earlier prototypes — ignore them.)
 
 ## 2. Run it
@@ -12,7 +12,7 @@ Open this one. (The files in `archive/` are earlier prototypes — ignore them.)
 ```bash
 cd "Aurum Building"
 python3 -m http.server 8787
-# open http://localhost:8787/aurum_walkthrough.html
+# open http://localhost:8787/index.html
 ```
 
 Must be served over HTTP (not opened as a `file://`) because it loads JS modules + image textures.
@@ -32,7 +32,7 @@ Internet is needed once to fetch Three.js from the CDN (unpkg). Works in any mod
 
 ## 4. The numbers (where to change them)
 
-All in the `<script type="module">` near the top of `aurum_walkthrough.html`:
+All in the `<script type="module">` near the top of `index.html`:
 
 - **Pricing** — `PSF_LARGE = 2350`, `PSF_SMALL = 2500`, `LARGE_AT = 1500` (sqft threshold).
   `priceOf(u) = size × psf`.
@@ -79,7 +79,9 @@ trace geometry → build the Three.js app with all the features above). See its 
 - Admin mode to toggle unit status from a touch screen; idle attract-loop for a showroom TV.
 - Arabic/English toggle for walk-in clients.
 - Replace interpreted footprint with exact CAD-derived boundaries; add real interior renders.
-- Host it (any static host / GitHub Pages / S3) for sharing beyond localhost.
+- **Host it:** This has been pre-configured for **Vercel deployment** with the new `vercel.json` file for zero-config deployments, clean URLs, and ultra-fast asset caching headers.
+- **Local Development:** Run locally using `npm run dev` with modern Vite, or fallback to the traditional Python `http.server`.
 
 Questions: the code is heavily commented and organised top-to-bottom (data → scene → geometry →
 features → camera → loop). Search the section banners (`/* ===== ... ===== */`).
+

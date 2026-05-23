@@ -3,6 +3,9 @@
 .claude/
 *.log
 aurum_3d_walkthrough_test.png
+node_modules/
+.vite/
+.vercel/
 
 # Source PDFs (heavy; the app uses the rendered PNGs, not these)
 *.pdf
@@ -19,3 +22,5 @@ aurum_assets/render_candidates/Aurum_by_Meteora_Investment_Overview/
 
 # KEPT (the app loads these): aurum_assets/plans, plan_crops, plan_view,
 # building_render_front.jpg, render_candidates/3D_revised_render/*.png, pricing_data.json
+
+.vercel
