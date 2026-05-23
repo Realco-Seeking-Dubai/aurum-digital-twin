@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurum Holographic 3D Walkthrough</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --bg: #071014;
+      --panel: rgba(8, 21, 26, 0.78);
+      --panel-strong: rgba(7, 17, 22, 0.92);
+      --line: rgba(128, 226, 220, 0.32);
+      --cyan: #58fff2;
+      --mint: #89f5c4;
+      --gold: #d8b15a;
+      --coral: #ff7d6e;
+      --ink: #ecfbf8;
+      --muted: #9ab7b4;
+      --road: #263238;
+      --road-line: rgba(255,255,255,.52);
+      --shadow: 0 22px 80px rgba(0,0,0,.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 14%, rgba(88,255,242,.18), transparent 27rem),
+        radial-gradient(circle at 82% 18%, rgba(216,177,90,.14), transparent 25rem),
+        linear-gradient(145deg, #051013 0%, #0b1618 48%, #071014 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(88,255,242,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88,255,242,.045) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent 92%);
+    }
+
+    button, a { font: inherit; }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(290px, 360px) minmax(0, 1fr) minmax(300px, 390px);
+      gap: 18px;
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: 8px;
+    }
+
+    .left-panel, .right-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 36px);
+      overflow: hidden;
+    }
+
+    .brand {
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .11em;
+    }
+
+    h1 {
+      margin: 10px 0 6px;
+      font-size: clamp(30px, 4vw, 54px);
+      line-height: .92;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stat {
+      min-height: 72px;
+      padding: 12px 10px;
+      border: 1px solid rgba(137,245,196,.22);
+      border-radius: 6px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--cyan);
+      font-size: 22px;
+      line-height: 1;
+      margin-bottom: 7px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .controls, .floor-list {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .mode-button, .floor-button, .chip, .link-button {
+      border: 1px solid rgba(88,255,242,.25);
+      color: var(--ink);
+      background: rgba(88,255,242,.07);
+      border-radius: 6px;
+      min-height: 42px;
+      padding: 9px 11px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+      text-decoration: none;
+    }
+
+    .mode-button:hover, .floor-button:hover, .link-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(88,255,242,.62);
+      background: rgba(88,255,242,.12);
+    }
+
+    .mode-button.active, .floor-button.active {
+      border-color: rgba(216,177,90,.82);
+      color: #fff7db;
+      background: rgba(216,177,90,.18);
+      box-shadow: 0 0 24px rgba(216,177,90,.12);
+    }
+
+    .mode-button svg, .link-button svg { width: 17px; height: 17px; }
+
+    .floor-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      max-height: 44vh;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .floor-button {
+      justify-content: space-between;
+      width: 100%;
+      min-height: 47px;
+    }
+
+    .floor-button b {
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .floor-button small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .source-note {
+      padding: 16px;
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .stage-wrap {
+      position: relative;
+      min-height: calc(100vh - 36px);
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    .stage-toolbar {
+      position: absolute;
+      z-index: 7;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .status-pill {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(4, 13, 16, .72);
+      color: var(--muted);
+      box-shadow: var(--shadow);
+      max-width: 100%;
+    }
+
+    .stage {
+      height: 100%;
+      min-height: calc(100vh - 36px);
+      position: relative;
+      perspective: 1400px;
+      display: grid;
+      place-items: center;
+    }
+
+    .map-plane {
+      position: absolute;
+      width: min(76vw, 960px);
+      height: min(72vh, 720px);
+      transform: rotateX(66deg) rotateZ(-18deg) translateY(8%);
+      transform-style: preserve-3d;
+      border: 1px solid rgba(88,255,242,.22);
+      background:
+        linear-gradient(90deg, transparent 0 48%, rgba(137,245,196,.13) 48% 52%, transparent 52%),
+        linear-gradient(0deg, transparent 0 48%, rgba(137,245,196,.11) 48% 52%, transparent 52%),
+        rgba(10, 29, 33, .72);
+      box-shadow: 0 60px 120px rgba(0,0,0,.65), inset 0 0 80px rgba(88,255,242,.08);
+      transition: transform .75s ease, opacity .75s ease;
+    }
+
+    .map-plane::before, .map-plane::after {
+      content: "";
+      position: absolute;
+      background: var(--road);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.22);
+    }
+
+    .map-plane::before {
+      width: 126%;
+      height: 15%;
+      left: -13%;
+      top: 39%;
+      transform: rotate(-13deg);
+    }
+
+    .map-plane::after {
+      width: 14%;
+      height: 122%;
+      left: 54%;
+      top: -11%;
+      transform: rotate(11deg);
+    }
+
+    .road-label {
+      position: absolute;
+      z-index: 2;
+      color: rgba(236,251,248,.78);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      transform: translateZ(9px);
+      background: rgba(3, 10, 12, .55);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 5px 8px;
+      border-radius: 5px;
+    }
+
+    .road-label.a { left: 8%; top: 34%; transform: rotate(-13deg) translateZ(9px); }
+    .road-label.b { right: 18%; top: 15%; transform: rotate(11deg) translateZ(9px); }
+    .road-label.c { left: 12%; bottom: 14%; transform: rotate(16deg) translateZ(9px); }
+
+    .building-rig {
+      position: relative;
+      width: min(38vw, 450px);
+      height: min(70vh, 670px);
+      transform-style: preserve-3d;
+      transform: rotateX(59deg) rotateZ(-31deg) rotateY(0deg);
+      transition: transform .8s cubic-bezier(.2,.8,.2,1);
+      animation: slowOrbit 14s ease-in-out infinite alternate;
+    }
+
+    .stage.paused .building-rig { animation-play-state: paused; }
+    .stage.exploded .floor-plate { transform: translate3d(var(--x), var(--gap), var(--z)) rotateX(0deg); }
+    .stage.zoomed .map-plane { transform: rotateX(64deg) rotateZ(-18deg) translateY(5%) scale(1.13); opacity: .94; }
+    .stage.zoomed .building-rig { transform: rotateX(60deg) rotateZ(-31deg) scale(.78); }
+
+    @keyframes slowOrbit {
+      0% { transform: rotateX(59deg) rotateZ(-31deg) rotateY(-6deg); }
+      100% { transform: rotateX(57deg) rotateZ(-20deg) rotateY(10deg); }
+    }
+
+    .floor-plate {
+      position: absolute;
+      left: 50%;
+      bottom: var(--level);
+      width: var(--w);
+      height: var(--d);
+      margin-left: calc(var(--w) / -2);
+      transform: translate3d(var(--x), 0, var(--z));
+      transform-style: preserve-3d;
+      border: 1px solid rgba(88,255,242,.5);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(88,255,242,.44), rgba(137,245,196,.12) 46%, rgba(216,177,90,.2)),
+        rgba(13, 42, 46, .72);
+      box-shadow:
+        0 0 24px rgba(88,255,242,.18),
+        inset 0 0 42px rgba(88,255,242,.13);
+      cursor: pointer;
+      transition: transform .72s cubic-bezier(.2,.8,.2,1), filter .2s ease, border-color .2s ease;
+    }
+
+    .floor-plate::before {
+      content: "";
+      position: absolute;
+      inset: 10%;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: inherit;
+      background-image:
+        linear-gradient(90deg, rgba(255,255,255,.11) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.09) 1px, transparent 1px);
+      background-size: 28px 22px;
+    }
+
+    .floor-plate::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotateZ(31deg);
+      color: rgba(255,255,255,.82);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      white-space: nowrap;
+      text-shadow: 0 0 14px rgba(88,255,242,.6);
+    }
+
+    .floor-plate:hover, .floor-plate.active {
+      filter: brightness(1.25);
+      border-color: rgba(216,177,90,.95);
+      box-shadow: 0 0 34px rgba(216,177,90,.28), inset 0 0 42px rgba(88,255,242,.17);
+    }
+
+    .core {
+      position: absolute;
+      width: 24%;
+      height: 36%;
+      left: 38%;
+      top: 32%;
+      border: 1px solid rgba(255,255,255,.3);
+      background: rgba(4, 12, 15, .46);
+      border-radius: 5px;
+    }
+
+    .atrium {
+      position: absolute;
+      width: 17%;
+      height: 24%;
+      left: 42%;
+      top: 37%;
+      border: 1px dashed rgba(216,177,90,.72);
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(216,177,90,.28);
+    }
+
+    .marker {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--gold);
+      box-shadow: 0 0 18px rgba(216,177,90,.8);
+      transform: translateZ(16px);
+    }
+
+    .marker.one { left: 16%; top: 28%; }
+    .marker.two { right: 18%; top: 60%; background: var(--coral); }
+    .marker.three { left: 66%; top: 16%; background: var(--mint); }
+
+    .holo-beam {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(42vw, 520px);
+      height: min(42vw, 520px);
+      transform: translate(-50%, -38%);
+      border-radius: 50%;
+      border: 1px solid rgba(88,255,242,.2);
+      box-shadow: inset 0 0 80px rgba(88,255,242,.07), 0 0 90px rgba(88,255,242,.1);
+      pointer-events: none;
+    }
+
+    .right-panel { background: var(--panel-strong); }
+
+    .detail-head {
+      padding: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-head h2 {
+      margin: 0 0 8px;
+      font-size: 27px;
+      line-height: 1;
+    }
+
+    .detail-head p {
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .plan-frame {
+      margin: 16px;
+      border: 1px solid rgba(88,255,242,.28);
+      border-radius: 7px;
+      min-height: 220px;
+      background: rgba(255,255,255,.035);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .plan-frame img {
+      display: block;
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(.8) contrast(1.08) brightness(.93);
+    }
+
+    .plan-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 45%, rgba(4,12,15,.72));
+      pointer-events: none;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    .chip {
+      min-height: 32px;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: default;
+    }
+
+    .detail-body {
+      display: grid;
+      gap: 14px;
+      padding: 0 16px 16px;
+      overflow: auto;
+    }
+
+    .info-card {
+      border: 1px solid rgba(137,245,196,.18);
+      background: rgba(255,255,255,.035);
+      border-radius: 7px;
+      padding: 14px;
+    }
+
+    .info-card h3 {
+      margin: 0 0 9px;
+      font-size: 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--mint);
+    }
+
+    .info-card p, .info-card li {
+      color: var(--muted);
+      line-height: 1.48;
+      font-size: 14px;
+    }
+
+    .info-card p { margin: 0; }
+    .info-card ul { margin: 0; padding-left: 18px; }
+
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(78px, 1fr));
+      gap: 7px;
+    }
+
+    .unit {
+      min-height: 48px;
+      border: 1px solid rgba(88,255,242,.18);
+      border-radius: 5px;
+      background: rgba(88,255,242,.055);
+      padding: 8px;
+    }
+
+    .unit b {
+      display: block;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .unit span {
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .tour-progress {
+      height: 5px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+      border-radius: 999px;
+      margin-top: 12px;
+    }
+
+    .tour-progress i {
+      display: block;
+      width: var(--progress, 0%);
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--gold));
+      transition: width .35s ease;
+    }
+
+    @media (max-width: 1180px) {
+      .app {
+        grid-template-columns: 320px minmax(0, 1fr);
+      }
+      .right-panel {
+        grid-column: 1 / -1;
+        min-height: auto;
+      }
+      .detail-body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .plan-frame img { height: 320px; }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        grid-template-columns: 1fr;
+        padding: 10px;
+      }
+      .left-panel, .stage-wrap {
+        min-height: auto;
+      }
+      .stage {
+        min-height: 68vh;
+      }
+      .button-row, .stats, .detail-body {
+        grid-template-columns: 1fr;
+      }
+      .floor-grid { max-height: 280px; }
+      .stage-toolbar {
+        position: relative;
+        inset: auto;
+        padding: 12px;
+        flex-direction: column;
+      }
+      .building-rig {
+        width: 74vw;
+        transform: rotateX(58deg) rotateZ(-28deg) scale(.86);
+      }
+      .map-plane { width: 108vw; height: 78vh; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="left-panel panel">
+      <div class="brand">
+        <div class="eyebrow"><i data-lucide="scan-line"></i> Digital Hologram</div>
+        <h1>Aurum Commercial Building</h1>
+        <p class="subtitle">Al Sufouh First, Dubai. A G+7+HC vertical walkthrough built from the revised architectural floor sheets and location context.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong>G+7</strong><span>Commercial stack</span></div>
+        <div class="stat"><strong>HC</strong><span>Roof amenity</span></div>
+        <div class="stat"><strong>3720565</strong><span>Plot ref.</span></div>
+      </div>
+
+      <section class="controls">
+        <h2 class="section-title">Scene</h2>
+        <div class="button-row">
+          <button class="mode-button active" data-mode="orbit"><i data-lucide="rotate-3d"></i><span>Orbit</span></button>
+          <button class="mode-button" data-mode="zoom"><i data-lucide="map"></i><span>Roads</span></button>
+          <button class="mode-button" data-mode="explode"><i data-lucide="layers-3"></i><span>Floors</span></button>
+          <button class="mode-button" data-mode="tour"><i data-lucide="play"></i><span>Tour</span></button>
+        </div>
+      </section>
+
+      <section class="floor-list">
+        <h2 class="section-title">Levels</h2>
+        <div id="floorGrid" class="floor-grid"></div>
+      </section>
+
+      <div class="source-note">
+        Architectural data is derived from the revised 29-08-2025 sheets: ground, first, second, third, fourth, fifth, sixth, seventh, and health club plans. Road context is a local schematic for presentation, with external map access below.
+      </div>
+    </aside>
+
+    <section class="stage-wrap panel">
+      <div class="stage-toolbar">
+        <div class="status-pill"><i data-lucide="building-2"></i><span id="sceneStatus">Orbiting complete building stack</span></div>
+        <a class="link-button" href="https://www.google.com/maps/search/?api=1&query=Plot%203720565%20Al%20Sufouh%20First%20Dubai" target="_blank" rel="noopener">
+          <i data-lucide="map-pin"></i><span>Google Maps</span>
+        </a>
+      </div>
+
+      <div id="stage" class="stage">
+        <div class="map-plane">
+          <span class="road-label a">Al Sufouh corridor</span>
+          <span class="road-label b">Dubai Internet City access</span>
+          <span class="road-label c">Internal approach road</span>
+        </div>
+        <div class="holo-beam"></div>
+        <div id="buildingRig" class="building-rig"></div>
+      </div>
+    </section>
+
+    <aside class="right-panel panel">
+      <div class="detail-head">
+        <h2 id="floorTitle">Ground Floor</h2>
+        <p id="floorSummary">Entry level with office frontage, driveway, parking rhythm, atrium, services, ramp, and repeated office/pantry/toilet modules.</p>
+        <div class="tour-progress"><i id="progressBar"></i></div>
+      </div>
+
+      <figure class="plan-frame">
+        <img id="planImage" src="aurum_assets/plans/architecture_page_01.pdf.png" alt="Architectural floor plan preview">
+      </figure>
+
+      <div id="tags" class="tags"></div>
+
+      <div class="detail-body">
+        <article class="info-card">
+          <h3>Floor Logic</h3>
+          <p id="floorLogic"></p>
+        </article>
+        <article class="info-card">
+          <h3>Core And Movement</h3>
+          <p id="floorCore"></p>
+        </article>
+        <article class="info-card">
+          <h3>Unit Breakdown</h3>
+          <div id="unitGrid" class="unit-grid"></div>
+        </article>
+        <article class="info-card">
+          <h3>Presentation Notes</h3>
+          <ul id="notes"></ul>
+        </article>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const floorData = [
+      {
+        id: "ground", label: "G", title: "Ground Floor", plan: "aurum_assets/plans/architecture_page_01.pdf.png",
+        summary: "Entry level with office frontage, driveway, parking rhythm, atrium, services, ramp, and repeated office/pantry/toilet modules.",
+        width: 92, depth: 54, radius: "7px", units: rangeUnits("Office", 1, 14),
+        tags: ["Entrances", "Driveway", "Parking", "Atrium", "Substation", "MDF", "Garbage"],
+        logic: "The ground plate carries the public arrival sequence: building entrances, driveway in/out, parking bands, office modules, utility rooms, and the vertical core grouped around the atrium.",
+        core: "Lift lobby, stair case, ramp movement, atrium opening, and service rooms are concentrated through the center and edge service zones.",
+        notes: ["Best for tenant arrival animation and access routing.", "The office sequence reads as fourteen front-facing commercial modules.", "Use the driveway/parking geometry as the zoomed-out arrival scene."]
+      },
+      {
+        id: "first", label: "1", title: "First Floor", plan: "aurum_assets/plans/architecture_page_02.pdf.png",
+        summary: "Commercial office level with voids over atrium, playing areas, substation, balconies, stores, lift lobby, and stair connections.",
+        width: 88, depth: 51, radius: "11px", units: rangeUnits("Office", 1, 14),
+        tags: ["Void Over Atrium", "Balconies", "Stores", "Lift Lobby", "Open To Down"],
+        logic: "The first floor keeps the lower commercial rhythm while carving voids over ground-level activity and services.",
+        core: "The central lift/stair spine repeats, with open-to-down pockets preserving atrium visibility.",
+        notes: ["Good level for showing the atrium as a vertical light well.", "Balconies wrap multiple units.", "Fourteen office labels are visible on the revised sheet."]
+      },
+      {
+        id: "second", label: "2", title: "Second Floor", plan: "aurum_assets/plans/architecture_page_03.pdf.png",
+        summary: "Higher density office plate, labelled 201-222, with terraces, passages, lift lobbies, and repeated toilet/pantry support.",
+        width: 100, depth: 56, radius: "22px", units: rangeUnits("Office", 201, 222),
+        tags: ["Offices 201-222", "Terraces", "Passages", "Lift Lobbies", "Atrium Void"],
+        logic: "The second floor expands into a denser commercial plate and begins the repeated upper-level unit numbering pattern.",
+        core: "Lift lobby, garbage, electrical, water meter, telecom, closet/store, and stair movements organize the plate into clear wings.",
+        notes: ["Use this as the first full upper-office breakdown.", "Terrace pockets can be highlighted as premium edges.", "Twenty-two units are identified on the drawing."]
+      },
+      {
+        id: "third", label: "3", title: "Third Floor", plan: "aurum_assets/plans/architecture_page_04.pdf.png",
+        summary: "Office level 301-322 with balcony/terrace rhythm, atrium void, lift lobby, passages, and repeated wet service clusters.",
+        width: 99, depth: 55, radius: "24px", units: rangeUnits("Office", 301, 322),
+        tags: ["Offices 301-322", "Balconies", "Terraces", "Passages", "Service Closets"],
+        logic: "This level repeats the curved commercial floor plate and makes the terrace/balcony pattern more visually legible.",
+        core: "Two lift-lobby zones and stair connections keep movement central while service closets and meter rooms sit beside the circulation.",
+        notes: ["Ideal for demonstrating a typical tenant floor.", "The curved facade can be animated as edge glow.", "Twenty-two unit labels appear in the plan."]
+      },
+      {
+        id: "fourth", label: "4", title: "Fourth Floor", plan: "aurum_assets/plans/architecture_page_05.pdf.png",
+        summary: "Office level 401-422 with Detail-B reference areas, living/dining annotations, terraces, balconies, and core services.",
+        width: 98, depth: 54, radius: "21px", units: rangeUnits("Office", 401, 422),
+        tags: ["Offices 401-422", "Detail-B", "Terraces", "Balconies", "Electrical Room"],
+        logic: "The fourth floor continues the high-density office plate while introducing detail reference areas at specific facade portions.",
+        core: "Lift, stair, electrical, telecom, garbage and water meter rooms remain aligned to the central circulation band.",
+        notes: ["Detail-B can be treated as a callout hotspot.", "Repeated pantry/toilet modules support most units.", "Twenty-two units are listed on the revised drawing."]
+      },
+      {
+        id: "fifth", label: "5", title: "Fifth Floor", plan: "aurum_assets/plans/architecture_page_06.pdf.png",
+        summary: "Office level 501-522 with Detail-A references, terraces, and similar upper-commercial service planning.",
+        width: 96, depth: 53, radius: "19px", units: rangeUnits("Office", 501, 522),
+        tags: ["Offices 501-522", "Detail-A", "Terraces", "Lift/Stair Core", "Pantry/Toilet"],
+        logic: "The fifth level is another typical office breakdown, with the drawing calling out Detail-A portions specific to this floor.",
+        core: "The repeated lift and stair core creates consistent tenant access, while wet services sit near passages and unit backs.",
+        notes: ["Use Detail-A as an exploded facade module.", "Twenty-two office labels are visible.", "This floor works well as the typical leasing plan in the walkthrough."]
+      },
+      {
+        id: "sixth", label: "6", title: "Sixth Floor", plan: "aurum_assets/plans/architecture_page_07.pdf.png",
+        summary: "Setback executive level with larger terraces, balconies, atrium voids, and fewer grouped office zones.",
+        width: 76, depth: 47, radius: "17px", units: ["Office NW", "Office NE", "Office E", "Office SE", "Office SW", "Office W"].map((name, i) => ({ name, type: i % 2 ? "Terrace office" : "Executive office" })),
+        tags: ["Setback", "Large Terraces", "Balconies", "Void Over Atrium", "Executive Plate"],
+        logic: "The sixth floor steps inward from the typical commercial plates, creating a lighter crown with larger terrace edges.",
+        core: "Lifts remain central with garbage, meter, electrical and telecom support grouped around the circulation zone.",
+        notes: ["Show this level separating upward during floor-explode mode.", "Terraces become the strongest visual story.", "Office labels are grouped rather than fully numbered in the extracted drawing text."]
+      },
+      {
+        id: "seventh", label: "7", title: "Seventh Floor", plan: "aurum_assets/plans/architecture_page_08.pdf.png",
+        summary: "Upper setback level with open-to-down voids, balconies, passages, lift lobbies, pantry/toilet groups, and smaller office clusters.",
+        width: 62, depth: 40, radius: "14px", units: ["Office A", "Office B", "Office C", "Office D"].map(name => ({ name, type: "Upper office" })),
+        tags: ["Open To Down", "Balconies", "Passages", "Lift Lobbies", "Setback Crown"],
+        logic: "The seventh floor tightens the footprint further, emphasizing a stepped architectural crown.",
+        core: "Lift lobby and stair movement continue vertically, with open-to-down spaces maintaining atrium continuity.",
+        notes: ["Use as a premium top-office floor in the presentation.", "Smaller office clusters create a quieter upper plate.", "Good point to transition toward health club amenities."]
+      },
+      {
+        id: "hc", label: "HC", title: "Health Club Floor", plan: "aurum_assets/plans/architecture_page_09.pdf.png",
+        summary: "Roof amenity level with health club reception, gym, sauna, steam, changing rooms, lockers, roof deck, swimming pool, and child pool.",
+        width: 50, depth: 34, radius: "10px", units: [
+          { name: "Reception", type: "Amenity" }, { name: "Gym", type: "Amenity" }, { name: "Sauna", type: "Wellness" },
+          { name: "Steam", type: "Wellness" }, { name: "Pool", type: "Roof deck" }, { name: "Child Pool", type: "Roof deck" },
+          { name: "Lockers", type: "Support" }, { name: "Pump Room", type: "Service" }
+        ],
+        tags: ["Roof Deck", "Swimming Pool", "Gym", "Sauna", "Steam", "Lockers"],
+        logic: "The roof becomes the amenity cap of the building, trading office density for wellness, pool deck, and service rooms.",
+        core: "The lift/stair core reaches the roof lobby and splits toward reception, wet amenities, roof deck and service rooms.",
+        notes: ["Best finale for the animated walkthrough.", "Use cyan pool glow and gold roof edge in future render passes.", "Health club components are named directly on the revised sheet."]
+      }
+    ];
+
+    function rangeUnits(prefix, start, end) {
+      const list = [];
+      for (let n = start; n <= end; n += 1) {
+        const label = start < 100 ? String(n).padStart(2, "0") : String(n);
+        list.push({ name: `${prefix} ${label}`, type: n % 3 === 0 ? "Corner module" : n % 2 === 0 ? "Balcony/terrace edge" : "Standard module" });
+      }
+      return list;
+    }
+
+    const stage = document.getElementById("stage");
+    const buildingRig = document.getElementById("buildingRig");
+    const floorGrid = document.getElementById("floorGrid");
+    const title = document.getElementById("floorTitle");
+    const summary = document.getElementById("floorSummary");
+    const planImage = document.getElementById("planImage");
+    const tags = document.getElementById("tags");
+    const floorLogic = document.getElementById("floorLogic");
+    const floorCore = document.getElementById("floorCore");
+    const unitGrid = document.getElementById("unitGrid");
+    const notes = document.getElementById("notes");
+    const sceneStatus = document.getElementById("sceneStatus");
+    const progressBar = document.getElementById("progressBar");
+    let activeIndex = 0;
+    let tourTimer = null;
+
+    function buildScene() {
+      const total = floorData.length;
+      floorData.forEach((floor, index) => {
+        const level = index * 48 + 24;
+        const plate = document.createElement("button");
+        plate.className = "floor-plate";
+        plate.dataset.index = index;
+        plate.dataset.label = floor.label;
+        plate.style.setProperty("--level", `${level}px`);
+        plate.style.setProperty("--w", `${floor.width}%`);
+        plate.style.setProperty("--d", `${floor.depth}px`);
+        plate.style.setProperty("--radius", floor.radius);
+        plate.style.setProperty("--gap", `${(index - total / 2) * 19}px`);
+        plate.style.setProperty("--x", `${(index % 2 ? -1 : 1) * Math.max(0, 5 - index) * 1.5}px`);
+        plate.style.setProperty("--z", `${(total - index) * 3}px`);
+        plate.setAttribute("aria-label", floor.title);
+        plate.innerHTML = `<span class="core"></span><span class="atrium"></span><span class="marker one"></span><span class="marker two"></span><span class="marker three"></span>`;
+        plate.addEventListener("click", () => selectFloor(index));
+        buildingRig.appendChild(plate);
+
+        const btn = document.createElement("button");
+        btn.className = "floor-button";
+        btn.dataset.index = index;
+        btn.innerHTML = `<b>${floor.title}</b><small>${floor.units.length} zones</small>`;
+        btn.addEventListener("click", () => selectFloor(index));
+        floorGrid.prepend(btn);
+      });
+    }
+
+    function selectFloor(index) {
+      activeIndex = index;
+      const floor = floorData[index];
+      title.textContent = floor.title;
+      summary.textContent = floor.summary;
+      planImage.src = floor.plan;
+      floorLogic.textContent = floor.logic;
+      floorCore.textContent = floor.core;
+      tags.innerHTML = floor.tags.map(tag => `<span class="chip">${tag}</span>`).join("");
+      unitGrid.innerHTML = floor.units.map(unit => `<div class="unit"><b>${unit.name}</b><span>${unit.type}</span></div>`).join("");
+      notes.innerHTML = floor.notes.map(note => `<li>${note}</li>`).join("");
+      progressBar.style.setProperty("--progress", `${((index + 1) / floorData.length) * 100}%`);
+      document.querySelectorAll(".floor-plate, .floor-button").forEach(el => el.classList.toggle("active", Number(el.dataset.index) === index));
+    }
+
+    function setMode(mode) {
+      document.querySelectorAll(".mode-button").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === mode));
+      stage.classList.toggle("paused", mode !== "orbit" && mode !== "tour");
+      stage.classList.toggle("zoomed", mode === "zoom");
+      stage.classList.toggle("exploded", mode === "explode" || mode === "tour");
+      if (tourTimer) {
+        clearInterval(tourTimer);
+        tourTimer = null;
+      }
+      const labels = {
+        orbit: "Orbiting complete building stack",
+        zoom: "Roads and building location context",
+        explode: "Separated floor-by-floor breakdown",
+        tour: "Automated vertical walkthrough"
+      };
+      sceneStatus.textContent = labels[mode];
+      if (mode === "tour") {
+        selectFloor(0);
+        tourTimer = setInterval(() => selectFloor((activeIndex + 1) % floorData.length), 2300);
+      }
+    }
+
+    document.querySelectorAll(".mode-button").forEach(btn => btn.addEventListener("click", () => setMode(btn.dataset.mode)));
+
+    buildScene();
+    selectFloor(0);
+    lucide.createIcons();
+  </script>
+</body>
+</html>

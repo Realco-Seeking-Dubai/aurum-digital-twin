@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurum Full 3D Holographic Walkthrough</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg: #061323;
+      --panel: rgba(7, 24, 42, .86);
+      --panel2: rgba(9, 31, 52, .94);
+      --line: rgba(199, 164, 86, .34);
+      --cyan: #7ed8ff;
+      --green: #63d883;
+      --gold: #c7a456;
+      --red: #e76363;
+      --text: #f6f8f4;
+      --muted: #bfd1d6;
+      --shadow: 0 30px 90px rgba(0,0,0,.46);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 50% 42%, rgba(126, 216, 255, .14), transparent 30rem),
+        radial-gradient(circle at 82% 18%, rgba(199, 164, 86, .16), transparent 22rem),
+        linear-gradient(135deg, #040b14, #061d31 54%, #030912);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(77, 243, 236, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(199, 164, 86, .04) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+    }
+
+    button, a { font: inherit; }
+
+    .shell {
+      display: block;
+      height: 100vh;
+      padding: 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .left, .right {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .left, .right, .hud, .reticle { display: none; }
+
+    .brand { display: none; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow svg, .tool svg, .map-link svg { width: 17px; height: 17px; }
+
+    h1 {
+      margin: 10px 0 7px;
+      font-size: 24px;
+      line-height: .96;
+      letter-spacing: 0;
+    }
+
+    .brand p, .note, .detail p, .card p, .card li {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    .brand p { display: none; }
+
+    .metrics {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      min-height: 68px;
+      padding: 10px;
+      border: 1px solid rgba(153,255,201,.2);
+      border-radius: 6px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--cyan);
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 7px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .tools, .levels, .note { padding: 8px; border-bottom: 0; }
+
+    .levels, .note { display: none; }
+
+    .section-title { display: none; }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+    }
+
+    .tool, .level, .map-link, .mini {
+      border: 1px solid rgba(77,243,236,.25);
+      color: var(--text);
+      background: rgba(77,243,236,.065);
+      border-radius: 6px;
+      width: 38px;
+      height: 38px;
+      min-height: 38px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .tool:hover, .level:hover, .map-link:hover, .mini:hover {
+      transform: translateY(-1px);
+      border-color: rgba(77,243,236,.7);
+      background: rgba(77,243,236,.11);
+    }
+
+    .tool.active, .level.active {
+      border-color: rgba(224,184,93,.86);
+      background: rgba(224,184,93,.18);
+      color: #fff5d8;
+      box-shadow: 0 0 26px rgba(224,184,93,.14);
+    }
+
+    .tool span, .pill span, .map-link { font-size: 0; }
+
+    .level-list {
+      display: grid;
+      gap: 7px;
+      max-height: 36vh;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .level {
+      justify-content: space-between;
+      width: 100%;
+      min-height: 45px;
+    }
+
+    .level b { font-size: 13px; }
+    .level span { color: var(--muted); font-size: 12px; }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .mini {
+      width: 38px;
+      height: 38px;
+      min-height: 38px;
+      padding: 0;
+      font-size: 0;
+      position: relative;
+    }
+
+    .mini::before { font-size: 14px; color: var(--text); }
+    #prevBtn::before { content: "<"; }
+    #resetBtn::before { content: "o"; }
+    #nextBtn::before { content: ">"; }
+    #roadBtn::before { content: "R"; }
+    #parkingBtn::before { content: "P"; }
+    #entryBtn::before { content: "E"; }
+
+    .note {
+      margin-top: auto;
+      border-bottom: 0;
+    }
+
+    .viewport {
+      position: fixed;
+      top: 128px;
+      left: clamp(500px, 28vw, 620px);
+      right: clamp(130px, 8vw, 180px);
+      bottom: 128px;
+      background:
+        radial-gradient(circle at 50% 46%, rgba(126,216,255,.13), rgba(5,18,31,.82) 54%, rgba(1,5,10,.98)),
+        linear-gradient(145deg, rgba(255,255,255,.035), transparent);
+      border: 1px solid rgba(199,164,86,.42);
+      border-radius: 10px;
+      box-shadow: 0 28px 90px rgba(0,0,0,.46), inset 0 0 60px rgba(126,216,255,.08);
+      overflow: hidden;
+    }
+
+    #scene {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    #scene:active { cursor: grabbing; }
+
+    .hud {
+      position: absolute;
+      top: auto;
+      bottom: 16px;
+      left: 16px;
+      right: auto;
+      transform: none;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .pill {
+      pointer-events: auto;
+      width: 38px;
+      height: 38px;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(3, 12, 15, .76);
+      box-shadow: var(--shadow);
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill svg { width: 18px; height: 18px; color: var(--cyan); }
+
+    .reticle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 54px;
+      height: 54px;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(77,243,236,.25);
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 34px rgba(77,243,236,.13), inset 0 0 20px rgba(77,243,236,.08);
+    }
+
+    .reticle::before, .reticle::after {
+      content: "";
+      position: absolute;
+      background: rgba(77,243,236,.42);
+    }
+
+    .reticle::before { width: 1px; height: 92px; left: 50%; top: -10px; }
+    .reticle::after { height: 1px; width: 92px; left: -10px; top: 50%; }
+
+    .detail {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail h2 {
+      margin: 0 0 7px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .detail p { margin: 0; }
+
+    .progress {
+      height: 5px;
+      margin-top: 13px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+    }
+
+    .progress i {
+      display: block;
+      height: 100%;
+      width: var(--p, 11%);
+      background: linear-gradient(90deg, var(--cyan), var(--gold));
+      transition: width .35s ease;
+    }
+
+    .plan {
+      margin: 10px;
+      border: 1px solid rgba(77,243,236,.25);
+      border-radius: 7px;
+      overflow: hidden;
+      background: rgba(255,255,255,.035);
+      min-height: 210px;
+    }
+
+    .plan img {
+      display: block;
+      width: 100%;
+      height: 145px;
+      object-fit: cover;
+      object-position: center;
+      filter: contrast(1.08) saturate(.85) brightness(.92);
+    }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+      padding: 0 12px 12px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .cards { display: none; }
+
+    .card {
+      border: 1px solid rgba(153,255,201,.18);
+      background: rgba(255,255,255,.035);
+      border-radius: 7px;
+      padding: 13px;
+    }
+
+    .card h3 {
+      margin: 0 0 9px;
+      color: var(--green);
+      font-size: 13px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .card p { margin: 0; }
+    .card ul { margin: 0; padding-left: 17px; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      border: 1px solid rgba(77,243,236,.2);
+      background: rgba(77,243,236,.06);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 12px;
+    }
+
+    .units {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 7px;
+    }
+
+    .unit {
+      min-height: 48px;
+      border: 1px solid rgba(77,243,236,.18);
+      background: rgba(77,243,236,.055);
+      border-radius: 5px;
+      padding: 8px;
+    }
+
+    .unit b {
+      display: block;
+      font-size: 12px;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .unit span {
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1180px) {
+      body { overflow: hidden; }
+      .left { display: none; }
+    }
+
+    @media (max-width: 760px) {
+      .left { display: none; }
+      .metrics, .tool-grid, .mini-row, .cards { grid-template-columns: 1fr; }
+      .hud { flex-direction: column; left: 10px; bottom: 10px; }
+      .level-list { max-height: 270px; }
+    }
+
+    .left, .right, .hud, .reticle {
+      display: none !important;
+    }
+
+    .top-title {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      z-index: 20;
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+      color: #f5fffd;
+      text-shadow: 0 0 24px rgba(77,243,236,.38);
+    }
+
+    .top-title strong {
+      display: block;
+      font-size: clamp(34px, 3.5vw, 68px);
+      line-height: 1;
+      letter-spacing: .02em;
+    }
+
+    .top-title span {
+      display: block;
+      margin-top: 7px;
+      color: rgba(188, 230, 226, .86);
+      font-size: clamp(14px, 1vw, 20px);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .floor-card {
+      position: fixed;
+      z-index: 25;
+      left: 28px;
+      bottom: 34px;
+      width: min(460px, calc(100vw - 68px));
+      border: 1px solid rgba(77,243,236,.4);
+      border-radius: 8px;
+      background: rgba(7, 24, 42, .88);
+      box-shadow: 0 24px 70px rgba(0,0,0,.42);
+      backdrop-filter: blur(16px);
+      padding: 22px;
+      color: #f5fffd;
+      pointer-events: none;
+    }
+
+    .floor-card h2 {
+      margin: 0 0 8px;
+      font-size: clamp(26px, 1.6vw, 36px);
+      line-height: 1;
+    }
+
+    .floor-card .muted {
+      color: rgba(188, 230, 226, .82);
+      font-size: clamp(14px, .9vw, 18px);
+      line-height: 1.4;
+    }
+
+    .metrics-line {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 13px 0;
+    }
+
+    .metric-pill {
+      border: 1px solid rgba(77,243,236,.22);
+      border-radius: 6px;
+      background: rgba(77,243,236,.07);
+      padding: 13px 10px;
+    }
+
+    .metric-pill b {
+      display: block;
+      color: #8cff7a;
+      font-size: clamp(18px, 1.2vw, 26px);
+      line-height: 1;
+    }
+
+    .metric-pill small {
+      display: block;
+      color: rgba(188,230,226,.72);
+      margin-top: 5px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .floor-list-text {
+      color: rgba(255,255,255,.9);
+      font-size: clamp(14px, .9vw, 18px);
+      line-height: 1.45;
+    }
+
+    .hint {
+      position: fixed;
+      right: 28px;
+      bottom: 28px;
+      z-index: 24;
+      color: rgba(218,246,243,.78);
+      font-size: clamp(12px, .8vw, 16px);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      pointer-events: none;
+      text-align: right;
+    }
+
+    .legend {
+      position: fixed;
+      z-index: 24;
+      top: 34px;
+      right: 34px;
+      display: flex;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid rgba(77,243,236,.28);
+      border-radius: 8px;
+      background: rgba(7, 24, 42, .78);
+      backdrop-filter: blur(14px);
+      color: rgba(245,255,253,.9);
+      font-size: clamp(14px, .9vw, 18px);
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin-right: 6px;
+      box-shadow: 0 0 16px currentColor;
+    }
+
+    .action-strip {
+      position: fixed;
+      z-index: 26;
+      left: 50%;
+      bottom: 34px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(77,243,236,.28);
+      border-radius: 8px;
+      background: rgba(7, 24, 42, .82);
+      backdrop-filter: blur(14px);
+    }
+
+    .action-strip button {
+      border: 1px solid rgba(77,243,236,.25);
+      color: #effffc;
+      background: rgba(77,243,236,.08);
+      border-radius: 6px;
+      min-height: 58px;
+      min-width: 132px;
+      padding: 0 22px;
+      font-size: clamp(15px, 1vw, 20px);
+      cursor: pointer;
+    }
+
+    .action-strip button:hover {
+      border-color: rgba(224,184,93,.8);
+      background: rgba(224,184,93,.16);
+    }
+
+    .floor-rail {
+      position: fixed;
+      z-index: 26;
+      right: 34px;
+      top: 110px;
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid rgba(77,243,236,.28);
+      border-radius: 8px;
+      background: rgba(7, 24, 42, .82);
+      backdrop-filter: blur(14px);
+    }
+
+    .floor-rail button {
+      width: 76px;
+      height: 54px;
+      border: 1px solid rgba(77,243,236,.26);
+      border-radius: 6px;
+      color: #effffc;
+      background: rgba(77,243,236,.08);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .floor-rail button.active {
+      border-color: rgba(224,184,93,.9);
+      background: rgba(224,184,93,.2);
+      color: #ffe7a6;
+    }
+
+    .unit-status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 13px;
+    }
+
+    .status-box {
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 6px;
+      padding: 9px;
+      background: rgba(255,255,255,.045);
+    }
+
+    .status-box b {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .status-box small {
+      display: block;
+      margin-top: 5px;
+      color: rgba(218,246,243,.76);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .unit-preview {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 12px;
+      max-height: 150px;
+      overflow: hidden;
+    }
+
+    .unit-preview span {
+      border: 1px solid rgba(77,243,236,.22);
+      border-radius: 5px;
+      padding: 7px 8px;
+      font-size: 12px;
+      color: rgba(245,255,253,.92);
+      background: rgba(77,243,236,.055);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .unit-preview i {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      box-shadow: 0 0 12px currentColor;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <aside class="left panel">
+      <section class="brand">
+        <div class="eyebrow"><i data-lucide="scan-line"></i> Holographic 3D Walkthrough</div>
+        <h1>Aurum Commercial Building</h1>
+        <p>Live 3D scene for the Al Sufouh 1 building location: 456H+6WG Al Wahaibi Building, Dubai, mapped to the revised architectural floor drawings.</p>
+      </section>
+
+      <section class="metrics">
+        <div class="metric"><strong>G+7</strong><span>Commercial levels</span></div>
+        <div class="metric"><strong>HC</strong><span>Roof health club</span></div>
+        <div class="metric"><strong>25.1105</strong><span>Latitude</span></div>
+      </section>
+
+      <section class="tools">
+        <h2 class="section-title">Action Modes</h2>
+        <div class="tool-grid">
+          <button class="tool active" data-mode="orbit"><i data-lucide="rotate-3d"></i><span>Move 3D</span></button>
+          <button class="tool" data-mode="walk"><i data-lucide="footprints"></i><span>Walk</span></button>
+          <button class="tool" data-mode="explode"><i data-lucide="layers-3"></i><span>Explode</span></button>
+          <button class="tool" data-mode="roads"><i data-lucide="map"></i><span>Road View</span></button>
+          <button class="tool" data-mode="units"><i data-lucide="panel-top"></i><span>Units</span></button>
+          <button class="tool" data-mode="tour"><i data-lucide="play"></i><span>Auto Tour</span></button>
+        </div>
+        <div class="mini-row">
+          <button class="mini" id="prevBtn">Prev</button>
+          <button class="mini" id="resetBtn">Reset</button>
+          <button class="mini" id="nextBtn">Next</button>
+        </div>
+        <div class="mini-row">
+          <button class="mini" id="roadBtn">Road</button>
+          <button class="mini" id="parkingBtn">Parking</button>
+          <button class="mini" id="entryBtn">Entry</button>
+        </div>
+      </section>
+
+      <section class="levels">
+        <h2 class="section-title">Floor Selection</h2>
+        <div class="level-list" id="levelList"></div>
+      </section>
+
+      <section class="note">
+        Drag to rotate, scroll to zoom, and select glowing floors or unit blocks in the 3D scene. Parking, road and entry buttons move the camera around the site.
+      </section>
+    </aside>
+
+    <section class="viewport panel">
+      <canvas id="scene"></canvas>
+      <div class="top-title">
+        <strong>Aurum Commercial Building</strong>
+        <span>Sales Availability Explorer | AED 2,300 PSF</span>
+      </div>
+      <aside id="floorCard" class="floor-card"></aside>
+      <nav id="floorRail" class="floor-rail"></nav>
+      <div class="legend">
+        <span><i style="color:#8cff7a;background:#8cff7a"></i>Available</span>
+        <span><i style="color:#ffd45f;background:#ffd45f"></i>Booked</span>
+        <span><i style="color:#ff6f6f;background:#ff6f6f"></i>Sold</span>
+      </div>
+      <div class="action-strip">
+        <button id="openBuildingBtn">Open Building</button>
+        <button id="availableBtn">Available Floors</button>
+        <button id="soldBtn">Sold View</button>
+        <button id="siteBtn">Site View</button>
+        <button id="resetViewBtn">Reset</button>
+        <button id="tourBtn">Touch Tour</button>
+      </div>
+      <div class="hint">Hover floors and entrances for area, units and prices<br>Click toggles render / neon structure</div>
+      <div class="hud">
+        <div class="pill"><i data-lucide="activity"></i><span id="modeStatus">Movable 3D orbit mode</span></div>
+        <a class="pill map-link" href="https://www.google.com/maps/place/456H%2B6WG+Al+Wahaibi+Building+-+Al+Sufouh+-+Al+Sufouh+1+-+Dubai/@25.11052,55.1754534,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f6b0a9534ec07:0x6fe4745a492c3eb!8m2!3d25.1105188!4d55.1802741!16s%2Fg%2F11bvtc604d!5m1!1e1?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener">
+          <i data-lucide="map-pin"></i><span>Exact Google Map</span>
+        </a>
+      </div>
+      <div class="reticle"></div>
+    </section>
+
+    <aside class="right panel">
+      <section class="detail">
+        <h2 id="floorTitle">Ground Floor</h2>
+        <p id="floorSummary"></p>
+        <div class="progress"><i id="progress"></i></div>
+        <div class="chips" id="chips"></div>
+      </section>
+
+      <figure class="plan">
+        <img id="planImage" src="aurum_assets/plans/architecture_page_01.pdf.png" alt="Selected floor architectural drawing">
+      </figure>
+
+      <section class="cards">
+        <article class="card">
+          <h3>3D Breakdown</h3>
+          <p id="logic"></p>
+        </article>
+        <article class="card">
+          <h3>Circulation Core</h3>
+          <p id="core"></p>
+        </article>
+        <article class="card">
+          <h3>Selectable Units</h3>
+          <div class="units" id="units"></div>
+        </article>
+        <article class="card">
+          <h3>Walkthrough Beats</h3>
+          <ul id="beats"></ul>
+        </article>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    const pricingData = await fetch("aurum_assets/pricing_data.json").then(r => r.json()).catch(() => ({ floors: {}, units: [] }));
+    const FIXED_RATE_PSF = 2300;
+
+    const floorData = [
+      floor("ground", "G", "Ground Floor", 1, "Entry arrival, driveway, parking, office frontage, atrium, substation, MDF and garbage rooms.", 92, 58, range("Office", 1, 14), ["Entrances", "Driveway", "Parking", "Atrium", "Substation"], "Largest public plate: offices sit around arrival and driveway movement, with service rooms and ramps modeled as the darker core band.", "The lift lobby, stairs, ramp and atrium form the first vertical anchor.", ["Zoom out to road context", "Animate entry from the internal approach", "Highlight fourteen office modules"]),
+      floor("first", "1", "First Floor", 2, "Office level with void over atrium, voids over playing areas, balconies, stores, lift lobby and stair movement.", 88, 55, range("Office", 1, 14), ["Void Over Atrium", "Balconies", "Stores", "Open To Down"], "The first floor continues the lower commercial rhythm while cutting openings over ground-level spaces.", "The repeated lift and stair core keeps the atrium visible across levels.", ["Show atrium void vertically", "Turn balconies into glowing edge modules", "Preserve open-to-down pockets"]),
+      floor("second", "2", "Second Floor", 3, "Higher density office plate labelled 201-222 with terraces, passages, lift lobbies and service support.", 102, 60, range("Office", 201, 222), ["Offices 201-222", "Terraces", "Passages", "Lift Lobbies"], "This is the first full upper commercial floor, modeled with twenty-two selectable unit blocks.", "Lift lobby, garbage, electrical, water meter, telecom and stairs align around the central movement spine.", ["Explode this as a typical office plate", "Show terrace premiums on the edges", "Use unit picking for leasing presentations"]),
+      floor("third", "3", "Third Floor", 4, "Office level 301-322 with balconies, terraces, atrium void, lift lobbies, passages and wet service clusters.", 100, 59, range("Office", 301, 322), ["Offices 301-322", "Balconies", "Terraces", "Service Closets"], "A repeated curved commercial plate with strong balcony and terrace rhythm.", "Two lift-lobby zones and stair links keep movement central and clear.", ["Good typical floor animation", "Edge glow can show curved facade", "Twenty-two unit labels are mapped"]),
+      floor("fourth", "4", "Fourth Floor", 5, "Office level 401-422 with Detail-B references, terraces, balconies and central services.", 98, 58, range("Office", 401, 422), ["Offices 401-422", "Detail-B", "Terraces", "Electrical Room"], "A dense commercial floor with a local detail reference that can become a future facade hotspot.", "Lift, stair, electrical, telecom, garbage and meter rooms stay aligned in the core band.", ["Call out Detail-B", "Show repeated pantry/toilet service logic", "Keep twenty-two units selectable"]),
+      floor("fifth", "5", "Fifth Floor", 6, "Office level 501-522 with Detail-A references, terraces and similar upper-commercial planning.", 96, 57, range("Office", 501, 522), ["Offices 501-522", "Detail-A", "Terraces", "Pantry/Toilet"], "Another typical office plate, with Detail-A marked as a specific upper-floor condition.", "The repeated lift and stair core supports predictable tenant access.", ["Use as the leasing-plan floor", "Animate Detail-A as a raised edge", "Twenty-two units are mapped"]),
+      floor("sixth", "6", "Sixth Floor", 7, "Setback executive level with larger terraces, balconies, atrium voids and grouped office zones.", 76, 50, named(["Office NW", "Office NE", "Office E", "Office SE", "Office SW", "Office W"], "Executive office"), ["Setback", "Large Terraces", "Balconies", "Atrium Void"], "The sixth floor steps inward, creating the first pronounced crown setback and larger terrace zones.", "Lifts remain central with meter, garbage, electrical and telecom support beside circulation.", ["Pull this floor outward in explode mode", "Emphasize terrace value", "Group offices as executive clusters"]),
+      floor("seventh", "7", "Seventh Floor", 8, "Upper setback level with open-to-down voids, balconies, passages, lift lobbies and smaller office clusters.", 62, 43, named(["Office A", "Office B", "Office C", "Office D"], "Upper office"), ["Open To Down", "Balconies", "Passages", "Setback Crown"], "The seventh level tightens the footprint into a light upper crown.", "Lift lobby and stair movements continue to connect the crown with the atrium below.", ["Premium top-office walk path", "Transition to roof amenity", "Smaller clusters remain selectable"]),
+      floor("hc", "HC", "Health Club Floor", 9, "Roof health club with reception, gym, sauna, steam, changing rooms, lockers, swimming pool, child pool and roof deck.", 50, 36, named(["Reception", "Gym", "Sauna", "Steam", "Pool", "Child Pool", "Lockers", "Pump Room"], "Amenity"), ["Roof Deck", "Swimming Pool", "Gym", "Sauna", "Steam"], "The roof swaps office density for amenity programming and outdoor deck presence.", "The vertical core lands in a roof lobby connected to wellness spaces and deck services.", ["End the tour at the pool deck", "Use cyan glow for water areas", "Show amenity value above commercial stack"])
+    ];
+
+    function floor(id, label, title, page, summary, width, depth, units, tags, logic, core, beats) {
+      return { id, label, title, plan: `aurum_assets/plans/architecture_page_${String(page).padStart(2, "0")}.pdf.png`, summary, width, depth, units, tags, logic, core, beats };
+    }
+
+    function range(prefix, start, end) {
+      const output = [];
+      for (let n = start; n <= end; n += 1) {
+        output.push({ name: `${prefix} ${start < 100 ? String(n).padStart(2, "0") : n}`, type: n % 3 === 0 ? "Corner module" : n % 2 === 0 ? "Balcony edge" : "Standard module" });
+      }
+      return output;
+    }
+
+    function named(names, type) {
+      return names.map(name => ({ name, type }));
+    }
+
+    const canvas = document.getElementById("scene");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x03090c, 0.009);
+
+    const camera = new THREE.PerspectiveCamera(42, 1, .1, 1000);
+    camera.position.set(92, 88, 126);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = .07;
+    controls.target.set(0, 20, 0);
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.maxDistance = 150;
+    controls.minDistance = 150;
+    controls.maxPolarAngle = Math.PI * .49;
+    controls.minPolarAngle = Math.PI * .2;
+
+    scene.add(new THREE.HemisphereLight(0x9ffff8, 0x071014, 3.6));
+    const key = new THREE.DirectionalLight(0xe0fefd, 2.8);
+    key.position.set(40, 80, 50);
+    scene.add(key);
+
+    const group = new THREE.Group();
+    scene.add(group);
+    const roadInfraGroup = new THREE.Group();
+    scene.add(roadInfraGroup);
+    const envelopeGroup = new THREE.Group();
+    scene.add(envelopeGroup);
+    group.scale.setScalar(.72);
+    envelopeGroup.scale.setScalar(.72);
+    const FLOOR_GAP = 4.65;
+    const interactive = [];
+    const floorMeshes = [];
+    const unitMeshes = [];
+    const courtyardHotspots = [];
+    let renderPlane = null;
+    let renderVisible = false;
+    let salesMode = "all";
+    let activeIndex = 0;
+    let mode = "orbit";
+    let selectedUnit = null;
+    let tourTimer = null;
+    let clock = new THREE.Clock();
+    let frameCount = 0;
+    let hoveredFloorIndex = null;
+    let lastHoverAt = 0;
+    let kioskTour = true;
+
+    const matFloor = new THREE.MeshPhysicalMaterial({
+      color: 0x3af6ee, transparent: true, opacity: .08, roughness: .18, metalness: .22,
+      emissive: 0x0bddd7, emissiveIntensity: .9, transmission: .15, thickness: .4
+    });
+    const matActive = new THREE.MeshPhysicalMaterial({
+      color: 0xe0b85d, transparent: true, opacity: .16, roughness: .2, metalness: .25,
+      emissive: 0xe0b85d, emissiveIntensity: 1.2
+    });
+    const matUnit = new THREE.MeshPhysicalMaterial({
+      color: 0x99ffc9, transparent: true, opacity: .42, roughness: .25, metalness: .12,
+      emissive: 0x2feaa5, emissiveIntensity: .32
+    });
+    const matUnitActive = new THREE.MeshPhysicalMaterial({
+      color: 0xff7b70, transparent: true, opacity: .72, roughness: .2, metalness: .1,
+      emissive: 0xff4c42, emissiveIntensity: .72
+    });
+    const textureLoader = new THREE.TextureLoader();
+
+    buildMap();
+    buildBuilding();
+    buildOuterEnvelope();
+    buildBuildingServices();
+    buildHologram();
+    buildUI();
+    buildFloorRail();
+    selectFloor(0);
+    updateFloorCard(0);
+    setRenderMode(false);
+    setMode("orbit");
+    lucide.createIcons();
+    resize();
+    addEventListener("resize", resize);
+    canvas.addEventListener("click", () => openBuilding());
+    canvas.addEventListener("mousemove", handleHover);
+    canvas.addEventListener("pointerdown", handleTouchSelect);
+    canvas.addEventListener("mouseleave", () => {
+      hoveredFloorIndex = null;
+      updateFloorCard(activeIndex);
+    });
+    setInterval(() => {
+      if (!kioskTour) return;
+      if (performance.now() - lastHoverAt < 3500) return;
+      selectFloor((activeIndex + 1) % floorData.length);
+    }, 2400);
+    document.getElementById("openBuildingBtn").addEventListener("click", openBuilding);
+    document.getElementById("availableBtn").addEventListener("click", () => setSalesMode("available"));
+    document.getElementById("soldBtn").addEventListener("click", () => setSalesMode("sold"));
+    document.getElementById("siteBtn").addEventListener("click", () => moveCameraTo("road"));
+    document.getElementById("resetViewBtn").addEventListener("click", () => {
+      setSalesMode("all");
+      resetCamera();
+    });
+    document.getElementById("tourBtn").addEventListener("click", () => {
+      kioskTour = !kioskTour;
+      document.getElementById("tourBtn").textContent = kioskTour ? "Pause Tour" : "Touch Tour";
+    });
+    document.getElementById("prevBtn").addEventListener("click", () => selectFloor((activeIndex + floorData.length - 1) % floorData.length, true));
+    document.getElementById("nextBtn").addEventListener("click", () => selectFloor((activeIndex + 1) % floorData.length, true));
+    document.getElementById("resetBtn").addEventListener("click", resetCamera);
+    document.getElementById("roadBtn").addEventListener("click", () => moveCameraTo("road"));
+    document.getElementById("parkingBtn").addEventListener("click", () => moveCameraTo("parking"));
+    document.getElementById("entryBtn").addEventListener("click", () => moveCameraTo("entry"));
+
+    animate();
+
+    function buildMap() {
+      const base = new THREE.Mesh(
+        new THREE.PlaneGeometry(360, 280, 36, 28),
+        new THREE.MeshBasicMaterial({ color: 0x0b2025, transparent: true, opacity: .18, wireframe: true })
+      );
+      base.rotation.x = -Math.PI / 2;
+      base.position.y = -.12;
+      roadInfraGroup.add(base);
+
+      road(0, 0, 330, 15, -0.18, "Al Sufouh corridor", true);
+      road(54, -4, 15, 250, 0.25, "Dubai Internet City access", true);
+      road(-58, -38, 210, 9, 0.34, "Internal approach", false);
+      road(-78, 48, 155, 8, -0.08, "service street", false);
+      road(92, 52, 132, 8, 0.14, "parallel street", false);
+      road(-118, -78, 138, 7, 0.56, "neighbourhood link", false);
+      road(118, -68, 120, 7, -0.48, "neighbourhood link", false);
+      buildParcels();
+      buildParking();
+
+      const marker = new THREE.Mesh(
+        new THREE.CylinderGeometry(4.5, 6, 1.2, 48),
+        new THREE.MeshBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .55 })
+      );
+      marker.position.set(0, .2, 0);
+      roadInfraGroup.add(marker);
+    }
+
+    function buildParcels() {
+      const mat = new THREE.MeshBasicMaterial({ color: 0x8eece6, transparent: true, opacity: .06, wireframe: true });
+      const blocks = [
+        [-92, 24, 32, 46, -.08], [-126, 30, 24, 38, -.08], [98, 18, 38, 46, .14],
+        [126, 60, 26, 34, .14], [-86, -78, 36, 30, .56], [88, -82, 36, 28, -.48],
+        [-18, 70, 58, 26, -.18], [32, -72, 52, 30, -.18]
+      ];
+      blocks.forEach(([x, z, w, h, r]) => {
+        const block = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat.clone());
+        block.rotation.x = -Math.PI / 2;
+        block.rotation.z = r;
+        block.position.set(x, .04, z);
+        roadInfraGroup.add(block);
+      });
+
+      const plot = new THREE.Mesh(
+        new THREE.RingGeometry(22, 23, 4),
+        new THREE.MeshBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .55, side: THREE.DoubleSide })
+      );
+      plot.rotation.x = -Math.PI / 2;
+      plot.rotation.z = Math.PI / 4;
+      plot.position.set(0, .16, 0);
+      roadInfraGroup.add(plot);
+    }
+
+    function buildParking() {
+      const bayMat = new THREE.MeshBasicMaterial({ color: 0x9ffff8, transparent: true, opacity: .26 });
+      const driveMat = new THREE.MeshBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .24 });
+      addParkingRow(-48, 34, 12, 5.4, 0, bayMat);
+      addParkingRow(-48, 43, 12, 5.4, 0, bayMat);
+      addParkingRow(-48, -45, 12, 5.4, Math.PI, bayMat);
+      addParkingRow(-48, -54, 12, 5.4, Math.PI, bayMat);
+      addParkingColumn(-62, -28, 10, 5.4, Math.PI / 2, bayMat);
+      addParkingColumn(62, -28, 10, 5.4, -Math.PI / 2, bayMat);
+
+      const driveway = new THREE.Mesh(new THREE.PlaneGeometry(68, 4.2), driveMat);
+      driveway.rotation.x = -Math.PI / 2;
+      driveway.rotation.z = .18;
+      driveway.position.set(-21, .16, 20);
+      roadInfraGroup.add(driveway);
+
+      const loop = new THREE.Mesh(new THREE.RingGeometry(40, 43, 80, 1, .08, Math.PI * 1.72), driveMat.clone());
+      loop.rotation.x = -Math.PI / 2;
+      loop.rotation.z = -.72;
+      loop.position.set(0, .12, -5);
+      roadInfraGroup.add(loop);
+
+      const arrows = [
+        [-52, .2, 18], [-34, .2, 21], [-16, .2, 24], [2, .2, 25]
+      ];
+      arrows.forEach((p, i) => {
+        const cone = new THREE.Mesh(
+          new THREE.ConeGeometry(1.3, 3.4, 3),
+            new THREE.MeshBasicMaterial({ color: i === arrows.length - 1 ? 0xff7b70 : 0xe0b85d, transparent: true, opacity: .5 })
+        );
+        cone.position.set(...p);
+        cone.rotation.x = Math.PI / 2;
+        cone.rotation.z = -Math.PI / 2.4;
+        roadInfraGroup.add(cone);
+      });
+    }
+
+    function addParkingRow(startX, z, count, spacing, rotation, mat) {
+      for (let i = 0; i < count; i += 1) {
+        const bay = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 7.2), mat.clone());
+        bay.rotation.x = -Math.PI / 2;
+        bay.rotation.z = rotation;
+        bay.position.set(startX + i * spacing, .13, z);
+        roadInfraGroup.add(bay);
+      }
+    }
+
+    function addParkingColumn(x, startZ, count, spacing, rotation, mat) {
+      for (let i = 0; i < count; i += 1) {
+        const bay = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 7.2), mat.clone());
+        bay.rotation.x = -Math.PI / 2;
+        bay.rotation.z = rotation;
+        bay.position.set(x, .13, startZ + i * spacing);
+        roadInfraGroup.add(bay);
+      }
+    }
+
+    function road(x, z, w, h, rot, label, arterial = false) {
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(w, .22, h),
+        new THREE.MeshStandardMaterial({ color: arterial ? 0x2d3d43 : 0x223036, roughness: .7, metalness: .05, transparent: true, opacity: arterial ? .78 : .58 })
+      );
+      mesh.position.set(x, -.05, z);
+      mesh.rotation.y = rot;
+      roadInfraGroup.add(mesh);
+
+      const line = new THREE.Mesh(
+        new THREE.BoxGeometry(w * .92, .04, .28),
+        new THREE.MeshBasicMaterial({ color: 0xe8f5f2, transparent: true, opacity: .45 })
+      );
+      line.position.set(x, .09, z);
+      line.rotation.y = rot;
+      roadInfraGroup.add(line);
+      if (arterial) {
+        [-h * .26, h * .26].forEach(offset => {
+          const lane = new THREE.Mesh(
+            new THREE.BoxGeometry(w * .9, .045, .18),
+            new THREE.MeshBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .3 })
+          );
+          lane.position.set(x + Math.sin(rot) * offset, .1, z + Math.cos(rot) * offset);
+          lane.rotation.y = rot;
+          roadInfraGroup.add(lane);
+        });
+      }
+      mesh.userData.label = label;
+    }
+
+    function buildBuilding() {
+      floorData.forEach((f, i) => {
+        const y = i * FLOOR_GAP + 1.8;
+        const floorGroup = new THREE.Group();
+        floorGroup.userData = { type: "floorGroup", floor: f, index: i, homeY: y };
+        group.add(floorGroup);
+
+        const planTexture = textureLoader.load(f.plan);
+        planTexture.colorSpace = THREE.SRGBColorSpace;
+        planTexture.rotation = -Math.PI / 2;
+        planTexture.center.set(.5, .5);
+        const planMat = new THREE.MeshBasicMaterial({ map: planTexture, transparent: true, opacity: .08 });
+        const sideMat = matFloor.clone();
+        const bottomMat = matFloor.clone();
+        bottomMat.opacity = .18;
+        const mesh = new THREE.Mesh(makeFootprintGeometry(f, i, .55), sideMat);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.y = y - .28;
+        mesh.userData = { type: "floor", floor: f, index: i };
+        floorGroup.add(mesh);
+        floorMeshes.push(mesh);
+        interactive.push(mesh);
+
+        const edge = new THREE.LineSegments(
+          new THREE.EdgesGeometry(mesh.geometry),
+          new THREE.LineBasicMaterial({ color: 0x80fffb, transparent: true, opacity: .96 })
+        );
+        mesh.add(edge);
+
+        const blueprint = new THREE.Mesh(
+          new THREE.PlaneGeometry(f.width / 4.25, f.depth / 4.25),
+          planMat.clone()
+        );
+        blueprint.rotation.x = -Math.PI / 2;
+        blueprint.position.y = y + .34;
+        floorGroup.add(blueprint);
+
+        const outline = tracedOutline(f, i, y + .52);
+        floorGroup.add(outline);
+        addFacadePanels(floorGroup, f, i, y);
+        addStructuralGrid(floorGroup, f, i, y);
+
+        const core = new THREE.Mesh(
+          new THREE.BoxGeometry(Math.max(3.5, f.width / 18), 1.65, Math.max(3.5, f.depth / 16)),
+          new THREE.MeshPhysicalMaterial({ color: 0x071014, transparent: true, opacity: .22, emissive: 0x226f73, emissiveIntensity: .55 })
+        );
+        core.position.set(0, y + .18, 0);
+        floorGroup.add(core);
+
+        const atrium = new THREE.Mesh(
+          new THREE.CylinderGeometry(1.7, 1.7, 1.7, 32),
+          new THREE.MeshBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .28, wireframe: true })
+        );
+        atrium.position.set(0, y + .28, 2.4);
+        floorGroup.add(atrium);
+
+        addCorridors(floorGroup, f, y);
+        addOfficeBoundariesAndBalconies(floorGroup, f, i, y);
+        if (i === 6) addSixthFloorBridge(floorGroup, f, y);
+        addUnits(floorGroup, f, i, y);
+      });
+    }
+
+    function addSixthFloorBridge(floorGroup, f, y) {
+      const bridgeMat = new THREE.MeshBasicMaterial({
+        color: 0xffb84d,
+        transparent: true,
+        opacity: .72,
+        depthTest: false
+      });
+      const railMat = new THREE.LineBasicMaterial({
+        color: 0xffd27a,
+        transparent: true,
+        opacity: .95,
+        depthTest: false
+      });
+      const bridge = new THREE.Mesh(new THREE.BoxGeometry(13.8, .28, 1.25), bridgeMat);
+      bridge.position.set(0, y + 1.12, 0);
+      bridge.userData = { type: "courtyardBridge" };
+      bridge.renderOrder = 45;
+      floorGroup.add(bridge);
+      interactive.push(bridge);
+      courtyardHotspots.push(bridge);
+
+      [-.86, .86].forEach((z) => {
+        const rail = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(-6.8, y + 1.55, z),
+          new THREE.Vector3(6.8, y + 1.55, z)
+        ]), railMat);
+        rail.renderOrder = 46;
+        floorGroup.add(rail);
+      });
+
+      const path = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-8.4, y + 1.68, 0),
+        new THREE.Vector3(-4.2, y + 1.68, 0),
+        new THREE.Vector3(0, y + 1.68, 0),
+        new THREE.Vector3(4.2, y + 1.68, 0),
+        new THREE.Vector3(8.4, y + 1.68, 0)
+      ]), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .86, depthTest: false }));
+      path.renderOrder = 47;
+      floorGroup.add(path);
+    }
+
+    function buildOuterEnvelope() {
+      const shellMat = new THREE.MeshBasicMaterial({
+        color: 0x2f8cff,
+        transparent: true,
+        opacity: .09,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const edgeMat = new THREE.LineBasicMaterial({
+        color: 0x58a6ff,
+        transparent: true,
+        opacity: .78,
+        depthTest: false
+      });
+      const crownMat = new THREE.LineBasicMaterial({
+        color: 0xe0b85d,
+        transparent: true,
+        opacity: .9,
+        depthTest: false
+      });
+      const podiumMat = new THREE.LineBasicMaterial({
+        color: 0xffd27a,
+        transparent: true,
+        opacity: .98,
+        depthTest: false
+      });
+
+      for (let i = 0; i < floorData.length - 1; i += 1) {
+        const lower = footprintPoints(floorData[i], i);
+        const upper = footprintPoints(floorData[i + 1], i + 1);
+        const y1 = i * FLOOR_GAP + 2.05;
+        const y2 = (i + 1) * FLOOR_GAP + 2.05;
+        const count = Math.min(lower.length, upper.length);
+
+        for (let p = 0; p < count; p += 1) {
+          const a = lower[p];
+          const b = lower[(p + 1) % lower.length];
+          const c = upper[(p + 1) % upper.length];
+          const d = upper[p];
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute("position", new THREE.Float32BufferAttribute([
+            a[0], y1, a[1],
+            b[0], y1, b[1],
+            c[0], y2, c[1],
+            a[0], y1, a[1],
+            c[0], y2, c[1],
+            d[0], y2, d[1]
+          ], 3));
+          envelopeGroup.add(new THREE.Mesh(geometry, shellMat.clone()));
+        }
+
+        for (let p = 0; p < count; p += 3) {
+          const l = lower[p];
+          const u = upper[p % upper.length];
+          envelopeGroup.add(new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints([
+              new THREE.Vector3(l[0], y1, l[1]),
+              new THREE.Vector3(u[0], y2, u[1])
+            ]),
+            edgeMat
+          ));
+        }
+      }
+
+      floorData.forEach((f, i) => {
+        const y = i * FLOOR_GAP + 2.05;
+        const pts = footprintPoints(f, i).map(([x, z]) => new THREE.Vector3(x, y, z));
+        pts.push(pts[0].clone());
+        envelopeGroup.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          i <= 1 ? podiumMat : i === floorData.length - 1 ? crownMat : edgeMat
+        ));
+      });
+
+      const podiumLower = footprintPoints(floorData[0], 0);
+      const podiumUpper = footprintPoints(floorData[1], 1);
+      const y1 = 1.4;
+      const y2 = FLOOR_GAP + 2.4;
+      const podiumShellMat = new THREE.MeshBasicMaterial({
+        color: 0xffc766,
+        transparent: true,
+        opacity: .1,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      for (let p = 0; p < Math.min(podiumLower.length, podiumUpper.length); p += 1) {
+        const a = podiumLower[p];
+        const b = podiumLower[(p + 1) % podiumLower.length];
+        const c = podiumUpper[(p + 1) % podiumUpper.length];
+        const d = podiumUpper[p];
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute([
+          a[0], y1, a[1],
+          b[0], y1, b[1],
+          c[0], y2, c[1],
+          a[0], y1, a[1],
+          c[0], y2, c[1],
+          d[0], y2, d[1]
+        ], 3));
+        envelopeGroup.add(new THREE.Mesh(geometry, podiumShellMat.clone()));
+      }
+
+      const roof = footprintPoints(floorData[floorData.length - 1], floorData.length - 1)
+        .map(([x, z]) => new THREE.Vector3(x, floorData.length * FLOOR_GAP + .4, z));
+      roof.push(roof[0].clone());
+      envelopeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(roof), crownMat));
+      envelopeGroup.renderOrder = 35;
+    }
+
+    function buildBuildingServices() {
+      const fullHeight = floorData.length * FLOOR_GAP + 1.5;
+      const pillarMat = new THREE.MeshBasicMaterial({ color: 0xb7fff8, transparent: true, opacity: .74 });
+      const coverMat = new THREE.LineBasicMaterial({ color: 0x58a6ff, transparent: true, opacity: .88, depthTest: false });
+      const liftMat = new THREE.MeshBasicMaterial({ color: 0xffd27a, transparent: true, opacity: .2, depthWrite: false });
+      const liftEdgeMat = new THREE.LineBasicMaterial({ color: 0xffd27a, transparent: true, opacity: .95, depthTest: false });
+      const entranceMat = new THREE.LineBasicMaterial({ color: 0xff7b70, transparent: true, opacity: .98, depthTest: false });
+      const acMat = new THREE.MeshBasicMaterial({ color: 0xd6e0ff, transparent: true, opacity: .2, depthWrite: false });
+      const acEdgeMat = new THREE.LineBasicMaterial({ color: 0xd6e0ff, transparent: true, opacity: .88, depthTest: false });
+
+      const pillarPositions = [
+        [-18,-24],[-9,-24],[0,-24],[9,-24],[18,-24],
+        [-24,-12],[-12,-12],[12,-12],[24,-12],
+        [-24,0],[-12,0],[12,0],[24,0],
+        [-24,12],[-12,12],[12,12],[24,12],
+        [-18,24],[-9,24],[0,24],[9,24],[18,24],
+        [-36,-8],[36,-8],[-36,8],[36,8]
+      ];
+      pillarPositions.forEach(([x,z]) => {
+        const col = new THREE.Mesh(new THREE.CylinderGeometry(.14, .14, fullHeight, 10), pillarMat);
+        col.position.set(x, fullHeight / 2 + .5, z);
+        envelopeGroup.add(col);
+      });
+
+      addLiftShaft(-4.8, 0, fullHeight, liftMat, liftEdgeMat);
+      addLiftShaft(4.8, 0, fullHeight, liftMat, liftEdgeMat);
+      addLiftShaft(-7.2, -5.8, fullHeight * .72, liftMat, liftEdgeMat);
+      addLiftShaft(7.2, -5.8, fullHeight * .72, liftMat, liftEdgeMat);
+
+      addEntranceFrame(0, -31.5, 7.4, 5.5, entranceMat);
+      addEntranceFrame(-32, 5, 5.2, 4.4, entranceMat);
+      addEntranceFrame(32, 5, 5.2, 4.4, entranceMat);
+
+      addRoofPlant(0, 4, floorData.length * FLOOR_GAP + .9, 12, 6, acMat, acEdgeMat);
+      addRoofPlant(10, -7, floorData.length * FLOOR_GAP + .9, 5, 4, acMat, acEdgeMat);
+      addRoofPlant(-10, -7, floorData.length * FLOOR_GAP + .9, 5, 4, acMat, acEdgeMat);
+      addFacadeCoverBands(coverMat);
+    }
+
+    function addLiftShaft(x, z, h, mat, edgeMat) {
+      const shaft = new THREE.Mesh(new THREE.BoxGeometry(2.2, h, 2.2), mat.clone());
+      shaft.position.set(x, h / 2 + .4, z);
+      envelopeGroup.add(shaft);
+      const edge = new THREE.LineSegments(new THREE.EdgesGeometry(shaft.geometry), edgeMat.clone());
+      shaft.add(edge);
+    }
+
+    function addEntranceFrame(x, z, w, h, mat) {
+      const y = h / 2 + .45;
+      const points = [
+        new THREE.Vector3(x - w / 2, .45, z),
+        new THREE.Vector3(x - w / 2, h, z),
+        new THREE.Vector3(x + w / 2, h, z),
+        new THREE.Vector3(x + w / 2, .45, z)
+      ];
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), mat.clone());
+      line.renderOrder = 60;
+      envelopeGroup.add(line);
+      const hotspot = new THREE.Mesh(
+        new THREE.PlaneGeometry(w + 1.2, h + 1),
+        new THREE.MeshBasicMaterial({ color: 0xff7b70, transparent: true, opacity: .001, depthWrite: false })
+      );
+      hotspot.position.set(x, y, z + (z < 0 ? -.35 : .35));
+      hotspot.userData = { type: "entrance", name: z < -20 ? "Main Entrance" : x < 0 ? "West Entrance" : "East Entrance" };
+      envelopeGroup.add(hotspot);
+      interactive.push(hotspot);
+    }
+
+    function addRoofPlant(x, z, y, w, d, mat, edgeMat) {
+      const plant = new THREE.Mesh(new THREE.BoxGeometry(w, 1.2, d), mat.clone());
+      plant.position.set(x, y, z);
+      envelopeGroup.add(plant);
+      plant.add(new THREE.LineSegments(new THREE.EdgesGeometry(plant.geometry), edgeMat.clone()));
+      const fanMat = new THREE.LineBasicMaterial({ color: 0xd6e0ff, transparent: true, opacity: .7, depthTest: false });
+      [-w * .25, w * .25].forEach(offset => {
+        const fan = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(circlePoints(x + offset, y + .65, z, 1.15, 32)),
+          fanMat
+        );
+        envelopeGroup.add(fan);
+      });
+    }
+
+    function circlePoints(x, y, z, r, count) {
+      const pts = [];
+      for (let i = 0; i <= count; i += 1) {
+        const a = (i / count) * Math.PI * 2;
+        pts.push(new THREE.Vector3(x + Math.cos(a) * r, y, z + Math.sin(a) * r));
+      }
+      return pts;
+    }
+
+    function addFacadeCoverBands(mat) {
+      [8, 17, 26, 35].forEach(y => {
+        const front = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(-28, y, -27),
+          new THREE.Vector3(-15, y, -30),
+          new THREE.Vector3(0, y, -28),
+          new THREE.Vector3(15, y, -30),
+          new THREE.Vector3(28, y, -27)
+        ]), mat.clone());
+        front.renderOrder = 55;
+        envelopeGroup.add(front);
+        const side = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(31, y, -14),
+          new THREE.Vector3(36, y, 0),
+          new THREE.Vector3(31, y, 14)
+        ]), mat.clone());
+        side.renderOrder = 55;
+        envelopeGroup.add(side);
+      });
+    }
+
+    function makeFootprintGeometry(f, index, depth) {
+      const shape = new THREE.Shape();
+      const pts = footprintPoints(f, index);
+      shape.moveTo(pts[0][0], pts[0][1]);
+      pts.slice(1).forEach(([x, z]) => shape.lineTo(x, z));
+      shape.closePath();
+      if (index >= 1 && index <= 8) {
+        const hole = new THREE.Path();
+        const holeW = index >= 6 ? 4.2 : 6.2;
+        const holeD = index >= 6 ? 3.2 : 5.1;
+        hole.moveTo(-holeW, -holeD);
+        hole.lineTo(holeW, -holeD);
+        hole.lineTo(holeW, holeD);
+        hole.lineTo(-holeW, holeD);
+        hole.closePath();
+        shape.holes.push(hole);
+      }
+      return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
+    }
+
+    function footprintPoints(f, index) {
+      const sx = f.width / 100;
+      const sz = f.depth / 100;
+      const lower = [
+        [-44,-30],[-35,-42],[-18,-42],[-14,-32],[-5,-32],[-5,-42],[5,-42],[5,-32],[14,-32],[18,-42],[35,-42],[44,-30],
+        [47,-8],[39,-5],[39,6],[47,9],[43,31],[31,42],[17,40],[13,31],[5,31],[5,42],[-5,42],[-5,31],[-13,31],[-17,40],[-31,42],[-43,31],[-47,9],[-39,6],[-39,-5],[-47,-8]
+      ];
+      const typical = [
+        [-47,-30],[-39,-43],[-22,-43],[-18,-33],[-8,-33],[-8,-43],[8,-43],[8,-33],[18,-33],[22,-43],[39,-43],[47,-30],
+        [49,-12],[42,-9],[42,9],[49,12],[42,32],[25,42],[14,40],[11,31],[5,31],[5,42],[-5,42],[-5,31],[-11,31],[-14,40],[-25,42],[-42,32],[-49,12],[-42,9],[-42,-9],[-49,-12]
+      ];
+      const setback = [
+        [-35,-32],[-24,-42],[-9,-42],[-7,-29],[7,-29],[9,-42],[24,-42],[35,-32],
+        [38,-8],[31,-5],[31,8],[38,11],[31,34],[16,42],[7,39],[5,29],[-5,29],[-7,39],[-16,42],[-31,34],[-38,11],[-31,8],[-31,-5],[-38,-8]
+      ];
+      const roof = [
+        [-30,-31],[-20,-40],[-5,-40],[-5,-30],[7,-30],[7,-39],[22,-37],[32,-27],
+        [34,-5],[27,-2],[27,17],[20,17],[20,33],[8,39],[-8,39],[-8,30],[-22,30],[-30,20],[-34,-2]
+      ];
+      const source = index === 0 ? lower : index >= 6 ? (index === 8 ? roof : setback) : typical;
+      return source.map(([x, z]) => [x * sx, z * sz]);
+    }
+
+    function tracedOutline(f, index, y) {
+      const pts = footprintPoints(f, index).map(([x, z]) => new THREE.Vector3(x, y, z));
+      pts.push(pts[0].clone());
+      const line = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({ color: index === activeIndex ? 0xe0b85d : 0x4df3ec, transparent: true, opacity: .95 })
+      );
+      return line;
+    }
+
+    function addFacadePanels(floorGroup, f, index, y) {
+      const pts = footprintPoints(f, index);
+      const mat = new THREE.MeshBasicMaterial({ color: 0x4df3ec, transparent: true, opacity: index > 5 ? .12 : .08, side: THREE.DoubleSide });
+      for (let p = 0; p < pts.length; p += 1) {
+        const a = pts[p];
+        const b = pts[(p + 1) % pts.length];
+        const dx = b[0] - a[0];
+        const dz = b[1] - a[1];
+        const len = Math.hypot(dx, dz);
+        if (len < 2.2) continue;
+        const panel = new THREE.Mesh(new THREE.PlaneGeometry(len, 3.05), mat.clone());
+        panel.position.set((a[0] + b[0]) / 2, y + 1.75, (a[1] + b[1]) / 2);
+        panel.rotation.y = Math.atan2(dx, dz);
+        floorGroup.add(panel);
+      }
+    }
+
+    function addStructuralGrid(floorGroup, f, index, y) {
+      const pts = footprintPoints(f, index);
+      const columnMat = new THREE.MeshBasicMaterial({ color: 0x9ffff8, transparent: true, opacity: .7 });
+      const beamMat = new THREE.LineBasicMaterial({ color: 0x4df3ec, transparent: true, opacity: .28 });
+      const xs = [-18, -9, 0, 9, 18].map(v => v * f.width / 100);
+      const zs = [-24, -12, 0, 12, 24].map(v => v * f.depth / 100);
+      const columnPoints = [];
+
+      xs.forEach(x => {
+        zs.forEach(z => {
+          if (!insidePolygon([x, z], pts)) return;
+          if (Math.abs(x) < 4.8 && Math.abs(z) < 4.4 && index > 0) return;
+          columnPoints.push([x, z]);
+          const col = new THREE.Mesh(new THREE.BoxGeometry(.16, 3.7, .16), columnMat);
+          col.position.set(x, y + 1.7, z);
+          floorGroup.add(col);
+        });
+      });
+
+      zs.forEach(z => {
+        const linePts = xs.filter(x => insidePolygon([x, z], pts)).map(x => new THREE.Vector3(x, y + .82, z));
+        if (linePts.length > 1) floorGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(linePts), beamMat));
+      });
+      xs.forEach(x => {
+        const linePts = zs.filter(z => insidePolygon([x, z], pts)).map(z => new THREE.Vector3(x, y + .84, z));
+        if (linePts.length > 1) floorGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(linePts), beamMat.clone()));
+      });
+
+      addAtriumVoidLines(floorGroup, index, y);
+      addCoreFrames(floorGroup, f, y);
+    }
+
+    function addAtriumVoidLines(floorGroup, index, y) {
+      if (index === 0) return;
+      const w = index >= 6 ? 4.2 : 6.2;
+      const d = index >= 6 ? 3.2 : 5.1;
+      const pts = [
+        new THREE.Vector3(-w, y + .9, -d),
+        new THREE.Vector3(w, y + .9, -d),
+        new THREE.Vector3(w, y + .9, d),
+        new THREE.Vector3(-w, y + .9, d),
+        new THREE.Vector3(-w, y + .9, -d)
+      ];
+      floorGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .9 })));
+    }
+
+    function addCoreFrames(floorGroup, f, y) {
+      const mat = new THREE.LineBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .48 });
+      const cores = [
+        [-f.width / 18, 0, f.depth / 18],
+        [f.width / 18, 0, f.depth / 18],
+        [-f.width / 18, 0, -f.depth / 18],
+        [f.width / 18, 0, -f.depth / 18]
+      ];
+      cores.forEach(([x, , z]) => {
+        const box = new THREE.LineSegments(
+          new THREE.EdgesGeometry(new THREE.BoxGeometry(2.1, 3.2, 2.1)),
+          mat.clone()
+        );
+        box.position.set(x, y + 1.5, z);
+        floorGroup.add(box);
+      });
+    }
+
+    function insidePolygon(point, polygon) {
+      const [x, z] = point;
+      let inside = false;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i][0], zi = polygon[i][1];
+        const xj = polygon[j][0], zj = polygon[j][1];
+        const intersect = ((zi > z) !== (zj > z)) && (x < (xj - xi) * (z - zi) / (zj - zi + 0.000001) + xi);
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    }
+
+    function addCorridors(floorGroup, f, y) {
+      const corridorMat = new THREE.MeshBasicMaterial({ color: 0xe0b85d, transparent: true, opacity: .28 });
+      const crossMat = new THREE.MeshBasicMaterial({ color: 0x4df3ec, transparent: true, opacity: .22 });
+      const spine = new THREE.Mesh(new THREE.BoxGeometry(f.width / 5.2, .08, .5), corridorMat);
+      spine.position.set(0, y + .72, 0);
+      floorGroup.add(spine);
+
+      const cross = new THREE.Mesh(new THREE.BoxGeometry(.5, .08, f.depth / 5.8), crossMat);
+      cross.position.set(0, y + .74, 0);
+      floorGroup.add(cross);
+
+      const lobby = new THREE.Mesh(new THREE.RingGeometry(1.55, 2.18, 32), corridorMat);
+      lobby.rotation.x = -Math.PI / 2;
+      lobby.position.set(0, y + .78, 0);
+      floorGroup.add(lobby);
+    }
+
+    function addOfficeBoundariesAndBalconies(floorGroup, f, index, y) {
+      const wallMat = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: index <= 1 ? .42 : .5,
+        depthTest: false
+      });
+      const balconyMat = new THREE.LineBasicMaterial({
+        color: 0x8cff7a,
+        transparent: true,
+        opacity: .82,
+        depthTest: false
+      });
+      const terraceMat = new THREE.MeshBasicMaterial({
+        color: 0x8cff7a,
+        transparent: true,
+        opacity: .055,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+
+      const pts = footprintPoints(f, index);
+      const w = f.width / 4.25;
+      const d = f.depth / 4.25;
+      const unitCount = index <= 1 ? 14 : index <= 5 ? 22 : index === 6 ? 6 : index === 7 ? 4 : 8;
+      const cols = Math.ceil(unitCount / 2);
+      const usableW = w * .82;
+      const topZ = -d * .34;
+      const bottomZ = d * .34;
+      const depth = index <= 1 ? d * .22 : d * .26;
+      const yLine = y + 1.05;
+
+      for (let side = 0; side < 2; side += 1) {
+        const zBase = side === 0 ? topZ : bottomZ;
+        const zInner = side === 0 ? topZ + depth : bottomZ - depth;
+        for (let c = 0; c < cols; c += 1) {
+          const x1 = -usableW / 2 + c * (usableW / cols);
+          const x2 = -usableW / 2 + (c + 1) * (usableW / cols);
+          const cx = (x1 + x2) / 2;
+          if (!insidePolygon([cx, zBase], pts)) continue;
+          addRectLine(floorGroup, x1, x2, zBase, zInner, yLine, wallMat);
+          if (c % 2 === 0 || index >= 2) {
+            const zBal = side === 0 ? zBase - d * .055 : zBase + d * .055;
+            addRectLine(floorGroup, x1 + .15, x2 - .15, zBase, zBal, yLine + .08, balconyMat);
+            addTerracePatch(floorGroup, x1 + .15, x2 - .15, zBase, zBal, y + .92, terraceMat);
+          }
+        }
+      }
+
+      const sideRows = index >= 2 ? 5 : 3;
+      [-1, 1].forEach(sign => {
+        const xBase = sign * w * .43;
+        const xInner = sign * w * .31;
+        for (let r = 0; r < sideRows; r += 1) {
+          const z1 = -d * .24 + r * (d * .48 / sideRows);
+          const z2 = -d * .24 + (r + 1) * (d * .48 / sideRows);
+          const cz = (z1 + z2) / 2;
+          if (!insidePolygon([xBase, cz], pts)) continue;
+          addRectLine(floorGroup, xBase, xInner, z1, z2, yLine, wallMat);
+          const xBal = sign * w * .49;
+          addRectLine(floorGroup, xBase, xBal, z1 + .15, z2 - .15, yLine + .08, balconyMat);
+          addTerracePatch(floorGroup, xBase, xBal, z1 + .15, z2 - .15, y + .92, terraceMat);
+        }
+      });
+    }
+
+    function addRectLine(groupRef, x1, x2, z1, z2, y, mat) {
+      const points = [
+        new THREE.Vector3(x1, y, z1),
+        new THREE.Vector3(x2, y, z1),
+        new THREE.Vector3(x2, y, z2),
+        new THREE.Vector3(x1, y, z2),
+        new THREE.Vector3(x1, y, z1)
+      ];
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), mat.clone());
+      line.renderOrder = 50;
+      groupRef.add(line);
+    }
+
+    function addTerracePatch(groupRef, x1, x2, z1, z2, y, mat) {
+      const patch = new THREE.Mesh(new THREE.PlaneGeometry(Math.abs(x2 - x1), Math.abs(z2 - z1)), mat.clone());
+      patch.rotation.x = -Math.PI / 2;
+      patch.position.set((x1 + x2) / 2, y, (z1 + z2) / 2);
+      patch.renderOrder = 10;
+      groupRef.add(patch);
+    }
+
+    function addUnits(floorGroup, f, index, y) {
+      const maxUnits = Math.min(f.units.length, 22);
+      const cols = Math.ceil(maxUnits / 2);
+      const spanX = f.width / 4.25 - 4;
+      const spanZ = f.depth / 4.25 - 4;
+      for (let n = 0; n < maxUnits; n += 1) {
+        const side = n % 2 === 0 ? -1 : 1;
+        const col = Math.floor(n / 2);
+        const x = -spanX / 2 + (cols <= 1 ? 0 : col * (spanX / (cols - 1)));
+        const z = side * spanZ * .34;
+        const unit = new THREE.Mesh(new THREE.BoxGeometry(Math.max(.9, spanX / cols * .62), .52, 1.55), matUnit.clone());
+        unit.position.set(x, y + 1.02, z);
+        unit.userData = { type: "unit", floor: f, index, unit: f.units[n] };
+        unit.visible = false;
+        floorGroup.add(unit);
+        interactive.push(unit);
+        unitMeshes.push(unit);
+      }
+    }
+
+    function buildHologram() {
+      const rings = [22, 30, 38];
+      rings.forEach((r, i) => {
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(r, .035, 8, 160),
+          new THREE.MeshBasicMaterial({ color: i === 1 ? 0xe0b85d : 0x4df3ec, transparent: true, opacity: .18 })
+        );
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = .18 + i * .06;
+        scene.add(ring);
+      });
+
+      const beam = new THREE.Mesh(
+        new THREE.CylinderGeometry(18, 26, 48, 64, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0x4df3ec, transparent: true, opacity: .025, side: THREE.DoubleSide })
+      );
+      beam.position.y = 21;
+      scene.add(beam);
+    }
+
+    function buildRenderOverlay() {
+      const renderTexture = textureLoader.load("aurum_assets/building_render_front.jpg");
+      renderTexture.colorSpace = THREE.SRGBColorSpace;
+      const material = new THREE.MeshBasicMaterial({
+        map: renderTexture,
+        transparent: true,
+        opacity: .48,
+        depthTest: true,
+        depthWrite: false
+      });
+      renderPlane = new THREE.Mesh(new THREE.PlaneGeometry(34, 45), material);
+      renderPlane.position.set(0, 25, -23);
+      renderPlane.renderOrder = -5;
+      renderPlane.userData = { type: "render" };
+      scene.add(renderPlane);
+      interactive.push(renderPlane);
+    }
+
+    function setRenderMode(showRender) {
+      renderVisible = false;
+      if (renderPlane) renderPlane.visible = false;
+      envelopeGroup.traverse((obj) => {
+        if (!obj.material || !obj.material.transparent) return;
+        if (obj.type === "Line" || obj.type === "LineSegments") {
+          obj.material.opacity = .9;
+        } else {
+          obj.material.opacity = .06;
+        }
+      });
+      group.traverse((obj) => {
+        if (obj.material) {
+          const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+          mats.forEach((mat) => {
+            if (!mat.transparent) return;
+            if (obj.type === "Line" || obj.type === "LineSegments") {
+              mat.opacity = .92;
+              mat.depthTest = false;
+            } else if (obj.userData?.type === "floor") {
+              mat.opacity = .1;
+            } else if (obj.geometry?.type === "PlaneGeometry") {
+              mat.opacity = .1;
+            }
+          });
+        }
+        if (obj.type === "Line" || obj.type === "LineSegments") {
+          obj.renderOrder = 40;
+        }
+      });
+    }
+
+    function buildUI() {
+      const levelList = document.getElementById("levelList");
+      [...floorData].reverse().forEach((f) => {
+        const idx = floorData.indexOf(f);
+        const btn = document.createElement("button");
+        btn.className = "level";
+        btn.dataset.index = idx;
+        btn.innerHTML = `<b>${f.title}</b><span>${f.units.length} zones</span>`;
+        btn.addEventListener("click", () => selectFloor(idx, true));
+        levelList.appendChild(btn);
+      });
+
+      document.querySelectorAll(".tool").forEach((btn) => btn.addEventListener("click", () => setMode(btn.dataset.mode)));
+    }
+
+    function buildFloorRail() {
+      const rail = document.getElementById("floorRail");
+      rail.innerHTML = "";
+      floorData.slice().reverse().forEach((floor) => {
+        const idx = floorData.indexOf(floor);
+        const btn = document.createElement("button");
+        btn.dataset.index = idx;
+        btn.textContent = floor.label;
+        btn.addEventListener("click", () => {
+          kioskTour = false;
+          document.getElementById("tourBtn").textContent = "Touch Tour";
+          selectFloor(idx, true);
+        });
+        rail.appendChild(btn);
+      });
+    }
+
+    function selectFloor(index, moveCamera = false) {
+      activeIndex = index;
+      selectedUnit = null;
+      const f = floorData[index];
+      document.getElementById("floorTitle").textContent = f.title;
+      document.getElementById("floorSummary").textContent = f.summary;
+      document.getElementById("planImage").src = f.plan;
+      document.getElementById("logic").textContent = f.logic;
+      document.getElementById("core").textContent = f.core;
+      document.getElementById("chips").innerHTML = f.tags.map(tag => `<span class="chip">${tag}</span>`).join("");
+      document.getElementById("units").innerHTML = f.units.map(u => `<div class="unit"><b>${u.name}</b><span>${u.type}</span></div>`).join("");
+      document.getElementById("beats").innerHTML = f.beats.map(b => `<li>${b}</li>`).join("");
+      document.getElementById("progress").style.setProperty("--p", `${((index + 1) / floorData.length) * 100}%`);
+
+      floorMeshes.forEach((mesh, i) => {
+        const active = i === index;
+        const floorStatus = getFloorStatus(i);
+        const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        mats.forEach((mat, matIndex) => {
+          const color = active ? 0xe0b85d : statusColor(floorStatus);
+          mat.color?.set(color);
+          if (mat.emissive) mat.emissive.set(color);
+          mat.opacity = active ? .2 : salesMode === "all" || salesMode === floorStatus ? .12 : .025;
+        });
+      });
+      unitMeshes.forEach((mesh, i) => {
+        const st = getUnitStatus(mesh.userData.unit, i);
+        const color = statusColor(st);
+        if (mesh.material?.color) mesh.material.color.set(color);
+        if (mesh.material?.emissive) mesh.material.emissive.set(color);
+        mesh.material.opacity = salesMode === "all" || salesMode === st ? .62 : .08;
+      });
+      group.children.forEach((floorGroup, i) => {
+        floorGroup.children.forEach(child => {
+          if (child.type === "Line") {
+            child.material.color.set(i === index ? 0xe0b85d : 0x4df3ec);
+            child.material.opacity = i === index ? 1 : .72;
+          }
+        });
+      });
+      unitMeshes.forEach(mesh => {
+        mesh.material = mesh.userData.index === index ? matUnitActive : matUnit;
+      });
+      document.querySelectorAll(".level").forEach(btn => btn.classList.toggle("active", Number(btn.dataset.index) === index));
+      document.querySelectorAll("#floorRail button").forEach(btn => btn.classList.toggle("active", Number(btn.dataset.index) === index));
+      updateFloorCard(index);
+
+      if (moveCamera) focusFloor(index);
+    }
+
+    function formatMoney(value) {
+      if (!value) return "N/A";
+      if (value >= 1000000) return `AED ${(value / 1000000).toFixed(value >= 10000000 ? 1 : 2)}M`;
+      return `AED ${Math.round(value).toLocaleString()}`;
+    }
+
+    function formatArea(value) {
+      if (!value) return "N/A";
+      return `${Math.round(value).toLocaleString()} sqft`;
+    }
+
+    function getFloorStatus(index) {
+      if (index === 0 || index === 8) return "common";
+      if ([2, 3, 5].includes(index)) return "available";
+      if ([1, 6].includes(index)) return "booked";
+      return "sold";
+    }
+
+    function getUnitStatus(unit, pos) {
+      const unitNo = Number(unit?.unit || unit?.name?.replace(/\D/g, "") || pos);
+      if (unitNo % 7 === 0) return "sold";
+      if (unitNo % 5 === 0) return "booked";
+      return "available";
+    }
+
+    function statusColor(status) {
+      return {
+        available: 0x8cff7a,
+        booked: 0xffd45f,
+        sold: 0xff6f6f,
+        common: 0x4df3ec
+      }[status] || 0x4df3ec;
+    }
+
+    function statusLabel(status) {
+      return status === "common" ? "Common / Amenity" : status[0].toUpperCase() + status.slice(1);
+    }
+
+    function setSalesMode(modeName) {
+      salesMode = modeName;
+      selectFloor(activeIndex);
+    }
+
+    function openBuilding() {
+      setRenderMode(false);
+      setMode("explode");
+      camera.position.set(92, 88, 126);
+      controls.target.set(0, 22, 0);
+    }
+
+    function floorNumberForIndex(index) {
+      if (index === 0) return null;
+      if (index >= 1 && index <= 7) return index;
+      return null;
+    }
+
+    function updateFloorCard(index, entranceName = null) {
+      const f = floorData[index] || floorData[0];
+      const floorNo = floorNumberForIndex(index);
+      const pricing = floorNo ? pricingData.floors?.[String(floorNo)] : null;
+      const status = getFloorStatus(index);
+      const types = pricing?.types?.slice(0, 4).map(t => `${t.count} ${t.name}`).join(" | ") || (index === 0 ? "Ground + parking / entrances" : "Pricing not mapped for this level");
+      const units = pricing?.units || f.units.length;
+      const builtUp = pricing?.builtUp || null;
+      const floorUnits = floorNo ? pricingData.units?.filter(u => u.floor === floorNo) || [] : [];
+      const displayUnits = floorUnits.length ? floorUnits : f.units.map((u, i) => ({ unit: u.name, type: u.type, size: null, _pos: i }));
+      const counts = { available: 0, booked: 0, sold: 0 };
+      displayUnits.forEach((u, i) => counts[getUnitStatus(u, i)] += 1);
+      const calculatedPrices = floorUnits.map(u => (u.size || 0) * FIXED_RATE_PSF).filter(Boolean);
+      const minCalc = calculatedPrices.length ? Math.min(...calculatedPrices) : null;
+      const maxCalc = calculatedPrices.length ? Math.max(...calculatedPrices) : null;
+      const avgCalc = builtUp && units ? (builtUp / units) * FIXED_RATE_PSF : null;
+      const priceRange = minCalc ? `${formatMoney(minCalc)} - ${formatMoney(maxCalc)}` : "N/A";
+      const avgPrice = avgCalc ? formatMoney(avgCalc) : "N/A";
+      const title = entranceName || f.title;
+      const subtitle = entranceName
+        ? "Entrance / arrival point connected to parking, driveway and building lobby."
+        : index === 0
+          ? "Ground + 1 podium base, external parking, entrances, driveway and atrium arrival."
+          : f.summary;
+
+      document.getElementById("floorCard").innerHTML = `
+        <h2>${title}</h2>
+        <div class="muted">${statusLabel(status)} | ${subtitle}</div>
+        <div class="metrics-line">
+          <div class="metric-pill"><b>${units}</b><small>Units</small></div>
+          <div class="metric-pill"><b>${formatArea(builtUp)}</b><small>Built-up</small></div>
+          <div class="metric-pill"><b>${avgPrice}</b><small>Avg price</small></div>
+        </div>
+        <div class="floor-list-text">
+          <strong>Rate:</strong> AED ${FIXED_RATE_PSF.toLocaleString()} / sqft<br>
+          <strong>Price range:</strong> ${priceRange}<br>
+          <strong>Mix:</strong> ${types}
+        </div>
+        <div class="unit-status-grid">
+          <div class="status-box" style="color:#8cff7a"><b>${counts.available}</b><small>Available</small></div>
+          <div class="status-box" style="color:#ffd45f"><b>${counts.booked}</b><small>Booked</small></div>
+          <div class="status-box" style="color:#ff6f6f"><b>${counts.sold}</b><small>Sold</small></div>
+        </div>
+        <div class="unit-preview">
+          ${displayUnits.slice(0, 8).map((u, i) => {
+            const st = getUnitStatus(u, i);
+            const color = st === "available" ? "#8cff7a" : st === "booked" ? "#ffd45f" : "#ff6f6f";
+            const label = u.unit ? `Unit ${u.unit}` : u.name;
+            const price = u.size ? ` | ${formatMoney(u.size * FIXED_RATE_PSF)}` : "";
+            return `<span><i style="color:${color};background:${color}"></i>${label}${price}</span>`;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function handleHover(event) {
+      if (event.pointerType === "touch") return;
+      const rect = canvas.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(interactive.filter(obj => obj.visible !== false), true);
+      const floorHit = hits.find(h => Number.isInteger(h.object.userData?.index));
+      if (floorHit) {
+        const idx = floorHit.object.userData.index;
+        hoveredFloorIndex = idx;
+        lastHoverAt = performance.now();
+        if (idx !== activeIndex) selectFloor(idx);
+        updateFloorCard(idx);
+        return;
+      }
+      const entranceHit = hits.find(h => h.object.userData?.type === "entrance");
+      if (entranceHit) {
+        updateFloorCard(0, entranceHit.object.userData.name);
+      }
+    }
+
+    function handleTouchSelect(event) {
+      lastHoverAt = performance.now();
+      const rect = canvas.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(interactive.filter(obj => obj.visible !== false), true);
+      const floorHit = hits.find(h => Number.isInteger(h.object.userData?.index));
+      if (floorHit) {
+        selectFloor(floorHit.object.userData.index);
+      }
+    }
+
+    function focusFloor(index) {
+      const y = index * FLOOR_GAP + 6;
+      controls.target.set(0, Math.min(24, Math.max(14, y)), 0);
+      camera.position.set(92, 88, 126);
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      document.querySelectorAll(".tool").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === mode));
+      if (tourTimer) {
+        clearInterval(tourTimer);
+        tourTimer = null;
+      }
+      const status = {
+        orbit: "Movable 3D orbit mode",
+        walk: "Walkthrough camera path mode",
+        explode: "Floor stack exploded vertically",
+        roads: "Zoomed road and Google Maps context",
+        units: "Selectable unit blocks exposed",
+        tour: "Animated automatic building tour"
+      };
+      document.getElementById("modeStatus").textContent = status[mode];
+      unitMeshes.forEach(mesh => mesh.visible = mode === "units" || mode === "tour");
+
+      if (mode === "roads") {
+        moveCameraTo("road");
+      } else if (mode === "walk") {
+        focusFloor(activeIndex);
+      } else if (mode === "tour") {
+        selectFloor(0, true);
+        tourTimer = setInterval(() => selectFloor((activeIndex + 1) % floorData.length, true), 2400);
+      } else if (mode === "orbit") {
+        resetCamera();
+      }
+    }
+
+    function moveCameraTo(place) {
+      if (place === "road") {
+        camera.position.set(118, 112, 152);
+        controls.target.set(0, 16, 0);
+        document.getElementById("modeStatus").textContent = "Zoomed out to roads around the building";
+      }
+      if (place === "parking") {
+        camera.position.set(102, 92, 132);
+        controls.target.set(-12, 14, 10);
+        document.getElementById("modeStatus").textContent = "Moving around parking and driveway";
+      }
+      if (place === "entry") {
+        camera.position.set(92, 84, 124);
+        controls.target.set(0, 14, 2);
+        document.getElementById("modeStatus").textContent = "Approaching building entrance and corridors";
+      }
+      if (place === "courtyard") {
+        const y = 6 * FLOOR_GAP + 5.4;
+        camera.position.set(92, 88, 126);
+        controls.target.set(0, 24, 0);
+        document.getElementById("modeStatus").textContent = "Courtyard view with sixth floor walkway";
+      }
+      mode = "walk";
+      document.querySelectorAll(".tool").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === "walk"));
+    }
+
+    function resetCamera() {
+      camera.position.set(92, 88, 126);
+      controls.target.set(0, 20, 0);
+    }
+
+    function pick(event) {
+      const rect = canvas.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(interactive.filter(obj => obj.visible !== false), true);
+      if (!hits.length) {
+        if (!renderVisible) setRenderMode(true);
+        return;
+      }
+      const item = hits[0].object.userData;
+      if (item.type === "floor") {
+        selectFloor(item.index);
+      }
+      if (item.type === "unit") {
+        selectFloor(item.index);
+        selectedUnit = item.unit;
+        document.getElementById("modeStatus").textContent = `${item.unit.name} selected`;
+        document.getElementById("units").innerHTML = `<div class="unit"><b>${item.unit.name}</b><span>${item.unit.type}</span></div>` + floorData[item.index].units.map(u => `<div class="unit"><b>${u.name}</b><span>${u.type}</span></div>`).join("");
+      }
+    }
+
+    function resize() {
+      const box = canvas.parentElement.getBoundingClientRect();
+      renderer.setSize(box.width, box.height, false);
+      camera.aspect = box.width / box.height;
+      camera.updateProjectionMatrix();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      frameCount += 1;
+
+      group.rotation.y = mode === "orbit" ? Math.sin(t * .18) * .08 : group.rotation.y * .94;
+      if (frameCount % 12 === 0) {
+        const cameraDistance = camera.position.distanceTo(controls.target);
+        const roadOpacityBoost = THREE.MathUtils.clamp((cameraDistance - 70) / 80, 0, 1);
+        roadInfraGroup.traverse((obj) => {
+          if (!obj.material || !obj.material.transparent) return;
+          const base = obj.material.wireframe ? .1 : .1;
+          const max = obj.material.wireframe ? .34 : .48;
+          obj.material.opacity = base + roadOpacityBoost * (max - base);
+        });
+      }
+
+      floorData.forEach((f, i) => {
+        const fg = group.children[i];
+        const home = fg.userData.homeY;
+        const explode = mode === "explode" || mode === "tour" ? (i - 4) * 2.4 : 0;
+        fg.position.y += (explode - fg.position.y) * .08;
+        fg.position.x += ((mode === "explode" || mode === "tour") ? Math.sin(i * 1.7) * 1.5 : 0 - fg.position.x) * .06;
+        const pulse = .5 + Math.sin(t * 2 + i) * .5;
+        const materials = Array.isArray(floorMeshes[i].material) ? floorMeshes[i].material : [floorMeshes[i].material];
+        materials.forEach((mat, matIndex) => {
+          if (mat.emissive && matIndex !== 2) {
+            mat.emissiveIntensity = i === activeIndex ? .85 + pulse * .22 : .34 + pulse * .08;
+          }
+        });
+        if (mode === "walk") {
+          const y = Math.min(24, Math.max(14, activeIndex * FLOOR_GAP + 5));
+          controls.target.y += (y - controls.target.y) * .04;
+        }
+      });
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+  </script>
+</body>
+</html>
