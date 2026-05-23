@@ -704,6 +704,22 @@ const CORE_X=11, COREW=5, CORED=6, YEL=0xc9a878;
     const seat=(x,z,w,d)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,0.9,d),glassMat(0x8aab9e,.2));m.position.set(x,0.55,z);m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),lineMat(0x8aab9e,.75)));coresGrp.add(m);};
     seat(ex-sgn*11.5,dz,4.4,1.5); seat(ex-sgn*9.8,dz+2.4,1.4,1.4); seat(ex-sgn*13.2,dz+2.4,1.4,1.4);
     coresGrp.add((()=>{const l=makeLabel("LOUNGE",'#8aab9e',20);l.position.set(ex-sgn*11.5,1.7,dz+1.7);l.scale.set(10,1.7,1);return l;})());
+    // ── ENCLOSURE: glass side walls + courtyard door give the lobby real interior depth ──
+    const WH=FH[1], zW=lw/2, xIn=sgn*9.5;                       // walls span entrance → atrium edge
+    for(const zz of [-zW,zW]){
+      const wall=new THREE.Mesh(new THREE.PlaneGeometry(Math.abs(ex-xIn),WH),glassMat(0x163a5e,.09));
+      wall.position.set((ex+xIn)/2,WH/2,zz); coresGrp.add(wall);
+      const wv=[],x0w=Math.min(ex,xIn),x1w=Math.max(ex,xIn);
+      for(let x=x0w;x<=x1w+0.01;x+=3.6)wv.push(x,0.05,zz,x,WH,zz);
+      wv.push(x0w,WH,zz,x1w,WH,zz, x0w,WH*0.5,zz,x1w,WH*0.5,zz);
+      coresGrp.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(wv,3)),lineMat(0xc9a878,.5)));
+    }
+    // DOOR TO COURTYARD — opening in the inner end wall, beyond the lifts
+    const dH=WH*0.72, dW=3.2;
+    const ev=[xIn,0.05,-zW,xIn,WH,-zW, xIn,WH,-zW,xIn,WH,zW, xIn,WH,zW,xIn,0.05,zW,
+              xIn,0.05,-dW,xIn,dH,-dW, xIn,dH,-dW,xIn,dH,dW, xIn,dH,dW,xIn,0.05,dW];
+    coresGrp.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(ev,3)),lineMat(0x8aab9e,.6)));
+    coresGrp.add((()=>{const l=makeLabel("→ COURTYARD",'#8aab9e',20);l.position.set(xIn,dH+1.1,0);l.scale.set(11,1.8,1);return l;})());
   }
   const l=makeLabel("LOBBY & LIFTS",'#d8c08a',30); l.position.set(0,2.8,CORED/2+4); l.scale.set(20,3,1); coresGrp.add(l);
 })();
@@ -857,6 +873,25 @@ const courtyards=[];
   courtyards.push({mesh:mk(A_HALF,A_CHAM,0,ROOF_Y,0xc9a878),name:"CENTRAL COURTYARD",render:R+"page_05.pdf.png"});
 })();
 
+/* COURTYARD GROUND — paving, central medallion, planters, benches, lamps (atrium at ground level) */
+(function(){
+  const cg=new THREE.Group(); tower.add(cg);
+  for(let r=1.6;r<A_HALF-0.3;r+=1.5) cg.add(ringLine(r,r*0.4,0.06,0x9fc0b8,.20));   // concentric paving rings
+  const spokes=octPts(A_HALF-0.4,A_CHAM*0.9), pv=[];
+  for(const p of spokes) pv.push(0,0.06,0,p[0],0.06,p[1]);                          // radial paving spokes
+  cg.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(pv,3)),lineMat(0x9fc0b8,.16)));
+  // central water medallion
+  const med=new THREE.Mesh(new THREE.CircleGeometry(1.5,28),new THREE.MeshBasicMaterial({color:0x6fa6ad,transparent:true,opacity:.22,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+  med.rotation.x=-Math.PI/2; med.position.y=0.07; cg.add(med); cg.add(ringLine(1.7,0.6,0.08,0xc9a878,.6));
+  const planter=(x,z)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.7,1.6),glassMat(0x8aab9e,.18));m.position.set(x,0.35,z);m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),lineMat(0x8aab9e,.7)));cg.add(m);
+    const f=new THREE.Mesh(new THREE.ConeGeometry(1.0,1.9,6),new THREE.MeshBasicMaterial({color:0x7fc8a0,transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false}));f.position.set(x,1.55,z);cg.add(f);};
+  const bench=(x,z,ang)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(2.6,0.5,0.8),glassMat(0xc9a878,.16));m.position.set(x,0.3,z);m.rotation.y=ang;m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),lineMat(0xefdcae,.7)));cg.add(m);};
+  const lamp=(x,z)=>{cg.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute([x,0,z,x,3.2,z],3)),lineMat(0xc9a878,.5)));
+    const h=new THREE.Mesh(new THREE.SphereGeometry(0.4,10,10),new THREE.MeshBasicMaterial({color:0xffe6a8,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false}));h.position.set(x,3.3,z);cg.add(h);};
+  octPts(A_HALF-1.5,A_CHAM*0.7).forEach((p,i)=>{ i%2===0 ? planter(p[0],p[1]) : lamp(p[0],p[1]); });
+  bench(0,A_HALF-2.4,0); bench(0,-(A_HALF-2.4),0); bench(A_HALF-2.4,0,Math.PI/2); bench(-(A_HALF-2.4),0,Math.PI/2);
+})();
+
 /* floor labels */
 function makeLabel(text,color='#cfe0d6',size=46){const c=document.createElement('canvas');c.width=512;c.height=128;const x=c.getContext('2d');x.fillStyle=color;x.font=`700 ${size}px Inter,Arial`;x.textBaseline='middle';x.fillText(text,8,70);const t=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));s.scale.set(18,4.5,1);return s;}
 const labels=[];
@@ -898,7 +933,7 @@ const neighbors=new THREE.Group(); scene.add(neighbors);
 })();
 
 /* ===== state + animation ===== */
-const S={explode:0,explodeT:0,reveal:0,spin:false,selected:null,t:0,columns:1,courts:0};
+const S={explode:0,explodeT:0,reveal:0,spin:false,selected:null,t:0,columns:1,courts:0,walk:0};
 const T0=performance.now();
 function layout(dt){
   S.reveal=Math.min(1,(performance.now()-T0)/2200);
@@ -906,10 +941,10 @@ function layout(dt){
   S.courts+=((S.courts>0.5?1:0?1:0)-0)*0; // (courts handled separately)
   const ease=x=>1-Math.pow(1-x,3);
   for(let f=1;f<=7;f++){const g=floorGroups[f];const local=Math.max(0,Math.min(1,(S.reveal*8-(f-1))/1.6));const rev=ease(local);
-    g.position.y=g.userData.base*rev+(f-1)*9*S.explode; g.visible=rev>0.001;}
-  bridgeGrp.position.y=BASE_Y[6]*1+(6-1)*9*S.explode*0; bridgeGrp.position.y=floorGroups[6].position.y;
-  roofGroup.position.y=ROOF_Y+6*9*S.explode; roofGroup.visible=(S.reveal*8-6.5)>0;
-  columnGroup.visible=S.columns>0.5;
+    g.position.y=g.userData.base*rev+(f-1)*9*S.explode; g.visible=rev>0.001 && !(S.walk&&f>=2);}
+  bridgeGrp.position.y=BASE_Y[6]*1+(6-1)*9*S.explode*0; bridgeGrp.position.y=floorGroups[6].position.y; bridgeGrp.visible=!S.walk;
+  roofGroup.position.y=ROOF_Y+6*9*S.explode; roofGroup.visible=(S.reveal*8-6.5)>0 && !S.walk;
+  columnGroup.visible=S.columns>0.5 && !S.walk;
 }
 function applySelection(){
   for(let f=1;f<=7;f++){const sel=(S.selected===null)||(S.selected===f);
@@ -930,7 +965,7 @@ function floorFrom(f){return DATA.units.filter(u=>u.f===f).reduce((a,u)=>Math.mi
 function selectFloor(f){
   if(S.selected===f){clearSelection();return;}
   exitCourts();
-  S.selected=f; applySelection(); liftTargetY=BASE_Y[f]; hideBalcony();
+  S.selected=f; S.walk=0; applySelection(); liftTargetY=BASE_Y[f]; hideBalcony();
   document.getElementById('dTitle').childNodes[0].nodeValue=FLOOR_NAMES[f].split('·')[0].trim();
   document.getElementById('dSub').textContent=(FLOOR_NAMES[f].split('·').slice(1).join('·')||'COMMERCIAL').trim();
   document.getElementById('dUnits').textContent=DATA.floors[f].units;
@@ -1116,7 +1151,7 @@ const VIEWS={
   bridge:{pos:new THREE.Vector3(34,BASE_Y[6]+9,34),tgt:new THREE.Vector3(0,BASE_Y[6]+1,0)},
 };
 let camTween=null, camQueue=[], afterTour=null;
-function flyTo(name){const v=VIEWS[name];if(!v)return;camQueue=[];controls.minDistance=18;camTween={fromP:camera.position.clone(),toP:v.pos.clone(),fromT:controls.target.clone(),toT:v.tgt.clone(),t:0,dur:1.15};
+function flyTo(name){const v=VIEWS[name];if(!v)return;camQueue=[];S.walk=0;controls.minDistance=18;camTween={fromP:camera.position.clone(),toP:v.pos.clone(),fromT:controls.target.clone(),toT:v.tgt.clone(),t:0,dur:1.15};
   document.querySelectorAll('#dock .btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));}
 function flyToFloor(f){const y=floorGroups[f].position.y+FH[f]*0.5;camTween={fromP:camera.position.clone(),toP:new THREE.Vector3(72,y+16,82),fromT:controls.target.clone(),toT:new THREE.Vector3(0,y,0),t:0,dur:1.0};}
 function runQueue(){ if(camQueue.length){const s=camQueue.shift();
@@ -1134,12 +1169,12 @@ function floorTour(f){
   runQueue();
 }
 function walkIn(side){            // animated walk: outside entrance → through portal → lobby → lift
-  clearSelection();exitCourts();S.spin=false;bSpin.classList.remove('active');controls.minDistance=1.5;
+  clearSelection();exitCourts();S.spin=false;bSpin.classList.remove('active');controls.minDistance=1.5;S.walk=1;
   const xf=side*HALF, eH=FH[1]*0.4;
   camQueue=[
-    {pos:new THREE.Vector3(xf+side*16,4.5,7),tgt:new THREE.Vector3(xf,eH,0),dur:1.2},        // approach the portal
-    {pos:new THREE.Vector3(xf-side*2,2.8,0),tgt:new THREE.Vector3(side*CORE_X,3,0),dur:1.3}, // step through, look to lift
-    {pos:new THREE.Vector3(xf-side*15,2.8,0),tgt:new THREE.Vector3(side*CORE_X,4,0),dur:1.6} // cross lobby to reception/lift
+    {pos:new THREE.Vector3(xf+side*16,4.5,7),tgt:new THREE.Vector3(xf,eH,0),dur:1.2},               // approach the portal
+    {pos:new THREE.Vector3(xf-side*3,3.4,side*4.5),tgt:new THREE.Vector3(side*9,2.6,-side*1.5),dur:1.4}, // step inside: reception left, lift right, courtyard ahead
+    {pos:new THREE.Vector3(xf-side*11,3.0,side*4),tgt:new THREE.Vector3(side*3,2.4,-side*1.5),dur:1.6}   // advance toward the courtyard door
   ];
   document.querySelectorAll('#dock .btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view==='street'));
   runQueue();
