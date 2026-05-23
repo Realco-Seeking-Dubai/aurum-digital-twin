@@ -576,8 +576,18 @@ const ground=new THREE.Group(); scene.add(ground);
   // EXTRA PARKING (east) + G+1 OFFICE front parking spots
   (function(){const seg=[],ex=72;for(let i=0;i<9;i++){const z=-30+i*7;seg.push(ex,0.12,z,ex+5.4,0.12,z, ex,0.12,z+5,ex+5.4,0.12,z+5, ex,0.12,z,ex,0.12,z+5);}seg.push(ex+5.4,0.12,-30,ex+5.4,0.12,33);
     lineSeg(seg,0x6e8c86,.5); lab("EXTRA PARKING",'#8aab9e',ex+3,37,20);})();
-  (function(){const seg=[];for(let i=0;i<11;i++){const x=-30+i*6;seg.push(x,0.12,40,x,0.12,46, x+5,0.12,40,x+5,0.12,46);}seg.push(-30,0.12,46,36,0.12,46);
-    lineSeg(seg,0x6e8c86,.5); lab("G+1 OFFICE PARKING",'#8aab9e',3,50,26);})();
+  // G+1 OFFICE FRONTS — each ground-floor office has its own front door + 2 parking bays beside it
+  (function(){
+    const zf=HALF, doorH=3.0, dW=2.2, fr=[], bays=[];
+    for(let x=-15;x<=15;x+=10){                                   // office fronts along the front (+Z) face
+      const d=new THREE.Mesh(new THREE.PlaneGeometry(dW,doorH),glassMat(0x123a63,.5)); d.position.set(x,doorH/2,zf+0.05); ground.add(d);
+      fr.push(x-dW/2,0.1,zf,x-dW/2,doorH,zf, x+dW/2,0.1,zf,x+dW/2,doorH,zf, x-dW/2,doorH,zf,x+dW/2,doorH,zf);
+      const can=new THREE.Mesh(new THREE.BoxGeometry(dW+1.2,0.18,1.4),glassMat(0xc9a878,.18)); can.position.set(x,doorH-0.1,zf+0.8); ground.add(can);
+      for(const bx of [x-1.7,x+1.7]){const bz=zf+3.4; bays.push(bx-1.35,0.12,bz,bx+1.35,0.12,bz, bx-1.35,0.12,bz+4.6,bx+1.35,0.12,bz+4.6, bx-1.35,0.12,bz,bx-1.35,0.12,bz+4.6, bx+1.35,0.12,bz,bx+1.35,0.12,bz+4.6);}
+    }
+    lineSeg(fr,0xc9a878,.85); lineSeg(bays,0x8aab9e,.5);
+    lab("G+1 OFFICE FRONTS · 2 BAYS EACH",'#8aab9e',0,44,26);
+  })();
   // location pin
   const pin=new THREE.Group(); ground.add(pin);
   for(let i=0;i<3;i++){const r=new THREE.Mesh(new THREE.RingGeometry(7+i*8,7.6+i*8,48),
