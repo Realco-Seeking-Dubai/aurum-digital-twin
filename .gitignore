@@ -1,10 +1,21 @@
+# OS / editor / local
 .DS_Store
 .claude/
+*.log
 aurum_3d_walkthrough_test.png
+
+# Source PDFs (heavy; the app uses the rendered PNGs, not these)
+*.pdf
+
+# Broken / unused / duplicate asset sets (NOT referenced by the app)
 aurum_assets/brochure/
 aurum_assets/brochure_pages/
 aurum_assets/extracted_images/
 aurum_assets/pdf_pages/
-aurum_assets/plan_crops/
-aurum_assets/plan_view/
-aurum_assets/render_candidates/
+aurum_assets/render_candidates/3D_revised_render_2/
+aurum_assets/render_candidates/Al_Sufouh_building_1/
+aurum_assets/render_candidates/Aurum_by_Meteora_Enhanced_Presentation/
+aurum_assets/render_candidates/Aurum_by_Meteora_Investment_Overview/
+
+# KEPT (the app loads these): aurum_assets/plans, plan_crops, plan_view,
+# building_render_front.jpg, render_candidates/3D_revised_render/*.png, pricing_data.json

@@ -1,35 +1,52 @@
-# Aurum Commercial Building Sales Kiosk
+# AURUM by Meteora — Digital Sales Twin
 
-Touch-TV ready interactive walkthrough for the Aurum Commercial Building in Al Sufouh 1, Dubai.
+An interactive **holographic 3D digital sales twin** of the AURUM commercial building (G+7) in
+Al Sufouh 1, Dubai. Built as a single self-contained HTML file using Three.js. Designed for sales:
+explore the building in 3D, drill into any unit, see pricing / EMI / yield, view the real floor
+plans, and generate a branded sales offer.
 
-## Open Locally
+## Run locally
 
-Run a local server from this folder:
+From this folder:
 
 ```bash
 python3 -m http.server 8787
 ```
 
-Then open:
+Then open **the current app**:
 
 ```text
-http://localhost:8787/aurum_full_3d_holographic_walkthrough.html
+http://localhost:8787/aurum_walkthrough.html
 ```
 
-## Current Experience
+> Use a local server (not `file://`) — the page loads JS modules and image textures over HTTP.
 
-- Touch-TV optimized sales availability explorer
-- Contained 3D canvas with orbit-only rotation
-- Road and parking context around the building
-- Floor-by-floor animated walkthrough
-- Floor hover/tap pricing card
-- AED 2,300 PSF pricing logic
-- Available / booked / sold display states
-- Office boundaries, balconies, pillars, lifts, entrances, AC/service zones
+## The building
 
-## Main Files
+- **Commercial**, **G+7**, ~**61 × 61 m** chamfered-octagon footprint with a central courtyard/atrium.
+- **114 units** · ground floor = G+1 duplex units (front entrances) · upper floors = office suites ·
+  twin arched roof crowns · 6th-floor sky bridge across the courtyard · rooftop pool.
+- Pricing model: **price = area (sqft) × PSF**, **2,350 AED/sqft** for larger units (≥1,500 sqft),
+  **2,500** for smaller. Rental ROI from **280–350 AED/sqft/yr**. (All editable — see HANDOFF.)
 
-- `aurum_full_3d_holographic_walkthrough.html` - primary kiosk experience
-- `aurum_assets/` - plan thumbnails, render candidates, extracted pricing JSON and supporting assets
-- `aurum_holographic_walkthrough.html` - earlier/reference version
+## Features
 
+- Movable 3D (orbit / zoom), floor **explode**, **floor selection** (camera stays put), area-true unit plates
+- **Unit drill-down**: real floor plan + specs + PSF price + editable **EMI calculator** + **rental yield**
+- **Printable, branded Sales Offer** (payment plan, EMI, yield) → Print / Save as PDF
+- **2D Floor Plans viewer** (floor tabs + readable plan + clickable unit grid)
+- **Lift cores + lobby** with a **lift-rises-to-floor** animation
+- Courtyards highlight → render, roof crowns/pool, surrounding plots + **satellite location** map
+- **Sheikh Zayed Road** context, two side **entrances**, villa parking, plot boundary
+- Realco brand theme (deep teal · champagne lines · gold accent · serif), low-bloom "sophisticated" look
+
+## Files
+
+- **`aurum_walkthrough.html`** — THE app (current). Open this one.
+- `aurum_assets/` — `plans/` (architectural PNGs), `plan_view/` (readable plan crops for the 2D viewer),
+  `plan_crops/` (inverted holographic crops for the 3D slab), `render_candidates/3D_revised_render/`
+  (renders), `building_render_front.jpg`, `pricing_data.json`.
+- `skill/floorplan-to-3d-twin/` — the reusable Claude skill that generates a twin like this from any floor plan.
+- `archive/` — earlier prototypes (not used; kept for reference).
+
+See **HANDOFF_MUHAMMAD_SALEH.md** for the full handoff.

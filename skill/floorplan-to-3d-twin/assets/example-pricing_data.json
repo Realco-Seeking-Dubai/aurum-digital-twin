@@ -1,0 +1,1563 @@
+{
+  "source": "/Users/irfan/Downloads/PRICE _ Aurum By Meteora (metro).xlsx",
+  "unitCount": 114,
+  "units": [
+    {
+      "unit": 101,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2762.880521472,
+      "balconyArea": 1216.4295143040001,
+      "size": 3979.3100357760004,
+      "ratePsf": 1829.4628803860808,
+      "sellingPrice": 7280000.0
+    },
+    {
+      "unit": 102,
+      "floor": 1,
+      "type1": "3BR Duplex",
+      "balcony": "Yes",
+      "type": "3BR - Townhouse",
+      "suiteArea": 2357.726934016,
+      "balconyArea": 170.715618944,
+      "size": 2528.4425529600003,
+      "ratePsf": 2198.9821336818636,
+      "sellingPrice": 5560000.0
+    },
+    {
+      "unit": 103,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2418.004832256,
+      "balconyArea": 69.104304768,
+      "size": 2487.109137024,
+      "ratePsf": 2199.340559114039,
+      "sellingPrice": 5470000.0
+    },
+    {
+      "unit": 104,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2547.064117952,
+      "balconyArea": 69.104304768,
+      "size": 2616.16842272,
+      "ratePsf": 2201.693113477532,
+      "sellingPrice": 5760000.0
+    },
+    {
+      "unit": 105,
+      "floor": 1,
+      "type1": "3BR Duplex",
+      "balcony": "Yes",
+      "type": "3BR - Townhouse",
+      "suiteArea": 2556.213441792,
+      "balconyArea": 351.44167455999997,
+      "size": 2907.6551163520003,
+      "ratePsf": 2125.4240109994703,
+      "sellingPrice": 6180000.0
+    },
+    {
+      "unit": 106,
+      "floor": 1,
+      "type1": "3BR Duplex",
+      "balcony": "Yes",
+      "type": "3BR - Townhouse",
+      "suiteArea": 2556.213441792,
+      "balconyArea": 351.44167455999997,
+      "size": 2907.6551163520003,
+      "ratePsf": 2125.4240109994703,
+      "sellingPrice": 6180000.0
+    },
+    {
+      "unit": 107,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2547.064117952,
+      "balconyArea": 69.104304768,
+      "size": 2616.16842272,
+      "ratePsf": 2201.693113477532,
+      "sellingPrice": 5760000.0
+    },
+    {
+      "unit": 108,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2417.57427584,
+      "balconyArea": 69.104304768,
+      "size": 2486.678580608,
+      "ratePsf": 2199.7213643359446,
+      "sellingPrice": 5470000.0
+    },
+    {
+      "unit": 109,
+      "floor": 1,
+      "type1": "3BR Duplex",
+      "balcony": "Yes",
+      "type": "3BR - Townhouse",
+      "suiteArea": 2355.68179104,
+      "balconyArea": 171.25381446400002,
+      "size": 2526.935605504,
+      "ratePsf": 2200.2935048639883,
+      "sellingPrice": 5560000.0
+    },
+    {
+      "unit": 110,
+      "floor": 1,
+      "type1": "3BR Duplex",
+      "balcony": "Yes",
+      "type": "3BR - Townhouse",
+      "suiteArea": 2362.8936110080003,
+      "balconyArea": 171.25381446400002,
+      "size": 2534.1474254720006,
+      "ratePsf": 2201.923985918337,
+      "sellingPrice": 5580000.0
+    },
+    {
+      "unit": 111,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2418.004832256,
+      "balconyArea": 69.104304768,
+      "size": 2487.109137024,
+      "ratePsf": 2199.340559114039,
+      "sellingPrice": 5470000.0
+    },
+    {
+      "unit": 112,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2547.064117952,
+      "balconyArea": 69.104304768,
+      "size": 2616.16842272,
+      "ratePsf": 2201.693113477532,
+      "sellingPrice": 5760000.0
+    },
+    {
+      "unit": 113,
+      "floor": 1,
+      "type1": "3BR Duplex",
+      "balcony": "Yes",
+      "type": "3BR - Townhouse",
+      "suiteArea": 2542.327997376,
+      "balconyArea": 351.44167455999997,
+      "size": 2893.769671936,
+      "ratePsf": 2125.255530750485,
+      "sellingPrice": 6150000.0
+    },
+    {
+      "unit": 114,
+      "floor": 1,
+      "type1": "4BR Duplex",
+      "balcony": "Yes",
+      "type": "4BR - Townhouse",
+      "suiteArea": 2941.6690732160005,
+      "balconyArea": 1089.845928,
+      "size": 4031.515001216,
+      "ratePsf": 1880.1864801975667,
+      "sellingPrice": 7580000.0
+    },
+    {
+      "unit": 202,
+      "floor": 2,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1337.7387845120002,
+      "balconyArea": 249.937999488,
+      "size": 1587.6767840000002,
+      "ratePsf": 2154.0908291066876,
+      "sellingPrice": 3420000.0
+    },
+    {
+      "unit": 302,
+      "floor": 3,
+      "type1": "2BR + Bal + Stor.",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1326.544317696,
+      "balconyArea": 158.660039296,
+      "size": 1485.204356992,
+      "ratePsf": 2201.7172146079383,
+      "sellingPrice": 3270000.0
+    },
+    {
+      "unit": 402,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1224.179529792,
+      "balconyArea": 189.121905728,
+      "size": 1413.30143552,
+      "ratePsf": 2200.5213621365415,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 502,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1224.179529792,
+      "balconyArea": 189.121905728,
+      "size": 1413.30143552,
+      "ratePsf": 2200.5213621365415,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 203,
+      "floor": 2,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1220.412161152,
+      "balconyArea": 497.185021376,
+      "size": 1717.5971825279998,
+      "ratePsf": 1950.3991006025005,
+      "sellingPrice": 3350000.0
+    },
+    {
+      "unit": 303,
+      "floor": 3,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1205.342686592,
+      "balconyArea": 160.489904064,
+      "size": 1365.832590656,
+      "ratePsf": 2196.462451199177,
+      "sellingPrice": 3000000.0
+    },
+    {
+      "unit": 403,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1115.571673856,
+      "balconyArea": 191.0594096,
+      "size": 1306.631083456,
+      "ratePsf": 2196.488386307891,
+      "sellingPrice": 2870000.0
+    },
+    {
+      "unit": 503,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1115.571673856,
+      "balconyArea": 191.0594096,
+      "size": 1306.631083456,
+      "ratePsf": 2196.488386307891,
+      "sellingPrice": 2870000.0
+    },
+    {
+      "unit": 209,
+      "floor": 2,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1220.519800256,
+      "balconyArea": 638.084608512,
+      "size": 1858.6044087680002,
+      "ratePsf": 1856.2314733165176,
+      "sellingPrice": 3450000.0
+    },
+    {
+      "unit": 309,
+      "floor": 3,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1207.495468672,
+      "balconyArea": 160.274625856,
+      "size": 1367.770094528,
+      "ratePsf": 2200.6622399787975,
+      "sellingPrice": 3010000.0
+    },
+    {
+      "unit": 409,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1116.5404257920002,
+      "balconyArea": 191.0594096,
+      "size": 1307.5998353920002,
+      "ratePsf": 2202.5086896226294,
+      "sellingPrice": 2880000.0
+    },
+    {
+      "unit": 509,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1116.5404257920002,
+      "balconyArea": 191.0594096,
+      "size": 1307.5998353920002,
+      "ratePsf": 2202.5086896226294,
+      "sellingPrice": 2880000.0
+    },
+    {
+      "unit": 214,
+      "floor": 2,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1220.519800256,
+      "balconyArea": 638.084608512,
+      "size": 1858.6044087680002,
+      "ratePsf": 1856.2314733165176,
+      "sellingPrice": 3450000.0
+    },
+    {
+      "unit": 314,
+      "floor": 3,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1207.495468672,
+      "balconyArea": 160.274625856,
+      "size": 1367.770094528,
+      "ratePsf": 2200.6622399787975,
+      "sellingPrice": 3010000.0
+    },
+    {
+      "unit": 414,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1116.5404257920002,
+      "balconyArea": 191.0594096,
+      "size": 1307.5998353920002,
+      "ratePsf": 2202.5086896226294,
+      "sellingPrice": 2880000.0
+    },
+    {
+      "unit": 514,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1116.5404257920002,
+      "balconyArea": 191.0594096,
+      "size": 1307.5998353920002,
+      "ratePsf": 2202.5086896226294,
+      "sellingPrice": 2880000.0
+    },
+    {
+      "unit": 220,
+      "floor": 2,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1220.519800256,
+      "balconyArea": 638.084608512,
+      "size": 1858.6044087680002,
+      "ratePsf": 1856.2314733165176,
+      "sellingPrice": 3450000.0
+    },
+    {
+      "unit": 320,
+      "floor": 3,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1207.495468672,
+      "balconyArea": 160.274625856,
+      "size": 1367.770094528,
+      "ratePsf": 2200.6622399787975,
+      "sellingPrice": 3010000.0
+    },
+    {
+      "unit": 420,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1116.5404257920002,
+      "balconyArea": 191.0594096,
+      "size": 1307.5998353920002,
+      "ratePsf": 2202.5086896226294,
+      "sellingPrice": 2880000.0
+    },
+    {
+      "unit": 520,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1116.5404257920002,
+      "balconyArea": 191.0594096,
+      "size": 1307.5998353920002,
+      "ratePsf": 2202.5086896226294,
+      "sellingPrice": 2880000.0
+    },
+    {
+      "unit": 210,
+      "floor": 2,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1336.985310784,
+      "balconyArea": 551.542768896,
+      "size": 1888.5280796799998,
+      "ratePsf": 1932.72212326251,
+      "sellingPrice": 3650000.0
+    },
+    {
+      "unit": 310,
+      "floor": 3,
+      "type1": "2BR + Bal + Stor.",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1324.283896512,
+      "balconyArea": 158.444761088,
+      "size": 1482.7286576,
+      "ratePsf": 2198.6490807271225,
+      "sellingPrice": 3260000.0
+    },
+    {
+      "unit": 410,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1223.103138752,
+      "balconyArea": 189.121905728,
+      "size": 1412.22504448,
+      "ratePsf": 2202.1985887845117,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 510,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1223.103138752,
+      "balconyArea": 189.121905728,
+      "size": 1412.22504448,
+      "ratePsf": 2202.1985887845117,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 213,
+      "floor": 2,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1336.985310784,
+      "balconyArea": 551.542768896,
+      "size": 1888.5280796799998,
+      "ratePsf": 1932.72212326251,
+      "sellingPrice": 3650000.0
+    },
+    {
+      "unit": 313,
+      "floor": 3,
+      "type1": "2BR + Bal + Stor.",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1324.283896512,
+      "balconyArea": 158.444761088,
+      "size": 1482.7286576,
+      "ratePsf": 2198.6490807271225,
+      "sellingPrice": 3260000.0
+    },
+    {
+      "unit": 413,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1223.103138752,
+      "balconyArea": 189.121905728,
+      "size": 1412.22504448,
+      "ratePsf": 2202.1985887845117,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 513,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1223.103138752,
+      "balconyArea": 189.121905728,
+      "size": 1412.22504448,
+      "ratePsf": 2202.1985887845117,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 221,
+      "floor": 2,
+      "type1": "2BR + Bal + Stor.",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1336.985310784,
+      "balconyArea": 551.542768896,
+      "size": 1888.5280796799998,
+      "ratePsf": 1932.72212326251,
+      "sellingPrice": 3650000.0
+    },
+    {
+      "unit": 321,
+      "floor": 3,
+      "type1": "2BR + Bal + Stor.",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1324.283896512,
+      "balconyArea": 158.444761088,
+      "size": 1482.7286576,
+      "ratePsf": 2198.6490807271225,
+      "sellingPrice": 3260000.0
+    },
+    {
+      "unit": 421,
+      "floor": 4,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1223.103138752,
+      "balconyArea": 189.121905728,
+      "size": 1412.22504448,
+      "ratePsf": 2202.1985887845117,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 521,
+      "floor": 5,
+      "type1": "2BR + Bal",
+      "balcony": "Yes",
+      "type": "2BR",
+      "suiteArea": 1223.103138752,
+      "balconyArea": 189.121905728,
+      "size": 1412.22504448,
+      "ratePsf": 2202.1985887845117,
+      "sellingPrice": 3110000.0
+    },
+    {
+      "unit": 201,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 0.0,
+      "size": 747.338299072,
+      "ratePsf": 2194.4546426115908,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 301,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 125.507195264,
+      "size": 872.845494336,
+      "ratePsf": 2199.7020233925846,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 401,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 682.109002048,
+      "balconyArea": 82.020997248,
+      "size": 764.1299992959999,
+      "ratePsf": 2198.578777888317,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 501,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 682.109002048,
+      "balconyArea": 82.020997248,
+      "size": 764.1299992959999,
+      "ratePsf": 2198.578777888317,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 205,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 746.800103552,
+      "balconyArea": 0.0,
+      "size": 746.800103552,
+      "ratePsf": 2196.036117563026,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 305,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 746.6924644480001,
+      "balconyArea": 125.507195264,
+      "size": 872.1996597120001,
+      "ratePsf": 2201.330829037451,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 405,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 81.48280172800001,
+      "size": 760.2549915520001,
+      "ratePsf": 2196.631417823154,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 505,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 81.48280172800001,
+      "size": 760.2549915520001,
+      "ratePsf": 2196.631417823154,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 207,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 746.6924644480001,
+      "balconyArea": 0.0,
+      "size": 746.6924644480001,
+      "ratePsf": 2196.3526861254536,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 307,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 746.6924644480001,
+      "balconyArea": 125.507195264,
+      "size": 872.1996597120001,
+      "ratePsf": 2201.330829037451,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 407,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 82.020997248,
+      "size": 760.793187072,
+      "ratePsf": 2195.0774906741567,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 507,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 82.020997248,
+      "size": 760.793187072,
+      "ratePsf": 2195.0774906741567,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 211,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 0.0,
+      "size": 747.338299072,
+      "ratePsf": 2194.4546426115908,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 311,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 125.507195264,
+      "size": 872.845494336,
+      "ratePsf": 2199.7020233925846,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 411,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 682.109002048,
+      "balconyArea": 82.020997248,
+      "size": 764.1299992959999,
+      "ratePsf": 2198.578777888317,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 511,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 682.109002048,
+      "balconyArea": 82.020997248,
+      "size": 764.1299992959999,
+      "ratePsf": 2198.578777888317,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 212,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 0.0,
+      "size": 747.338299072,
+      "ratePsf": 2194.4546426115908,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 312,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 125.507195264,
+      "size": 872.845494336,
+      "ratePsf": 2199.7020233925846,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 412,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 682.109002048,
+      "balconyArea": 82.4730814848,
+      "size": 764.5820835328,
+      "ratePsf": 2197.278796067851,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 512,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 682.109002048,
+      "balconyArea": 82.4730814848,
+      "size": 764.5820835328,
+      "ratePsf": 2197.278796067851,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 216,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 746.6924644480001,
+      "balconyArea": 0.0,
+      "size": 746.6924644480001,
+      "ratePsf": 2196.3526861254536,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 316,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 746.6924644480001,
+      "balconyArea": 125.507195264,
+      "size": 872.1996597120001,
+      "ratePsf": 2201.330829037451,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 416,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 82.020997248,
+      "size": 760.793187072,
+      "ratePsf": 2195.0774906741567,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 516,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 82.020997248,
+      "size": 760.793187072,
+      "ratePsf": 2195.0774906741567,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 218,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 746.6924644480001,
+      "balconyArea": 0.0,
+      "size": 746.6924644480001,
+      "ratePsf": 2196.3526861254536,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 318,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 746.6924644480001,
+      "balconyArea": 125.507195264,
+      "size": 872.1996597120001,
+      "ratePsf": 2201.330829037451,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 418,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 82.020997248,
+      "size": 760.793187072,
+      "ratePsf": 2195.0774906741567,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 518,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.7721898240001,
+      "balconyArea": 82.020997248,
+      "size": 760.793187072,
+      "ratePsf": 2195.0774906741567,
+      "sellingPrice": 1670000.0
+    },
+    {
+      "unit": 222,
+      "floor": 2,
+      "type1": "1BR (ext)",
+      "balcony": "No",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 0.0,
+      "size": 747.338299072,
+      "ratePsf": 2194.4546426115908,
+      "sellingPrice": 1640000.0
+    },
+    {
+      "unit": 322,
+      "floor": 3,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 747.338299072,
+      "balconyArea": 125.507195264,
+      "size": 872.845494336,
+      "ratePsf": 2199.7020233925846,
+      "sellingPrice": 1920000.0
+    },
+    {
+      "unit": 422,
+      "floor": 4,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.449272512,
+      "balconyArea": 85.57308768,
+      "size": 764.022360192,
+      "ratePsf": 2198.8885241235785,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 522,
+      "floor": 5,
+      "type1": "1BR + Bal (ext)",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 678.449272512,
+      "balconyArea": 85.57308768,
+      "size": 764.022360192,
+      "ratePsf": 2198.8885241235785,
+      "sellingPrice": 1680000.0
+    },
+    {
+      "unit": 204,
+      "floor": 2,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 603.424817024,
+      "balconyArea": 77.607793984,
+      "size": 681.032611008,
+      "ratePsf": 2202.5376990095115,
+      "sellingPrice": 1500000.0
+    },
+    {
+      "unit": 304,
+      "floor": 3,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 612.035945344,
+      "balconyArea": 77.607793984,
+      "size": 689.6437393279999,
+      "ratePsf": 2204.0365384613115,
+      "sellingPrice": 1520000.0
+    },
+    {
+      "unit": 404,
+      "floor": 4,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 612.035945344,
+      "balconyArea": 77.607793984,
+      "size": 689.6437393279999,
+      "ratePsf": 2204.0365384613115,
+      "sellingPrice": 1520000.0
+    },
+    {
+      "unit": 504,
+      "floor": 5,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 612.035945344,
+      "balconyArea": 77.607793984,
+      "size": 689.6437393279999,
+      "ratePsf": 2204.0365384613115,
+      "sellingPrice": 1520000.0
+    },
+    {
+      "unit": 208,
+      "floor": 2,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 604.285929856,
+      "balconyArea": 77.607793984,
+      "size": 681.89372384,
+      "ratePsf": 2199.7562780794283,
+      "sellingPrice": 1500000.0
+    },
+    {
+      "unit": 308,
+      "floor": 3,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 604.285929856,
+      "balconyArea": 77.607793984,
+      "size": 681.89372384,
+      "ratePsf": 2199.7562780794283,
+      "sellingPrice": 1500000.0
+    },
+    {
+      "unit": 408,
+      "floor": 4,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 570.056694784,
+      "balconyArea": 77.607793984,
+      "size": 647.664488768,
+      "ratePsf": 2192.493219291908,
+      "sellingPrice": 1420000.0
+    },
+    {
+      "unit": 508,
+      "floor": 5,
+      "type1": "1BR (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 570.056694784,
+      "balconyArea": 77.607793984,
+      "size": 647.664488768,
+      "ratePsf": 2192.493219291908,
+      "sellingPrice": 1420000.0
+    },
+    {
+      "unit": 215,
+      "floor": 2,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 612.574140864,
+      "balconyArea": 77.607793984,
+      "size": 690.181934848,
+      "ratePsf": 2202.3178574425488,
+      "sellingPrice": 1520000.0
+    },
+    {
+      "unit": 315,
+      "floor": 3,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 612.574140864,
+      "balconyArea": 77.607793984,
+      "size": 690.181934848,
+      "ratePsf": 2202.3178574425488,
+      "sellingPrice": 1520000.0
+    },
+    {
+      "unit": 415,
+      "floor": 4,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 614.834562048,
+      "balconyArea": 77.607793984,
+      "size": 692.4423560319999,
+      "ratePsf": 2195.128571727285,
+      "sellingPrice": 1520000.0
+    },
+    {
+      "unit": 515,
+      "floor": 5,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 614.834562048,
+      "balconyArea": 77.607793984,
+      "size": 692.4423560319999,
+      "ratePsf": 2195.128571727285,
+      "sellingPrice": 1520000.0
+    },
+    {
+      "unit": 219,
+      "floor": 2,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 603.747734336,
+      "balconyArea": 77.607793984,
+      "size": 681.35552832,
+      "ratePsf": 2201.4938422801233,
+      "sellingPrice": 1500000.0
+    },
+    {
+      "unit": 319,
+      "floor": 3,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 603.747734336,
+      "balconyArea": 77.607793984,
+      "size": 681.35552832,
+      "ratePsf": 2201.4938422801233,
+      "sellingPrice": 1500000.0
+    },
+    {
+      "unit": 419,
+      "floor": 4,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 603.747734336,
+      "balconyArea": 77.607793984,
+      "size": 681.35552832,
+      "ratePsf": 2201.4938422801233,
+      "sellingPrice": 1500000.0
+    },
+    {
+      "unit": 519,
+      "floor": 5,
+      "type1": "1BR (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 603.747734336,
+      "balconyArea": 77.607793984,
+      "size": 681.35552832,
+      "ratePsf": 2201.4938422801233,
+      "sellingPrice": 1500000.0
+    },
+    {
+      "unit": 206,
+      "floor": 2,
+      "type1": "1BR (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 627.751254528,
+      "balconyArea": 0.0,
+      "size": 627.751254528,
+      "ratePsf": 2198.322966375604,
+      "sellingPrice": 1380000.0
+    },
+    {
+      "unit": 306,
+      "floor": 3,
+      "type1": "1BR (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 627.751254528,
+      "balconyArea": 0.0,
+      "size": 627.751254528,
+      "ratePsf": 2357.621732054996,
+      "sellingPrice": 1480000.0
+    },
+    {
+      "unit": 406,
+      "floor": 4,
+      "type1": "1BR (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 625.813750656,
+      "balconyArea": 0.0,
+      "size": 625.813750656,
+      "ratePsf": 2205.1289198318755,
+      "sellingPrice": 1380000.0
+    },
+    {
+      "unit": 506,
+      "floor": 5,
+      "type1": "1BR + Bal (int)",
+      "balcony": "Yes",
+      "type": "1BR - In",
+      "suiteArea": 625.813750656,
+      "balconyArea": 0.0,
+      "size": 625.813750656,
+      "ratePsf": 2205.1289198318755,
+      "sellingPrice": 1380000.0
+    },
+    {
+      "unit": 217,
+      "floor": 2,
+      "type1": "1BR (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 700.9458452480001,
+      "balconyArea": 0.0,
+      "size": 700.9458452480001,
+      "ratePsf": 2197.0313547619876,
+      "sellingPrice": 1540000.0
+    },
+    {
+      "unit": 317,
+      "floor": 3,
+      "type1": "1BR (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 701.161123456,
+      "balconyArea": 0.0,
+      "size": 701.161123456,
+      "ratePsf": 2196.3567980058433,
+      "sellingPrice": 1540000.0
+    },
+    {
+      "unit": 417,
+      "floor": 4,
+      "type1": "1BR (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 699.008341376,
+      "balconyArea": 0.0,
+      "size": 699.008341376,
+      "ratePsf": 2203.1210628595727,
+      "sellingPrice": 1540000.0
+    },
+    {
+      "unit": 517,
+      "floor": 5,
+      "type1": "1BR + Bal (int)",
+      "balcony": "No",
+      "type": "1BR - In",
+      "suiteArea": 699.008341376,
+      "balconyArea": 0.0,
+      "size": 699.008341376,
+      "ratePsf": 2203.1210628595727,
+      "sellingPrice": 1540000.0
+    },
+    {
+      "unit": 601,
+      "floor": 6,
+      "type1": "3BR + office + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2646.415010944,
+      "balconyArea": 1586.277475648,
+      "size": 4232.692486592,
+      "ratePsf": 1724.6705313755683,
+      "sellingPrice": 7300000.0
+    },
+    {
+      "unit": 602,
+      "floor": 6,
+      "type1": "1BR + 2 Bal",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 755.303592768,
+      "balconyArea": 429.695303168,
+      "size": 1184.998895936,
+      "ratePsf": 1915.6135991223734,
+      "sellingPrice": 2270000.0
+    },
+    {
+      "unit": 603,
+      "floor": 6,
+      "type1": "1BR + 2 Bal",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 755.303592768,
+      "balconyArea": 429.695303168,
+      "size": 1184.998895936,
+      "ratePsf": 1915.6135991223734,
+      "sellingPrice": 2270000.0
+    },
+    {
+      "unit": 604,
+      "floor": 6,
+      "type1": "3BR +  office + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2677.953268416,
+      "balconyArea": 1586.277475648,
+      "size": 4264.230744064,
+      "ratePsf": 1728.3304873356983,
+      "sellingPrice": 7370000.0
+    },
+    {
+      "unit": 605,
+      "floor": 6,
+      "type1": "3BR +  office + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2658.793507904,
+      "balconyArea": 1586.708032064,
+      "size": 4245.501539968,
+      "ratePsf": 1726.5333508877375,
+      "sellingPrice": 7330000.0
+    },
+    {
+      "unit": 606,
+      "floor": 6,
+      "type1": "1BR + 2 Bal",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 755.303592768,
+      "balconyArea": 429.695303168,
+      "size": 1184.998895936,
+      "ratePsf": 1915.6135991223734,
+      "sellingPrice": 2270000.0
+    },
+    {
+      "unit": 607,
+      "floor": 6,
+      "type1": "1BR + 2 Bal",
+      "balcony": "Yes",
+      "type": "1BR - Out",
+      "suiteArea": 755.303592768,
+      "balconyArea": 429.695303168,
+      "size": 1184.998895936,
+      "ratePsf": 1915.6135991223734,
+      "sellingPrice": 2270000.0
+    },
+    {
+      "unit": 608,
+      "floor": 6,
+      "type1": "3BR + office + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2640.817777536,
+      "balconyArea": 1586.708032064,
+      "size": 4227.5258096,
+      "ratePsf": 1724.412890264475,
+      "sellingPrice": 7290000.0
+    },
+    {
+      "unit": 701,
+      "floor": 7,
+      "type1": "3BR + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2881.6064531839997,
+      "balconyArea": 1412.332683584,
+      "size": 4293.939136768,
+      "ratePsf": 1790.8963669634538,
+      "sellingPrice": 7690000.0
+    },
+    {
+      "unit": 702,
+      "floor": 7,
+      "type1": "3BR + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2903.6724695039998,
+      "balconyArea": 1412.332683584,
+      "size": 4316.005153088,
+      "ratePsf": 1793.325013632621,
+      "sellingPrice": 7740000.0
+    },
+    {
+      "unit": 703,
+      "floor": 7,
+      "type1": "3BR + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2886.234934656,
+      "balconyArea": 1412.332683584,
+      "size": 4298.56761824,
+      "ratePsf": 1791.2943761374813,
+      "sellingPrice": 7700000.0
+    },
+    {
+      "unit": 704,
+      "floor": 7,
+      "type1": "3BR + Bal",
+      "balcony": "Yes",
+      "type": "3BR",
+      "suiteArea": 2872.4571293440004,
+      "balconyArea": 1412.332683584,
+      "size": 4284.789812928,
+      "ratePsf": 1790.0527995231405,
+      "sellingPrice": 7670000.0
+    }
+  ],
+  "floors": {
+    "1": {
+      "floor": 1,
+      "units": 14,
+      "builtUp": 39618.83264838401,
+      "suiteArea": 35330.383105919995,
+      "balconyArea": 4288.449542464,
+      "minPrice": 5470000.0,
+      "maxPrice": 7580000.0,
+      "avgPrice": 5982857.142857143,
+      "totalPrice": 83760000.0,
+      "types": [
+        {
+          "name": "3BR Duplex",
+          "count": 6
+        },
+        {
+          "name": "4BR Duplex",
+          "count": 8
+        }
+      ]
+    },
+    "2": {
+      "floor": 2,
+      "units": 22,
+      "builtUp": 24586.06302284799,
+      "suiteArea": 19959.626693824,
+      "balconyArea": 4626.436329023999,
+      "minPrice": 1380000.0,
+      "maxPrice": 3650000.0,
+      "avgPrice": 2278636.3636363638,
+      "totalPrice": 50130000.0,
+      "types": [
+        {
+          "name": "1BR (ext)",
+          "count": 8
+        },
+        {
+          "name": "1BR (int)",
+          "count": 2
+        },
+        {
+          "name": "1BR + Bal (int)",
+          "count": 4
+        },
+        {
+          "name": "2BR + Bal",
+          "count": 7
+        },
+        {
+          "name": "2BR + Bal + Stor.",
+          "count": 1
+        }
+      ]
+    },
+    "3": {
+      "floor": 3,
+      "units": 22,
+      "builtUp": 22454.701124544,
+      "suiteArea": 19864.904282304004,
+      "balconyArea": 2589.7968422400013,
+      "minPrice": 1480000.0,
+      "maxPrice": 3270000.0,
+      "avgPrice": 2250000.0,
+      "totalPrice": 49500000.0,
+      "types": [
+        {
+          "name": "1BR (int)",
+          "count": 2
+        },
+        {
+          "name": "1BR + Bal (ext)",
+          "count": 8
+        },
+        {
+          "name": "1BR + Bal (int)",
+          "count": 4
+        },
+        {
+          "name": "2BR + Bal",
+          "count": 4
+        },
+        {
+          "name": "2BR + Bal + Stor.",
+          "count": 4
+        }
+      ]
+    },
+    "4": {
+      "floor": 4,
+      "units": 22,
+      "builtUp": 21014.8343581568,
+      "suiteArea": 18524.043963776003,
+      "balconyArea": 2490.7903943808005,
+      "minPrice": 1380000.0,
+      "maxPrice": 3110000.0,
+      "avgPrice": 2101363.6363636362,
+      "totalPrice": 46230000.0,
+      "types": [
+        {
+          "name": "1BR (int)",
+          "count": 2
+        },
+        {
+          "name": "1BR + Bal (ext)",
+          "count": 8
+        },
+        {
+          "name": "1BR + Bal (int)",
+          "count": 4
+        },
+        {
+          "name": "2BR + Bal",
+          "count": 8
+        }
+      ]
+    },
+    "5": {
+      "floor": 5,
+      "units": 22,
+      "builtUp": 21014.8343581568,
+      "suiteArea": 18524.043963776003,
+      "balconyArea": 2490.7903943808005,
+      "minPrice": 1380000.0,
+      "maxPrice": 3110000.0,
+      "avgPrice": 2101363.6363636362,
+      "totalPrice": 46230000.0,
+      "types": [
+        {
+          "name": "1BR (int)",
+          "count": 2
+        },
+        {
+          "name": "1BR + Bal (ext)",
+          "count": 8
+        },
+        {
+          "name": "1BR + Bal (int)",
+          "count": 4
+        },
+        {
+          "name": "2BR + Bal",
+          "count": 8
+        }
+      ]
+    },
+    "6": {
+      "floor": 6,
+      "units": 8,
+      "builtUp": 21709.946163968,
+      "suiteArea": 13645.193935872,
+      "balconyArea": 8064.752228096,
+      "minPrice": 2270000.0,
+      "maxPrice": 7370000.0,
+      "avgPrice": 4796250.0,
+      "totalPrice": 38370000.0,
+      "types": [
+        {
+          "name": "1BR + 2 Bal",
+          "count": 4
+        },
+        {
+          "name": "3BR +  office + Bal",
+          "count": 2
+        },
+        {
+          "name": "3BR + office + Bal",
+          "count": 2
+        }
+      ]
+    },
+    "7": {
+      "floor": 7,
+      "units": 4,
+      "builtUp": 17193.301721024,
+      "suiteArea": 11543.970986688,
+      "balconyArea": 5649.330734336,
+      "minPrice": 7670000.0,
+      "maxPrice": 7740000.0,
+      "avgPrice": 7700000.0,
+      "totalPrice": 30800000.0,
+      "types": [
+        {
+          "name": "3BR + Bal",
+          "count": 4
+        }
+      ]
+    }
+  }
+}
