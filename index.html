@@ -53,6 +53,20 @@
   .stat .v{font-size:15px;font-weight:700}.stat .v.g{color:var(--gold)}.stat .v.c{color:var(--cyan)}
   .stat .k{font-size:8.5px;letter-spacing:.14em;color:var(--muted);margin-top:2px}
 
+  #connect{left:20px;top:50%;transform:translateY(-50%);width:224px;
+    background:var(--glass);border:1px solid var(--line);border-radius:13px;backdrop-filter:blur(14px);
+    padding:12px 15px 13px;box-shadow:0 14px 42px rgba(0,0,0,.42);animation:floaty 9s ease-in-out infinite}
+  #connect .ctitle{font-size:9px;letter-spacing:.2em;color:var(--muted);font-weight:700;
+    padding-bottom:9px;border-bottom:1px solid var(--line)}
+  #connect .ctitle b{color:var(--gold)}
+  .crow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6.5px 0;
+    border-bottom:1px solid rgba(255,255,255,.045)}
+  .crow:last-child{border-bottom:none;padding-bottom:0}
+  .cdest{font-size:9.5px;letter-spacing:.04em;color:var(--muted);line-height:1.25;max-width:120px}
+  .cdist{font-size:16px;font-weight:700;color:var(--gold);font-family:var(--serif);white-space:nowrap}
+  @keyframes floaty{0%,100%{transform:translateY(-50%)}50%{transform:translateY(-53%)}}
+  #connect.hide{opacity:0;pointer-events:none}
+
   #rail{right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px}
   .frow{display:flex;align-items:center;gap:9px;justify-content:flex-end;cursor:pointer;opacity:.72;transition:.2s}
   .frow:hover{opacity:1}
@@ -209,7 +223,7 @@
   .ncard .v.g{color:var(--gold)} .ncard .v.c{color:var(--cyan)}
   @keyframes drift{0%{opacity:0;transform:translateY(34px) scale(.97)}14%{opacity:.5}
     84%{opacity:.5}100%{opacity:0;transform:translateY(-150px) scale(1)}}
-  @media(max-width:760px){#stats,#hint{display:none}#neon{display:none}}
+  @media(max-width:760px){#stats,#hint,#connect{display:none}#neon{display:none}}
 
   /* ---- Realco Capital intro ---- */
   #intro{position:fixed;inset:0;z-index:58;display:flex;align-items:center;justify-content:center;
@@ -230,7 +244,7 @@
 
   /* ---- stylish gradient frames (dock / stats / modal sheet) ---- */
   .sheet{position:relative}  /* #dock & #stats are already position:fixed, which anchors ::before */
-  #dock::before,#stats::before,.sheet::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  #dock::before,#stats::before,#connect::before,.sheet::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
     background:linear-gradient(125deg,rgba(201,168,120,.7),rgba(154,180,173,.12) 42%,rgba(154,180,173,.12) 58%,rgba(201,168,120,.7));
     -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
   #dock{box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 22px rgba(201,168,120,.06)}
@@ -238,6 +252,7 @@
   /* ---- mobile ---- */
   @media(max-width:640px){
     #top{top:10px;left:10px;gap:8px}.brand{font-size:15px;letter-spacing:.18em}.loc{font-size:9px;padding-left:8px}
+    .locDetail{display:none}
     #stats{display:none}#hint{display:none}#eye{top:10px;right:10px;width:34px;height:34px}
     #rail{right:6px;gap:4px}.frow .flabel{display:none}.fchip{width:32px;height:20px;font-size:10px}
     #dock{bottom:8px;padding:5px 6px;gap:2px;max-width:97vw;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;border-radius:12px}
@@ -251,12 +266,8 @@
 <body>
 <div id="app"></div>
 <div id="neon">
-  <div class="ncard" style="left:6%;top:62%;animation-duration:24s;animation-delay:0s"><div class="k">RATE</div><div class="v g">AED 2,350 / sqft</div></div>
-  <div class="ncard" style="left:84%;top:70%;animation-duration:29s;animation-delay:5s"><div class="k">INVENTORY</div><div class="v c">114 UNITS · G+7</div></div>
-  <div class="ncard" style="left:12%;top:30%;animation-duration:27s;animation-delay:11s"><div class="k">GROSS YIELD</div><div class="v g">11.9 – 14.9%</div></div>
-  <div class="ncard" style="left:80%;top:34%;animation-duration:31s;animation-delay:8s"><div class="k">SALEABLE</div><div class="v">168,000 sqft</div></div>
-  <div class="ncard" style="left:70%;top:80%;animation-duration:26s;animation-delay:15s"><div class="k">LOCATION</div><div class="v c">AL SUFOUH 1 · DUBAI</div></div>
-  <div class="ncard" style="left:20%;top:78%;animation-duration:33s;animation-delay:19s"><div class="k">GDV</div><div class="v g">AED 406 M</div></div>
+  <div class="ncard" style="left:84%;top:84%;animation-duration:30s;animation-delay:3s"><div class="k">HANDOVER</div><div class="v g">SEPTEMBER 2026</div></div>
+  <div class="ncard" style="left:7%;top:90%;animation-duration:34s;animation-delay:13s"><div class="k">PAYMENT PLAN</div><div class="v c">20% · 80% / 4 MO</div></div>
 </div>
 
 <div id="load"><div><div class="lring"></div><div class="ltitle">AURUM</div><div class="lsub">DIGITAL SALES TWIN · LOADING</div></div></div>
@@ -275,7 +286,7 @@
 
 <div id="top" class="ui">
   <div class="brand"><b>AURUM</b> <i>by Meteora</i></div>
-  <div class="loc">AL SUFOUH 1 · DUBAI<br><span>Commercial · 61 × 61 m · G+7</span></div>
+  <div class="loc locDetail">AL SUFOUH 1 · DUBAI<br><span>Commercial · 61 × 61 m · G+7</span></div>
   <div class="loc">DUBAI TIME<br><span id="clock" style="color:var(--gold)">—</span></div>
 </div>
 
@@ -285,6 +296,8 @@
   <div class="stat"><div class="v g" id="stGFA">—</div><div class="k">SALEABLE SQFT</div></div>
   <div class="stat"><div class="v" id="stGDV">—</div><div class="k">GDV</div></div>
 </div>
+
+<div id="connect" class="ui"></div>
 
 <div id="rail" class="ui"></div>
 
@@ -928,9 +941,9 @@ function selectFloor(f){
   const ul=document.getElementById('dUnitList'); ul.innerHTML='';
   DATA.units.filter(u=>u.f===f).forEach(u=>{const d=document.createElement('div');d.className='upill';d.textContent=u.u;
     d.onmouseenter=e=>showTip(e,u);d.onmouseleave=hideTip;d.onclick=()=>openUnitDetail(u);ul.appendChild(d);});
-  detail.classList.add('show'); showPlan(f); floorTour(f);   // guided: entrance → lift rises → floor-plan card
+  detail.classList.add('show'); document.getElementById('connect').classList.add('hide'); showPlan(f); floorTour(f);   // guided: entrance → lift rises → floor-plan card
 }
-function clearSelection(){S.selected=null;applySelection();detail.classList.remove('show');hideTip();hideBalcony();hidePlan();liftTargetY=BASE_Y[1];}
+function clearSelection(){S.selected=null;applySelection();detail.classList.remove('show');document.getElementById('connect').classList.remove('hide');hideTip();hideBalcony();hidePlan();liftTargetY=BASE_Y[1];}
 document.getElementById('dClose').onclick=clearSelection;
 
 /* ===== tooltip ===== */
@@ -1160,6 +1173,8 @@ document.getElementById('bPlans').onclick=()=>openPlans(S.selected||1);
 document.getElementById('bLoc').onclick=()=>{const w=document.getElementById('mapWrap');if(!w.dataset.l){w.innerHTML=`<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${MAPS_EMBED}"></iframe>`;w.dataset.l=1;
     document.getElementById('mapDist').innerHTML=CONNECTIVITY.map(c=>`<div style="flex:1 1 120px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:9px;padding:8px 10px"><div style="font-size:13px;font-weight:700;color:var(--gold);font-family:var(--serif)">${c[1]}</div><div style="font-size:9px;letter-spacing:.1em;color:var(--muted);margin-top:2px">${c[0].toUpperCase()}</div></div>`).join('');}
   document.getElementById('mapModal').classList.add('show');};
+document.getElementById('connect').innerHTML='<div class="ctitle">CONNECTIVITY · <b>SZR FRONTAGE</b></div>'+
+  CONNECTIVITY.slice(1,6).map(c=>`<div class="crow"><span class="cdest">${c[0]}</span><span class="cdist">${c[1].replace(/^~/,'')}</span></div>`).join('');
 document.getElementById('eye').onclick=()=>document.body.classList.toggle('clean');
 function closeModal(id){document.getElementById(id).classList.remove('show');}
 document.querySelectorAll('[data-close]').forEach(x=>x.onclick=()=>closeModal(x.dataset.close));
