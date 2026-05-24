@@ -67,6 +67,18 @@
   @keyframes floaty{0%,100%{transform:translateY(-50%)}50%{transform:translateY(-53%)}}
   #connect.hide{opacity:0;pointer-events:none}
 
+  #unitbar{position:fixed;z-index:30;left:50%;bottom:96px;transform:translateX(-50%);display:none;align-items:center;gap:11px;
+    background:var(--glass);border:1px solid var(--line);border-radius:13px;backdrop-filter:blur(14px);padding:9px 13px;box-shadow:0 14px 42px rgba(0,0,0,.46)}
+  #unitbar.show{display:flex}
+  #unitbar #unitName{font-family:var(--serif);font-size:13px;color:var(--gold);letter-spacing:.04em;white-space:nowrap}
+  #unitbar #unitLayout{font-size:10px;color:var(--muted);letter-spacing:.06em;white-space:nowrap}
+  #unitbar button{font-family:inherit;font-size:11px;letter-spacing:.04em;color:var(--ink);background:rgba(201,168,120,.14);
+    border:1px solid var(--line);border-radius:9px;padding:9px 13px;cursor:pointer;min-height:40px;white-space:nowrap}
+  #unitbar button:hover{border-color:var(--gold)}
+  #unitbar #unitExit{color:var(--gold)}
+  @media(max-width:640px){#unitbar{bottom:80px;flex-wrap:wrap;max-width:94vw;justify-content:center;gap:7px;padding:8px 10px}#unitbar #unitName,#unitbar #unitLayout{width:100%;text-align:center}}
+  body.unitwalk .ui{opacity:0;pointer-events:none}   /* clean, unobstructed interior during a unit walkthrough */
+
   #rail{right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px}
   .frow{display:flex;align-items:center;gap:9px;justify-content:flex-end;cursor:pointer;opacity:.72;transition:.2s}
   .frow:hover{opacity:1}
@@ -331,6 +343,8 @@
   <div class="units" id="dUnitList"></div>
 </div>
 
+<div id="unitbar"><span id="unitName">OFFICE</span><span id="unitLayout">Layout A · Open plan</span><button id="unitSwap">⇄ Swap layout</button><button id="unitExit">✕ Exit</button></div>
+
 <div id="eye" title="Toggle interface"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
 <div id="tip"></div>
 
@@ -576,18 +590,7 @@ const ground=new THREE.Group(); scene.add(ground);
   // EXTRA PARKING (east) + G+1 OFFICE front parking spots
   (function(){const seg=[],ex=72;for(let i=0;i<9;i++){const z=-30+i*7;seg.push(ex,0.12,z,ex+5.4,0.12,z, ex,0.12,z+5,ex+5.4,0.12,z+5, ex,0.12,z,ex,0.12,z+5);}seg.push(ex+5.4,0.12,-30,ex+5.4,0.12,33);
     lineSeg(seg,0x6e8c86,.5); lab("EXTRA PARKING",'#8aab9e',ex+3,37,20);})();
-  // G+1 OFFICE FRONTS — each ground-floor office has its own front door + 2 parking bays beside it
-  (function(){
-    const zf=HALF, doorH=3.0, dW=2.2, fr=[], bays=[];
-    for(let x=-15;x<=15;x+=10){                                   // office fronts along the front (+Z) face
-      const d=new THREE.Mesh(new THREE.PlaneGeometry(dW,doorH),glassMat(0x123a63,.5)); d.position.set(x,doorH/2,zf+0.05); ground.add(d);
-      fr.push(x-dW/2,0.1,zf,x-dW/2,doorH,zf, x+dW/2,0.1,zf,x+dW/2,doorH,zf, x-dW/2,doorH,zf,x+dW/2,doorH,zf);
-      const can=new THREE.Mesh(new THREE.BoxGeometry(dW+1.2,0.18,1.4),glassMat(0xc9a878,.18)); can.position.set(x,doorH-0.1,zf+0.8); ground.add(can);
-      for(const bx of [x-1.7,x+1.7]){const bz=zf+3.4; bays.push(bx-1.35,0.12,bz,bx+1.35,0.12,bz, bx-1.35,0.12,bz+4.6,bx+1.35,0.12,bz+4.6, bx-1.35,0.12,bz,bx-1.35,0.12,bz+4.6, bx+1.35,0.12,bz,bx+1.35,0.12,bz+4.6);}
-    }
-    lineSeg(fr,0xc9a878,.85); lineSeg(bays,0x8aab9e,.5);
-    lab("G+1 OFFICE FRONTS · 2 BAYS EACH",'#8aab9e',0,44,26);
-  })();
+  // (G+1 office fronts are now built for all 14 units in the unitDetailsGroup section below)
   // location pin
   const pin=new THREE.Group(); ground.add(pin);
   for(let i=0;i<3;i++){const r=new THREE.Mesh(new THREE.RingGeometry(7+i*8,7.6+i*8,48),
@@ -655,6 +658,8 @@ const parking=new THREE.Group(); scene.add(parking);
 const tower=new THREE.Group(); scene.add(tower);
 const floorGroups={}, unitGroups={}, balconyGroups={}, columnGroup=new THREE.Group();
 const pickUnits=[], pickFloors=[];
+const unitDetailsGroup=new THREE.Group(); scene.add(unitDetailsGroup);   // all ground-office details (doors/canopies/windows/interiors/parking/courtyard textures)
+const pickDoors=[], GROUND_UNITS=[]; let activeUnit=null;
 tower.add(columnGroup);
 
 /* perimeter STRUCTURE at grid bays (full height) — distinct VIOLET so the frame is identifiable */
@@ -942,6 +947,77 @@ const neighbors=new THREE.Group(); scene.add(neighbors);
   const al=makeLabel("AL NOOR ST",'#9bbac8',26); al.position.set(120,1.5,72); al.scale.set(20,2.6,1); neighbors.add(al);
 })();
 
+/* ===== GROUND-FLOOR OFFICES — 14 units around the octagon: recessed door + canopy + windows + interior + 2 parking bays ===== */
+(function(){
+  const WH=3.0, dW=2.2, intW=3.4, intD=3.6, intH=2.7, REC=0.5;          // door H/W, interior W/D/H, recess depth
+  const wallMat=(op,col)=>new THREE.MeshBasicMaterial({color:col==null?0x6e6658:col,transparent:op<1,opacity:op,side:THREE.DoubleSide});   // unlit, occluding room walls (warm taupe — mid-tone to avoid bloom blowout)
+  const fbox=(w,h,d,col)=>new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshBasicMaterial({color:col}));   // solid furniture
+  // 14 perimeter slots [x,z,nx,nz] — 4 front, 2 right, 4 back, 2 left, 2 front-chamfers; skips the two building entrances on the ±X mid-faces
+  const slots=[
+    [-15,30.5,0,1],[-5,30.5,0,1],[5,30.5,0,1],[15,30.5,0,1],
+    [30.5,14,1,0],[30.5,-14,1,0],
+    [15,-30.5,0,-1],[5,-30.5,0,-1],[-5,-30.5,0,-1],[-15,-30.5,0,-1],
+    [-30.5,14,-1,0],[-30.5,-14,-1,0],
+    [24.5,24.5,0.7071,0.7071],[-24.5,24.5,-0.7071,0.7071]
+  ];
+  const U1=DATA.units.filter(u=>u.f===1);
+  const box=(w,h,d,col,op)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),glassMat(col,op==null?.3:op));m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),lineMat(col,.8)));return m;};
+  slots.forEach((s,i)=>{
+    const px=s[0],pz=s[1],nx=s[2],nz=s[3], ang=Math.atan2(nx,nz);
+    const g=new THREE.Group(); g.position.set(px,0,pz); g.rotation.y=ang; unitDetailsGroup.add(g);   // local +Z points outward
+    // recessed glass DOOR (set back REC into the facade) — this is the clickable walk-in target
+    const door=new THREE.Mesh(new THREE.PlaneGeometry(dW,WH),glassMat(0x1a4a7a,.55)); door.position.set(0,WH/2,-REC); door.userData.unitWalk=i; g.add(door); pickDoors.push(door);
+    // facade opening + recess reveal lines
+    const fv=[-dW/2,0.05,0,-dW/2,WH,0, dW/2,0.05,0,dW/2,WH,0, -dW/2,WH,0,dW/2,WH,0,
+              -dW/2,0.05,0,-dW/2,0.05,-REC, dW/2,0.05,0,dW/2,0.05,-REC, -dW/2,WH,0,-dW/2,WH,-REC, dW/2,WH,0,dW/2,WH,-REC];
+    g.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(fv,3)),lineMat(0xc9a878,.85)));
+    // CANOPY (projects outward)
+    const can=box(dW+1.4,0.16,1.5,0xc9a878,.2); can.position.set(0,WH+0.05,0.78); g.add(can);
+    // WINDOWS flanking the door
+    for(const wx of [-(dW/2+1.35),(dW/2+1.35)]){
+      const w=new THREE.Mesh(new THREE.PlaneGeometry(1.9,1.9),glassMat(0x2a6a9a,.42)); w.position.set(wx,1.7,0.03); g.add(w);
+      g.add(new THREE.LineSegments(new THREE.EdgesGeometry(w.geometry),lineMat(0xd8cdb4,.5)));
+    }
+    // INTERIOR shell (recessed behind facade): enclosed room — back + side walls + floor + ceiling (occluding, gold edges)
+    const back=new THREE.Mesh(new THREE.PlaneGeometry(intW,intH),wallMat(1)); back.position.set(0,intH/2,-intD); g.add(back);
+    back.add(new THREE.LineSegments(new THREE.EdgesGeometry(back.geometry),lineMat(0xc9a878,.6)));
+    for(const sx of [-1,1]){const sw=new THREE.Mesh(new THREE.PlaneGeometry(intD,intH),wallMat(1,0x625b4e)); sw.position.set(sx*intW/2,intH/2,-intD/2); sw.rotation.y=sx*Math.PI/2; g.add(sw);}
+    const flr=new THREE.Mesh(new THREE.PlaneGeometry(intW,intD),wallMat(1,0x4a463e)); flr.rotation.x=-Math.PI/2; flr.position.set(0,0.05,-intD/2); g.add(flr);
+    const ceil=new THREE.Mesh(new THREE.PlaneGeometry(intW,intD),wallMat(1,0x7a7264)); ceil.rotation.x=Math.PI/2; ceil.position.set(0,intH,-intD/2); g.add(ceil);
+    const iv=[-intW/2,0.06,0,-intW/2,0.06,-intD, intW/2,0.06,0,intW/2,0.06,-intD, -intW/2,0.06,-intD,intW/2,0.06,-intD,
+              -intW/2,intH,-intD,intW/2,intH,-intD, -intW/2,0.06,-intD,-intW/2,intH,-intD, intW/2,0.06,-intD,intW/2,intH,-intD];
+    g.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(iv,3)),lineMat(0x9ab4ad,.4)));
+    // FURNITURE — two layouts, hidden until walkthrough (solid, lit)
+    let m; const fA=new THREE.Group(); fA.visible=false; g.add(fA);     // Layout A · open plan: 2 desks + chairs + monitor
+    m=fbox(1.5,0.72,0.8,0xa07d4e); m.position.set(-0.75,0.36,-1.3); fA.add(m);
+    m=fbox(0.52,0.92,0.52,0x3c4048); m.position.set(-0.75,0.46,-0.6); fA.add(m);
+    m=fbox(1.5,0.72,0.8,0xa07d4e); m.position.set(0.75,0.36,-2.1); fA.add(m);
+    m=fbox(0.52,0.92,0.52,0x3c4048); m.position.set(0.75,0.46,-1.4); fA.add(m);
+    m=fbox(0.64,0.42,0.07,0x14171c); m.position.set(-0.75,0.95,-1.55); fA.add(m);   // monitor
+    const fB=new THREE.Group(); fB.visible=false; g.add(fB);            // Layout B · private: meeting table + 4 chairs + glass partition
+    m=fbox(1.8,0.72,1.05,0xa07d4e); m.position.set(0,0.36,-1.95); fB.add(m);
+    for(const cx of [-0.8,0.8])for(const cz of [-1.4,-2.5]){m=fbox(0.48,0.92,0.48,0x3c4048); m.position.set(cx,0.46,cz); fB.add(m);}
+    m=box(0.08,intH-0.4,intD-0.7,0xd8cdb4,.16); m.position.set(-intW/2+0.6,(intH-0.4)/2,-0.6); fB.add(m);  // glass partition
+    // 2 PARKING BAYS just outside the unit
+    const bv=[]; for(const bx of [-1.7,1.7]){const z0=2.6,z1=7.2; bv.push(bx-1.35,0.12,z0,bx+1.35,0.12,z0, bx-1.35,0.12,z1,bx+1.35,0.12,z1, bx-1.35,0.12,z0,bx-1.35,0.12,z1, bx+1.35,0.12,z0,bx+1.35,0.12,z1);}
+    g.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(bv,3)),lineMat(0x8aab9e,.5)));
+    GROUND_UNITS.push({i:i,px:px,pz:pz,nx:nx,nz:nz,ang:ang,group:g,fA:fA,fB:fB,unit:U1[i]||null});
+  });
+  const al=makeLabel("GROUND FLOOR OFFICES · 2 BAYS EACH",'#8aab9e',26); al.position.set(0,3.6,46); al.scale.set(32,3,1); unitDetailsGroup.add(al);
+
+  /* ----- courtyard photo-texture backdrops (async load, fallback to solid colour if file missing) ----- */
+  const TL=new THREE.TextureLoader();
+  const backdrop=(w,h,x,y,z,ry,file,fallback)=>{
+    const mat=new THREE.MeshBasicMaterial({color:fallback,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false});
+    const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat); p.position.set(x,y,z); p.rotation.y=ry; unitDetailsGroup.add(p);
+    TL.load('aurum_assets/'+file,t=>{if('SRGBColorSpace' in THREE)t.colorSpace=THREE.SRGBColorSpace; t.minFilter=THREE.LinearFilter; mat.map=t; mat.color.set(0xffffff); mat.opacity=1; mat.needsUpdate=true;}, undefined, ()=>{/* keep solid fallback */});
+    return p;
+  };
+  backdrop(9,4.2,0,2.3,-7.0,0,'courtyard2.jpg',0x223c46);                 // hero eye-level render, behind the water medallion
+  backdrop(7,3.6,-5.2,2.1,-5.2,0.6,'courtyard1.jpg',0x20323e);            // left, angled inward
+  backdrop(7,3.6,5.2,2.1,-5.2,-0.6,'courtyard3.jpg',0x20323e);            // right, angled inward
+})();
+
 /* ===== state + animation ===== */
 const S={explode:0,explodeT:0,reveal:0,spin:false,selected:null,t:0,columns:1,courts:0,walk:0};
 const T0=performance.now();
@@ -975,7 +1051,7 @@ function floorFrom(f){return DATA.units.filter(u=>u.f===f).reduce((a,u)=>Math.mi
 function selectFloor(f){
   if(S.selected===f){clearSelection();return;}
   exitCourts();
-  S.selected=f; S.walk=0; applySelection(); liftTargetY=BASE_Y[f]; hideBalcony();
+  S.selected=f; S.walk=0; exitUnit(); applySelection(); liftTargetY=BASE_Y[f]; hideBalcony();
   document.getElementById('dTitle').childNodes[0].nodeValue=FLOOR_NAMES[f].split('·')[0].trim();
   document.getElementById('dSub').textContent=(FLOOR_NAMES[f].split('·').slice(1).join('·')||'COMMERCIAL').trim();
   document.getElementById('dUnits').textContent=DATA.floors[f].units;
@@ -1161,7 +1237,7 @@ const VIEWS={
   bridge:{pos:new THREE.Vector3(34,BASE_Y[6]+9,34),tgt:new THREE.Vector3(0,BASE_Y[6]+1,0)},
 };
 let camTween=null, camQueue=[], afterTour=null;
-function flyTo(name){const v=VIEWS[name];if(!v)return;camQueue=[];S.walk=0;controls.minDistance=18;camTween={fromP:camera.position.clone(),toP:v.pos.clone(),fromT:controls.target.clone(),toT:v.tgt.clone(),t:0,dur:1.15};
+function flyTo(name){const v=VIEWS[name];if(!v)return;exitUnit();camQueue=[];S.walk=0;controls.minDistance=18;camTween={fromP:camera.position.clone(),toP:v.pos.clone(),fromT:controls.target.clone(),toT:v.tgt.clone(),t:0,dur:1.15};
   document.querySelectorAll('#dock .btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));}
 function flyToFloor(f){const y=floorGroups[f].position.y+FH[f]*0.5;camTween={fromP:camera.position.clone(),toP:new THREE.Vector3(72,y+16,82),fromT:controls.target.clone(),toT:new THREE.Vector3(0,y,0),t:0,dur:1.0};}
 function runQueue(){ if(camQueue.length){const s=camQueue.shift();
@@ -1189,6 +1265,43 @@ function walkIn(side){            // animated walk: outside entrance → through
   document.querySelectorAll('#dock .btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view==='street'));
   runQueue();
 }
+/* ===== individual UNIT walkthrough (ground offices) ===== */
+function showUnitBar(u){
+  document.getElementById('unitName').textContent=u.unit?('OFFICE '+u.unit.u+' · '+u.unit.s.toLocaleString()+' sqft'):('GROUND OFFICE '+(u.i+1));
+  document.getElementById('unitLayout').textContent='Layout A · Open plan';
+  document.getElementById('unitbar').classList.add('show');
+}
+function walkUnit(i){
+  const u=GROUND_UNITS[i]; if(!u)return;
+  clearSelection(); exitCourts(); exitUnit(); S.spin=false; bSpin.classList.remove('active');
+  activeUnit=i; S.walk=1; controls.minDistance=0.4;
+  tower.visible=false; document.body.classList.add('unitwalk'); GROUND_UNITS.forEach(o=>{o.group.visible=(o.i===i);});   // isolate this unit + clean the HUD
+  u.fA.visible=true; u.fB.visible=false;
+  camera.fov=58; camera.updateProjectionMatrix();
+  const n=new THREE.Vector3(u.nx,0,u.nz).normalize(), P=new THREE.Vector3(u.px,0,u.pz), eye=1.6;
+  const out=P.clone().addScaledVector(n,11); out.y=4.2;
+  const door=P.clone().addScaledVector(n,2.4); door.y=eye;
+  const inside=P.clone().addScaledVector(n,-0.7); inside.y=1.65;
+  const look=P.clone().addScaledVector(n,-2.6); look.y=0.95;
+  camQueue=[{pos:out,tgt:P.clone().setY(eye),dur:1.1},{pos:door,tgt:look.clone(),dur:1.1},{pos:inside,tgt:look.clone(),dur:1.0}];
+  document.querySelectorAll('#dock .btn[data-view]').forEach(b=>b.classList.remove('active'));
+  showUnitBar(u); runQueue();
+}
+function swapFurniture(){
+  if(activeUnit==null)return; const u=GROUND_UNITS[activeUnit]; const showB=u.fA.visible;
+  u.fA.visible=!showB; u.fB.visible=showB;
+  document.getElementById('unitLayout').textContent=u.fB.visible?'Layout B · Private offices':'Layout A · Open plan';
+}
+function exitUnit(){
+  if(activeUnit==null)return; const u=GROUND_UNITS[activeUnit];
+  if(u){u.fA.visible=false;u.fB.visible=false;} activeUnit=null;
+  tower.visible=true; document.body.classList.remove('unitwalk'); GROUND_UNITS.forEach(o=>{o.group.visible=true;});   // restore the full scene
+  const bar=document.getElementById('unitbar'); if(bar)bar.classList.remove('show');
+  if(camera.fov!==48){camera.fov=48;camera.updateProjectionMatrix();}
+}
+function resetUnitView(){ exitUnit(); S.walk=0; controls.minDistance=18; flyTo('orbit'); }
+document.getElementById('unitSwap').onclick=swapFurniture;
+document.getElementById('unitExit').onclick=resetUnitView;
 document.querySelectorAll('#dock .btn[data-view]').forEach(b=>b.onclick=()=>{clearSelection();exitCourts();if(b.dataset.view==='street')walkIn(1);else flyTo(b.dataset.view);});
 
 const bExplode=document.getElementById('bExplode');
@@ -1230,7 +1343,7 @@ const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let downXY=null;
 renderer.domElement.addEventListener('pointerdown',e=>downXY=[e.clientX,e.clientY]);
 renderer.domElement.addEventListener('pointermove',e=>{
   if(S.selected===null){mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight*2-1));ray.setFromCamera(mouse,camera);
-    const h=ray.intersectObjects(pickFloors,false)[0];renderer.domElement.style.cursor=h?'pointer':'grab';return;}
+    const h=ray.intersectObjects([...pickDoors,...pickFloors],false)[0];renderer.domElement.style.cursor=h?'pointer':'grab';return;}
   mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight*2-1));ray.setFromCamera(mouse,camera);
   const h=ray.intersectObjects(unitGroups[S.selected].children,false)[0];
   if(h){showTip(e,h.object.userData.unit);renderer.domElement.style.cursor='pointer';}else{hideTip();renderer.domElement.style.cursor='grab';}});
@@ -1238,6 +1351,7 @@ renderer.domElement.addEventListener('pointerup',e=>{
   if(!downXY)return;if(Math.hypot(e.clientX-downXY[0],e.clientY-downXY[1])>5){downXY=null;return;}downXY=null;
   mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight*2-1));ray.setFromCamera(mouse,camera);
   if(S.courts){const h=ray.intersectObjects(courtyards.map(c=>c.mesh),false)[0];if(h){const c=courtyards.find(c=>c.mesh===h.object);openLightbox(c.render,c.name+' · render');return;}}
+  if(S.selected===null&&!S.courts){const dh=ray.intersectObjects(pickDoors,false)[0];if(dh){if(e.stopPropagation)e.stopPropagation();walkUnit(dh.object.userData.unitWalk);return;}}   // ground office door → unit walkthrough (priority over floor pick)
   if(S.selected!==null){const h=ray.intersectObjects(unitGroups[S.selected].children,false)[0];if(h){openUnitDetail(h.object.userData.unit);return;}}
   const picks=ray.intersectObjects([bridgeDeck,...pickFloors],false);
   if(picks.length){const o=picks[0].object; if(o.userData.bridge)flyTo('bridge'); else if(o.userData.floor!==undefined)selectFloor(o.userData.floor);}});
@@ -1246,9 +1360,9 @@ renderer.domElement.addEventListener('pointerup',e=>{
 let last=performance.now(),pulseUnit=null,pulseT=0;
 function tick(now){const dt=Math.min(0.05,(now-last)/1000);last=now;S.t+=dt;layout(dt);
   if(camTween){camTween.t=Math.min(1,camTween.t+dt/camTween.dur);const e=1-Math.pow(1-camTween.t,3);
-    camera.position.lerpVectors(camTween.fromP,camTween.toP,e);controls.target.lerpVectors(camTween.fromT,camTween.toT,e);if(camTween.t>=1){const cb=camTween.onEnd;camTween=null;if(cb)cb();}}
-  else if(S.spin&&S.selected===null&&!S.courts){const a=0.05*dt,p=camera.position;const nx=p.x*Math.cos(a)-p.z*Math.sin(a),nz=p.x*Math.sin(a)+p.z*Math.cos(a);camera.position.x=nx;camera.position.z=nz;}
-  controls.update();
+    camera.position.lerpVectors(camTween.fromP,camTween.toP,e);controls.target.lerpVectors(camTween.fromT,camTween.toT,e);camera.lookAt(controls.target);if(camTween.t>=1){const cb=camTween.onEnd;camTween=null;if(cb)cb();}}
+  else {if(S.spin&&S.selected===null&&!S.courts){const a=0.05*dt,p=camera.position;const nx=p.x*Math.cos(a)-p.z*Math.sin(a),nz=p.x*Math.sin(a)+p.z*Math.cos(a);camera.position.x=nx;camera.position.z=nz;}
+  controls.update();}
   pinRings.forEach(r=>{const s=1+0.12*Math.sin(S.t*1.6+r.userData.p);r.scale.set(s,s,s);r.material.opacity=(0.3-r.userData.p*0.08)*(0.6+0.4*Math.sin(S.t*1.6+r.userData.p));});
   trafficCars.forEach(c=>{c.position.x+=c.userData.sp*dt; if(c.position.x>368)c.position.x=-368; else if(c.position.x<-368)c.position.x=368;});
   streetLights.forEach((h,i)=>{h.material.opacity=0.72+0.22*Math.sin(S.t*2+i*0.7);});
