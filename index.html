@@ -687,7 +687,7 @@ const STRUCT=0x6f9b96;
 
 /* CIRCULATION — two yellow LIFT CORES flanking the courtyard, lobbies from each side entrance, lift cars */
 const coresGrp=new THREE.Group(); coresGrp.position.z=2.5; tower.add(coresGrp);  // cores sit just front of atrium centre, per plan
-let liftCars=[], liftTargetY=BASE_Y[1];
+let liftCars=[], liftTargetY=BASE_Y[1]+FH[1]/2;   // lift car target Y = floor base + half floor height (mid-floor, geometry-exact)
 const CORE_X=11, COREW=5, CORED=6, YEL=0xc9a878;
 (function buildCores(){
   for(const sx of [-CORE_X,CORE_X]){
@@ -700,7 +700,7 @@ const CORE_X=11, COREW=5, CORED=6, YEL=0xc9a878;
     for(let f=1;f<=7;f++){const rr=[x0,BASE_Y[f],z0,x1,BASE_Y[f],z0, x1,BASE_Y[f],z0,x1,BASE_Y[f],z1, x1,BASE_Y[f],z1,x0,BASE_Y[f],z1, x0,BASE_Y[f],z1,x0,BASE_Y[f],z0];
       coresGrp.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(rr,3)),lineMat(YEL,.42)));}
     const car=new THREE.Mesh(new THREE.BoxGeometry(COREW*0.74,3,CORED*0.74),new THREE.MeshBasicMaterial({color:0xd8c08a,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));
-    car.position.set(sx,BASE_Y[1]+1.5,zCore); car.add(new THREE.LineSegments(new THREE.EdgesGeometry(car.geometry),lineMat(0xefdcae,1.0))); coresGrp.add(car); liftCars.push(car);
+    car.position.set(sx,BASE_Y[1]+FH[1]/2,zCore); car.add(new THREE.LineSegments(new THREE.EdgesGeometry(car.geometry),lineMat(0xefdcae,1.0))); coresGrp.add(car); liftCars.push(car);
     coresGrp.add((()=>{const l=makeLabel("LIFTS",'#d8c08a',24);l.position.set(sx,5,zCore);l.scale.set(9,2,1);return l;})());
     // lobby floor + grid (entrance -> courtyard), wide enough for lounge on one side + lifts on the other
     const lw=CORED*2+5, xa=Math.min(ex,sx), xb=Math.max(ex,sx);
@@ -1050,7 +1050,7 @@ function floorFrom(f){return DATA.units.filter(u=>u.f===f).reduce((a,u)=>Math.mi
 function selectFloor(f){
   if(S.selected===f){clearSelection();return;}
   exitCourts();
-  S.selected=f; S.walk=0; exitUnit(); applySelection(); liftTargetY=BASE_Y[f]; hideBalcony();
+  S.selected=f; S.walk=0; exitUnit(); applySelection(); liftTargetY=BASE_Y[f]+FH[f]/2; hideBalcony();
   document.getElementById('dTitle').childNodes[0].nodeValue=FLOOR_NAMES[f].split('·')[0].trim();
   document.getElementById('dSub').textContent=(FLOOR_NAMES[f].split('·').slice(1).join('·')||'COMMERCIAL').trim();
   document.getElementById('dUnits').textContent=DATA.floors[f].units;
@@ -1063,7 +1063,7 @@ function selectFloor(f){
     d.onmouseenter=e=>showTip(e,u);d.onmouseleave=hideTip;d.onclick=()=>openUnitDetail(u);ul.appendChild(d);});
   detail.classList.add('show'); document.getElementById('connect').classList.add('hide'); showPlan(f); floorTour(f);   // guided: entrance → lift rises → floor-plan card
 }
-function clearSelection(){S.selected=null;applySelection();detail.classList.remove('show');document.getElementById('connect').classList.remove('hide');hideTip();hideBalcony();hidePlan();liftTargetY=BASE_Y[1];}
+function clearSelection(){S.selected=null;applySelection();detail.classList.remove('show');document.getElementById('connect').classList.remove('hide');hideTip();hideBalcony();hidePlan();liftTargetY=BASE_Y[1]+FH[1]/2;}
 document.getElementById('dClose').onclick=clearSelection;
 
 /* ===== tooltip ===== */
@@ -1076,7 +1076,7 @@ function hideTip(){tip.classList.remove('show');}
 let CUR=null;
 function openUnitDetail(u){
   CUR=u; pickUnits.forEach(m=>{if(m.userData.unit===u){pulseUnit=m;pulseT=1;}});
-  liftTargetY=BASE_Y[u.f]; showBalcony(u);   // lift rises to this unit's floor; balcony marker shows its location
+  liftTargetY=BASE_Y[u.f]+FH[u.f]/2; showBalcony(u);   // lift rises to this unit's floor (mid-floor); balcony marker shows its location
   document.getElementById('umTitle').childNodes[0].nodeValue='Unit '+u.u+'  ';
   document.getElementById('umSub').textContent=unitClass(u).toUpperCase()+' · '+FLOOR_NAMES[u.f].split('·')[0].trim();
   document.getElementById('umPlan').src=PLAN_BASE+FLOOR_PLAN[u.f];
@@ -1370,7 +1370,7 @@ function tick(now){const dt=Math.min(0.05,(now-last)/1000);last=now;S.t+=dt;layo
   courtyards.forEach(c=>{if(c.mesh.material.opacity>0)c.mesh.material.opacity=0.12+0.06*Math.sin(S.t*1.5);});
   if(bridgeDeck)bridgeDeck.material.opacity=0.4+0.18*Math.sin(S.t*1.8);
   // lift cars rise/fall toward the selected floor
-  liftCars.forEach(c=>{c.position.y+=((liftTargetY+1.5)-c.position.y)*Math.min(1,dt*2.2);
+  liftCars.forEach(c=>{c.position.y+=(liftTargetY-c.position.y)*Math.min(1,dt*2.2);
     c.material.opacity=0.45+0.2*Math.sin(S.t*4);});
   if(balconyMark.visible){balconyMark.children[0].material.opacity=0.5+0.25*Math.sin(S.t*3);}
   if(pulseUnit){pulseT=Math.max(0,pulseT-dt*0.7);pulseUnit.scale.setScalar(1+pulseT*0.6);if(pulseT<=0)pulseUnit=null;}
