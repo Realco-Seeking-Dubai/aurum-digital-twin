@@ -10,9 +10,9 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/",
-    "3d-tiles-renderer": "https://unpkg.com/3d-tiles-renderer@0.4.4/build/index.module.js"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/",
+    "3d-tiles-renderer": "https://cdn.jsdelivr.net/npm/3d-tiles-renderer@0.4.4/build/index.module.js"
   }
 }
 </script>
@@ -1423,12 +1423,12 @@
         <span style="font-size:20px;">⚠️</span> JavaScript Application Error
       </div>
       <div style="margin-bottom:12px; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; border-left:3px solid #ff4a4a; font-family:monospace;">
-        <strong>Error:</strong> \${message}
+        <strong>Error:</strong> ${message}
       </div>
       <div style="margin-bottom:10px; color:#c9a878;">
-        <strong>Location:</strong> \${source.split('/').pop()}:\${lineno}:\${colno}
+        <strong>Location:</strong> ${source ? source.split('/').pop() : ''}:${lineno}:${colno}
       </div>
-      \${error && error.stack ? `<pre style="margin:10px 0 0 0; background:rgba(0,0,0,0.5); padding:10px; border-radius:6px; overflow-x:auto; font-size:11px; max-height:200px; color:#ffb3b3;">\${error.stack}</pre>` : ''}
+      ${error && error.stack ? `<pre style="margin:10px 0 0 0; background:rgba(0,0,0,0.5); padding:10px; border-radius:6px; overflow-x:auto; font-size:11px; max-height:200px; color:#ffb3b3;">${error.stack}</pre>` : ''}
       <div style="margin-top:15px; text-align:right;">
         <button onclick="document.getElementById('jsGlobalErrorBanner').remove()" style="background:#ff4a4a; border:none; color:white; padding:6px 16px; border-radius:6px; cursor:pointer; font-weight:bold;">Dismiss</button>
       </div>
