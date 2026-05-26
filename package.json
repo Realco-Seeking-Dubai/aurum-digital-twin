@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "mkdir -p dist && cp -r index.html aurum_assets dist/",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "npm run build && cd dist && python3 ../serve.py 5173",
+    "bake:osm": "node tools/bake-osm.mjs"
   },
   "devDependencies": {
     "vite": "^5.2.11"
@@ -18,5 +20,9 @@
     "real-estate"
   ],
   "author": "Meteora / Realco",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "3d-tiles-renderer": "^0.4.4",
+    "three": "^0.164.1"
+  }
 }
