@@ -28,20 +28,61 @@
     --serif:'Georgia','Iowan Old Style','Times New Roman',serif;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;overflow:hidden;background:#03060d;
+  html,body{margin:0;height:100%;overflow:hidden;background:#0b1a1c;
     font-family:'Inter',ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
-  #app{position:fixed;inset:0}
+  #app{position:fixed;inset:0;background:linear-gradient(to bottom, #0B4F52 0%, #166B68 50%, #5EA8A0 100%)}
+  #vignette{position:fixed;inset:0;pointer-events:none;z-index:10;background:radial-gradient(circle, transparent 35%, rgba(11,79,82,0.15) 70%, rgba(10,28,30,0.6) 100%)}
   canvas{display:block}
   button,a{font:inherit;color:inherit}
 
   #load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at 50% 45%,#0a1c33,#03060d 70%);z-index:60;transition:opacity .8s}
+    background:radial-gradient(circle at 50% 36%,#093332,#030d0c 72%);z-index:60;transition:opacity .8s}
   #load.hide{opacity:0;pointer-events:none}
-  .lring{width:54px;height:54px;margin:0 auto 16px;border-radius:50%;
-    border:2px solid rgba(94,234,255,.18);border-top-color:var(--cyan);animation:spin 1s linear infinite}
+  .lring-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(201, 168, 120, 0.12);
+    border-top-color: var(--gold);
+    border-bottom-color: var(--gold);
+    animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+  }
+  .lring-inner {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    border-left-color: rgba(201, 168, 120, 0.4);
+    border-right-color: rgba(201, 168, 120, 0.4);
+    animation: spin-reverse 1.8s linear infinite;
+  }
+  .l-logo {
+    width: 28px;
+    height: 28px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 1.5;
+    animation: pulse-logo 2s ease-in-out infinite;
+  }
   @keyframes spin{to{transform:rotate(360deg)}}
-  .ltitle{letter-spacing:.42em;font-size:13px;color:var(--gold);font-weight:700;text-align:center}
-  .lsub{margin-top:6px;font-size:11px;letter-spacing:.18em;color:var(--muted);text-align:center}
+  @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+  @keyframes pulse-logo {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 6px var(--gold-glow)); }
+  }
+  .ltitle{font-family:'Cinzel', var(--serif);letter-spacing:.42em;font-size:22px;color:var(--gold);font-weight:700;text-align:center;text-shadow:0 0 12px rgba(201,168,120,0.25);margin-bottom:6px;text-transform:uppercase;line-height:1.2}
+  .lsub{font-family:'Outfit','Inter',sans-serif;margin-top:6px;font-size:10px;letter-spacing:.25em;color:rgba(236, 231, 218, 0.55);text-align:center;text-transform:uppercase}
 
   .ui{position:fixed;z-index:20;transition:opacity .35s,transform .35s}
   body.clean .ui{opacity:0;pointer-events:none}
@@ -330,10 +371,13 @@
   /* ===== PREMIUM FLOOR VIEW MODE OVERLAYS (MOCKUP STYLE) ===== */
   /* ============================================================== */
   
-  /* Layout variables & overall mode transitions */
+  body.floor-view-active {
+    background: #0d1117 !important;
+  }
   body.floor-view-active #app {
     filter: brightness(0.65) blur(0.5px);
     transition: filter 0.5s ease;
+    background: #0d1117 !important;
   }
   body.floor-view-active #dock {
     opacity: 1 !important;
@@ -495,10 +539,10 @@
     border-radius: 50%;
     flex-shrink: 0;
   }
-  .fls-badge-available { background: #4fe090; box-shadow: 0 0 8px #4fe090; }
-  .fls-badge-reserved { background: #c9a878; box-shadow: 0 0 8px #c9a878; }
-  .fls-badge-sold { background: #ff63c4; box-shadow: 0 0 8px #ff63c4; }
-  .fls-badge-onhold { border: 1.5px solid #fff; box-shadow: 0 0 8px rgba(255,255,255,0.4); }
+  .fls-badge-available { background: #48beaa; box-shadow: 0 0 8px #48beaa; }
+  .fls-badge-reserved { background: #ffa550; box-shadow: 0 0 8px #ffa550; }
+  .fls-badge-sold { background: #e65050; box-shadow: 0 0 8px #e65050; }
+  .fls-badge-onhold { background: #82829e; box-shadow: 0 0 8px #82829e; }
   
   /* Back Button at Bottom Left */
   #floorBackButton {
@@ -523,10 +567,9 @@
     border-color: var(--gold-bright);
     box-shadow: 0 0 15px var(--gold-glow);
     transform: translateY(-1px);
-  /* Hide mathematical fallback color wedges from regular view to show original clear floorplan image */
-  #svgSectorsGroup {
-    display: none !important;
   }
+  /* SVG sectors group is visible — unit polygons are rendered per-floor */
+
   
   /* Scrollable Units List Sidebar */
   #floorUnitsSidebar {
@@ -883,33 +926,45 @@
   
   /* Fullscreen Blueprint Viewport */
   #blueprintViewport {
-    display: none !important;
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 24;
+    background: #082a29 !important;
+    overflow: hidden;
+    cursor: grab;
   }
   body.floor-view-active #blueprintViewport {
-    display: none !important;
-  }
-  #blueprintViewport:active {
-    display: none !important;
+    display: block;
+    background: #082a29 !important;
   }
   #blueprintCanvas {
     position: absolute;
     width: 800px;
-    height: 800px;
+    height: 645px;
     transform-origin: center center;
     transition: transform 0.05s ease-out;
-    background: #f4f1ea;
+    background: #082a29 !important;
     border-radius: 16px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     overflow: hidden;
   }
   
   .blueprint-img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    opacity: 1.0;
     pointer-events: none;
+    filter: none !important;
+    transform: none !important;
     transition: opacity 0.3s ease;
+  }
+  /* Show the PNG in both modes */
+  #blueprintCanvas.svg-floor-mode .blueprint-img {
+    opacity: 1 !important;
+    pointer-events: none;
   }
   
   .blueprint-svg-layer {
@@ -919,57 +974,45 @@
     height: 100%;
   }
   
-  /* SVG Annular Sector Styling */
+  /* ===== SVG Floor Plan Polygon Styling ===== */
+  /* SVG unit interactivity (fill transparent by default, color comes from PNG) */
   .unit-path {
     cursor: pointer;
-    fill: transparent !important;
-    fill-opacity: 0 !important;
+    fill: rgba(0,0,0,0) !important;
     stroke: transparent;
-    stroke-opacity: 0;
-    stroke-width: 1.5;
-    transition: stroke-opacity 0.25s, stroke-width 0.25s;
+    stroke-width: 1.2px;
+    transition: fill 0.2s ease, stroke 0.2s ease, filter 0.2s ease;
   }
-  .unit-path.status-available {
-    fill: transparent !important;
-    fill-opacity: 0 !important;
-    stroke: transparent;
-  }
-  .unit-path.status-reserved {
-    fill: transparent !important;
-    fill-opacity: 0 !important;
-    stroke: transparent;
-  }
-  .unit-path.status-sold {
-    fill: transparent !important;
-    fill-opacity: 0 !important;
-    stroke: transparent;
-  }
-  .unit-path.status-on-hold {
-    fill: transparent !important;
-    fill-opacity: 0 !important;
-    stroke: transparent;
-  }
-  
   .unit-path:hover {
-    fill: transparent !important;
-    fill-opacity: 0 !important;
-    stroke: #c9a878 !important;
-    stroke-opacity: 0.95 !important;
-    stroke-width: 1.8 !important;
+    fill: rgba(255, 255, 255, 0.2) !important;
+    stroke: rgba(212, 175, 55, 0.8) !important;
+    stroke-width: 1.5px !important;
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8)) !important;
   }
   .unit-path.active {
-    fill: transparent !important;
-    fill-opacity: 0 !important;
-    stroke: #093332 !important;
-    stroke-opacity: 1.0 !important;
-    stroke-width: 2.2 !important;
+    fill: rgba(212, 175, 55, 0.15) !important;
+    stroke: rgba(212, 175, 55, 1.0) !important;
+    stroke-width: 2px !important;
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.9)) !important;
   }
-  
+  /* Unit number text inside each cell */
   .unit-text {
-    display: none !important;
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    fill: #1a1a2e;
+    pointer-events: none;
+    letter-spacing: 0.01em;
   }
-  .unit-path:hover + .unit-text, .unit-path.active + .unit-text {
-    display: none !important;
+  /* SVG background & outline shapes */
+  .fp-bg     { fill: #f7f4ee; }
+  .fp-outline { fill: #ffffff; stroke: #c4b49a; stroke-width: 2; }
+  .fp-grid   { stroke: #d8d0c0; stroke-width: 0.5; opacity: 0.6; fill: none; }
+  .fp-label  {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    fill: #a09070;
+    letter-spacing: 3px;
   }
   
   /* Connector Line */
@@ -990,10 +1033,21 @@
   }
   
   #unitDetailCard {
-    display: none !important;
+    display: none;
+    position: absolute;
+    z-index: 50;
+    width: 230px;
+    padding: 18px;
+    flex-direction: column;
+    gap: 14px;
+    animation: fadeSlideIn 0.25s ease;
   }
   #unitDetailCard.show {
-    display: none !important;
+    display: flex;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   .udc-header {
     display: flex;
@@ -1452,14 +1506,15 @@
 </script>
 
 <div id="app"></div>
+<div id="vignette"></div>
 <div id="poiLabels"></div>
 
 
 <!-- PREMIUM FULLSCREEN FLOOR VIEW (MOCKUP STYLE) -->
-<div id="blueprintViewport">
-  <div id="blueprintCanvas">
+<div id="blueprintViewport" style="background:#082a29">
+  <div id="blueprintCanvas" style="background:#082a29">
     <img id="blueprintImage" class="blueprint-img" src="" alt="blueprint">
-    <svg id="blueprintSvg" class="blueprint-svg-layer" viewBox="0 0 800 800">
+    <svg id="blueprintSvg" class="blueprint-svg-layer" viewBox="0 0 800 645" fill="none">
       <!-- Dynamic mathematical sectors will be injected here -->
       <g id="svgSectorsGroup"></g>
       <!-- Glowing active connector line -->
@@ -1657,7 +1712,22 @@
   <div class="ncard" style="left:7%;top:90%;animation-duration:34s;animation-delay:13s"><div class="k">PAYMENT PLAN</div><div class="v c">20% · 80% / 4 MO</div></div>
 </div>
 
-<div id="load"><div><div class="lring"></div><div class="ltitle">AURUM</div><div class="lsub">DIGITAL SALES TWIN · LOADING</div></div></div>
+<div id="load">
+  <div>
+    <div class="lring-container">
+      <div class="lring"></div>
+      <div class="lring-inner"></div>
+      <svg viewBox="0 0 24 24" class="l-logo">
+        <path d="M12 3l9 5.5v7L12 21l-9-5.5v-7L12 3z"/>
+        <path d="M12 21v-11"/>
+        <path d="M3 8.5l9 5.5"/>
+        <path d="M21 8.5l-9 5.5"/>
+      </svg>
+    </div>
+    <div class="ltitle">AURUM</div>
+    <div class="lsub">DIGITAL SALES TWIN &nbsp;·&nbsp; LOADING</div>
+  </div>
+</div>
 
 <div id="intro">
   <div class="introwrap">
@@ -2787,6 +2857,102 @@
   #floorInfo { top: 160px; left: 32px; transform: none; }
   #floorInfo.show { transform: none; }
   
+  /* Mobile responsive overrides to ensure premium mobile layouts and hide card overlays in orbit view */
+  @media (max-width: 768px) {
+    #leftSidebar {
+      display: none !important;
+    }
+    #stats {
+      display: none !important;
+    }
+    #top {
+      top: 12px !important;
+      left: 12px !important;
+      gap: 8px !important;
+    }
+    .logo-box {
+      width: 36px !important;
+      height: 36px !important;
+      border-radius: 8px !important;
+    }
+    .logo-box svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+    .brand {
+      font-size: 16px !important;
+      letter-spacing: 0.15em !important;
+    }
+    .brand-sub {
+      font-size: 9px !important;
+    }
+    .brand-loc {
+      display: none !important;
+    }
+    #topRight {
+      top: 12px !important;
+      right: 12px !important;
+      gap: 8px !important;
+    }
+    #bookMeeting {
+      display: none !important;
+    }
+    #menuBtn {
+      width: 36px !important;
+      height: 36px !important;
+    }
+    #rail {
+      position: fixed !important;
+      top: 60px !important;
+      right: 12px !important;
+      transform: scale(0.9) !important;
+      transform-origin: top right !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: opacity 0.25s ease, transform 0.25s ease !important;
+      display: flex !important;
+      flex-direction: column !important;
+      z-index: 99 !important;
+      background: var(--glass) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 16px !important;
+      padding: 8px 4px !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important;
+    }
+    #rail.open {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: scale(1) !important;
+    }
+    #dock {
+      bottom: 12px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      max-width: 95vw !important;
+      width: max-content !important;
+      padding: 4px !important;
+      border-radius: 12px !important;
+    }
+    .btn {
+      min-width: 50px !important;
+      padding: 8px 10px !important;
+      gap: 4px !important;
+    }
+    .btn svg {
+      width: 16px !important;
+      height: 16px !important;
+    }
+    .btn span {
+      font-size: 8px !important;
+    }
+    #dockExtra {
+      display: none !important;
+    }
+    #hint {
+      display: none !important;
+    }
+  }
+  
   /* --- END NEW UI CSS --- */
 
 </style>
@@ -2811,20 +2977,164 @@ import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {TilesRenderer, WGS84_ELLIPSOID} from '3d-tiles-renderer';
 
 /* ===== DATA ===== */
-const DATA = {"units":[{"u":101,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":3979,"p":7280000.0},{"u":102,"f":1,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2528,"p":5560000.0},{"u":103,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2487,"p":5470000.0},{"u":104,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2616,"p":5760000.0},{"u":105,"f":1,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2908,"p":6180000.0},{"u":106,"f":1,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2908,"p":6180000.0},{"u":107,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2616,"p":5760000.0},{"u":108,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2487,"p":5470000.0},{"u":109,"f":1,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2527,"p":5560000.0},{"u":110,"f":1,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2534,"p":5580000.0},{"u":111,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2487,"p":5470000.0},{"u":112,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2616,"p":5760000.0},{"u":113,"f":1,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2894,"p":6150000.0},{"u":114,"f":1,"t":"4BR - Townhouse","t1":"4BR Duplex","s":4032,"p":7580000.0},{"u":202,"f":2,"t":"2BR","t1":"2BR + Bal","s":1588,"p":3420000.0},{"u":302,"f":3,"t":"2BR","t1":"2BR + Bal + Stor.","s":1485,"p":3270000.0},{"u":402,"f":4,"t":"2BR","t1":"2BR + Bal","s":1413,"p":3110000.0},{"u":502,"f":5,"t":"2BR","t1":"2BR + Bal","s":1413,"p":3110000.0},{"u":203,"f":2,"t":"2BR","t1":"2BR + Bal","s":1718,"p":3350000.0},{"u":303,"f":3,"t":"2BR","t1":"2BR + Bal","s":1366,"p":3000000.0},{"u":403,"f":4,"t":"2BR","t1":"2BR + Bal","s":1307,"p":2870000.0},{"u":503,"f":5,"t":"2BR","t1":"2BR + Bal","s":1307,"p":2870000.0},{"u":209,"f":2,"t":"2BR","t1":"2BR + Bal","s":1859,"p":3450000.0},{"u":309,"f":3,"t":"2BR","t1":"2BR + Bal","s":1368,"p":3010000.0},{"u":409,"f":4,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":509,"f":5,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":214,"f":2,"t":"2BR","t1":"2BR + Bal","s":1859,"p":3450000.0},{"u":314,"f":3,"t":"2BR","t1":"2BR + Bal","s":1368,"p":3010000.0},{"u":414,"f":4,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":514,"f":5,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":220,"f":2,"t":"2BR","t1":"2BR + Bal","s":1859,"p":3450000.0},{"u":320,"f":3,"t":"2BR","t1":"2BR + Bal","s":1368,"p":3010000.0},{"u":420,"f":4,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":520,"f":5,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":210,"f":2,"t":"2BR","t1":"2BR + Bal","s":1889,"p":3650000.0},{"u":310,"f":3,"t":"2BR","t1":"2BR + Bal + Stor.","s":1483,"p":3260000.0},{"u":410,"f":4,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":510,"f":5,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":213,"f":2,"t":"2BR","t1":"2BR + Bal","s":1889,"p":3650000.0},{"u":313,"f":3,"t":"2BR","t1":"2BR + Bal + Stor.","s":1483,"p":3260000.0},{"u":413,"f":4,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":513,"f":5,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":221,"f":2,"t":"2BR","t1":"2BR + Bal + Stor.","s":1889,"p":3650000.0},{"u":321,"f":3,"t":"2BR","t1":"2BR + Bal + Stor.","s":1483,"p":3260000.0},{"u":421,"f":4,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":521,"f":5,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":201,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":301,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":401,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":501,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":205,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":305,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":405,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":760,"p":1670000.0},{"u":505,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":760,"p":1670000.0},{"u":207,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":307,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":407,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":507,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":211,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":311,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":411,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":511,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":212,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":312,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":412,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":765,"p":1680000.0},{"u":512,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":765,"p":1680000.0},{"u":216,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":316,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":416,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":516,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":218,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":318,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":418,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":518,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":222,"f":2,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":322,"f":3,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":422,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":522,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":204,"f":2,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":304,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":404,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":504,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":208,"f":2,"t":"1BR - In","t1":"1BR + Bal (int)","s":682,"p":1500000.0},{"u":308,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":682,"p":1500000.0},{"u":408,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":648,"p":1420000.0},{"u":508,"f":5,"t":"1BR - In","t1":"1BR (int)","s":648,"p":1420000.0},{"u":215,"f":2,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":315,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":415,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":692,"p":1520000.0},{"u":515,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":692,"p":1520000.0},{"u":219,"f":2,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":319,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":419,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":519,"f":5,"t":"1BR - In","t1":"1BR (int)","s":681,"p":1500000.0},{"u":206,"f":2,"t":"1BR - In","t1":"1BR (int)","s":628,"p":1380000.0},{"u":306,"f":3,"t":"1BR - In","t1":"1BR (int)","s":628,"p":1480000.0},{"u":406,"f":4,"t":"1BR - In","t1":"1BR (int)","s":626,"p":1380000.0},{"u":506,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":626,"p":1380000.0},{"u":217,"f":2,"t":"1BR - In","t1":"1BR (int)","s":701,"p":1540000.0},{"u":317,"f":3,"t":"1BR - In","t1":"1BR (int)","s":701,"p":1540000.0},{"u":417,"f":4,"t":"1BR - In","t1":"1BR (int)","s":699,"p":1540000.0},{"u":517,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":699,"p":1540000.0},{"u":601,"f":6,"t":"3BR","t1":"3BR + office + Bal","s":4233,"p":7300000.0},{"u":602,"f":6,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":603,"f":6,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":604,"f":6,"t":"3BR","t1":"3BR +  office + Bal","s":4264,"p":7370000.0},{"u":605,"f":6,"t":"3BR","t1":"3BR +  office + Bal","s":4246,"p":7330000.0},{"u":606,"f":6,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":607,"f":6,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":608,"f":6,"t":"3BR","t1":"3BR + office + Bal","s":4228,"p":7290000.0},{"u":701,"f":7,"t":"3BR","t1":"3BR + Bal","s":4294,"p":7690000.0},{"u":702,"f":7,"t":"3BR","t1":"3BR + Bal","s":4316,"p":7740000.0},{"u":703,"f":7,"t":"3BR","t1":"3BR + Bal","s":4299,"p":7700000.0},{"u":704,"f":7,"t":"3BR","t1":"3BR + Bal","s":4285,"p":7670000.0}],"floors":{"1":{"units":14,"min":5470000.0,"max":7580000.0,"avg":5982857,"total":83760000.0,"suite":35330,"types":[{"name":"3BR Duplex","count":6},{"name":"4BR Duplex","count":8}]},"2":{"units":22,"min":1380000.0,"max":3650000.0,"avg":2278636,"total":50130000.0,"suite":19960,"types":[{"name":"1BR (ext)","count":8},{"name":"1BR (int)","count":2},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":7},{"name":"2BR + Bal + Stor.","count":1}]},"3":{"units":22,"min":1480000.0,"max":3270000.0,"avg":2250000,"total":49500000.0,"suite":19865,"types":[{"name":"1BR (int)","count":2},{"name":"1BR + Bal (ext)","count":8},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":4},{"name":"2BR + Bal + Stor.","count":4}]},"4":{"units":22,"min":1380000.0,"max":3110000.0,"avg":2101364,"total":46230000.0,"suite":18524,"types":[{"name":"1BR (int)","count":2},{"name":"1BR + Bal (ext)","count":8},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":8}]},"5":{"units":22,"min":1380000.0,"max":3110000.0,"avg":2101364,"total":46230000.0,"suite":18524,"types":[{"name":"1BR (int)","count":2},{"name":"1BR + Bal (ext)","count":8},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":8}]},"6":{"units":8,"min":2270000.0,"max":7370000.0,"avg":4796250,"total":38370000.0,"suite":13645,"types":[{"name":"1BR + 2 Bal","count":4},{"name":"3BR +  office + Bal","count":2},{"name":"3BR + office + Bal","count":2}]},"7":{"units":4,"min":7670000.0,"max":7740000.0,"avg":7700000,"total":30800000.0,"suite":11544,"types":[{"name":"3BR + Bal","count":4}]}},"unitCount":114};
+const DATA = {"units":[{"u":101,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":3979,"p":7280000.0},{"u":102,"f":2,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2528,"p":5560000.0},{"u":103,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2487,"p":5470000.0},{"u":104,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2616,"p":5760000.0},{"u":105,"f":2,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2908,"p":6180000.0},{"u":106,"f":2,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2908,"p":6180000.0},{"u":107,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2616,"p":5760000.0},{"u":108,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2487,"p":5470000.0},{"u":109,"f":2,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2527,"p":5560000.0},{"u":110,"f":2,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2534,"p":5580000.0},{"u":111,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2487,"p":5470000.0},{"u":112,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":2616,"p":5760000.0},{"u":113,"f":2,"t":"3BR - Townhouse","t1":"3BR Duplex","s":2894,"p":6150000.0},{"u":114,"f":2,"t":"4BR - Townhouse","t1":"4BR Duplex","s":4032,"p":7580000.0},{"u":202,"f":3,"t":"2BR","t1":"2BR + Bal","s":1588,"p":3420000.0},{"u":302,"f":4,"t":"2BR","t1":"2BR + Bal + Stor.","s":1485,"p":3270000.0},{"u":402,"f":5,"t":"2BR","t1":"2BR + Bal","s":1413,"p":3110000.0},{"u":502,"f":6,"t":"2BR","t1":"2BR + Bal","s":1413,"p":3110000.0},{"u":203,"f":3,"t":"2BR","t1":"2BR + Bal","s":1718,"p":3350000.0},{"u":303,"f":4,"t":"2BR","t1":"2BR + Bal","s":1366,"p":3000000.0},{"u":403,"f":5,"t":"2BR","t1":"2BR + Bal","s":1307,"p":2870000.0},{"u":503,"f":6,"t":"2BR","t1":"2BR + Bal","s":1307,"p":2870000.0},{"u":209,"f":3,"t":"2BR","t1":"2BR + Bal","s":1859,"p":3450000.0},{"u":309,"f":4,"t":"2BR","t1":"2BR + Bal","s":1368,"p":3010000.0},{"u":409,"f":5,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":509,"f":6,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":214,"f":3,"t":"2BR","t1":"2BR + Bal","s":1859,"p":3450000.0},{"u":314,"f":4,"t":"2BR","t1":"2BR + Bal","s":1368,"p":3010000.0},{"u":414,"f":5,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":514,"f":6,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":220,"f":3,"t":"2BR","t1":"2BR + Bal","s":1859,"p":3450000.0},{"u":320,"f":4,"t":"2BR","t1":"2BR + Bal","s":1368,"p":3010000.0},{"u":420,"f":5,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":520,"f":6,"t":"2BR","t1":"2BR + Bal","s":1308,"p":2880000.0},{"u":210,"f":3,"t":"2BR","t1":"2BR + Bal","s":1889,"p":3650000.0},{"u":310,"f":4,"t":"2BR","t1":"2BR + Bal + Stor.","s":1483,"p":3260000.0},{"u":410,"f":5,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":510,"f":6,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":213,"f":3,"t":"2BR","t1":"2BR + Bal","s":1889,"p":3650000.0},{"u":313,"f":4,"t":"2BR","t1":"2BR + Bal + Stor.","s":1483,"p":3260000.0},{"u":413,"f":5,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":513,"f":6,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":221,"f":3,"t":"2BR","t1":"2BR + Bal + Stor.","s":1889,"p":3650000.0},{"u":321,"f":4,"t":"2BR","t1":"2BR + Bal + Stor.","s":1483,"p":3260000.0},{"u":421,"f":5,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":521,"f":6,"t":"2BR","t1":"2BR + Bal","s":1412,"p":3110000.0},{"u":201,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":301,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":401,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":501,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":205,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":305,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":405,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":760,"p":1670000.0},{"u":505,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":760,"p":1670000.0},{"u":207,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":307,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":407,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":507,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":211,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":311,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":411,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":511,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":212,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":312,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":412,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":765,"p":1680000.0},{"u":512,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":765,"p":1680000.0},{"u":216,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":316,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":416,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":516,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":218,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":318,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":872,"p":1920000.0},{"u":418,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":518,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":761,"p":1670000.0},{"u":222,"f":3,"t":"1BR - Out","t1":"1BR (ext)","s":747,"p":1640000.0},{"u":322,"f":4,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":873,"p":1920000.0},{"u":422,"f":5,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":522,"f":6,"t":"1BR - Out","t1":"1BR + Bal (ext)","s":764,"p":1680000.0},{"u":204,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":304,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":404,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":504,"f":6,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":208,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":682,"p":1500000.0},{"u":308,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":682,"p":1500000.0},{"u":408,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":648,"p":1420000.0},{"u":508,"f":6,"t":"1BR - In","t1":"1BR (int)","s":648,"p":1420000.0},{"u":215,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":315,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":690,"p":1520000.0},{"u":415,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":692,"p":1520000.0},{"u":515,"f":6,"t":"1BR - In","t1":"1BR + Bal (int)","s":692,"p":1520000.0},{"u":219,"f":3,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":319,"f":4,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":419,"f":5,"t":"1BR - In","t1":"1BR + Bal (int)","s":681,"p":1500000.0},{"u":519,"f":6,"t":"1BR - In","t1":"1BR (int)","s":681,"p":1500000.0},{"u":206,"f":3,"t":"1BR - In","t1":"1BR (int)","s":628,"p":1380000.0},{"u":306,"f":4,"t":"1BR - In","t1":"1BR (int)","s":628,"p":1480000.0},{"u":406,"f":5,"t":"1BR - In","t1":"1BR (int)","s":626,"p":1380000.0},{"u":506,"f":6,"t":"1BR - In","t1":"1BR + Bal (int)","s":626,"p":1380000.0},{"u":217,"f":3,"t":"1BR - In","t1":"1BR (int)","s":701,"p":1540000.0},{"u":317,"f":4,"t":"1BR - In","t1":"1BR (int)","s":701,"p":1540000.0},{"u":417,"f":5,"t":"1BR - In","t1":"1BR (int)","s":699,"p":1540000.0},{"u":517,"f":6,"t":"1BR - In","t1":"1BR + Bal (int)","s":699,"p":1540000.0},{"u":601,"f":7,"t":"3BR","t1":"3BR + office + Bal","s":4233,"p":7300000.0},{"u":602,"f":7,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":603,"f":7,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":604,"f":7,"t":"3BR","t1":"3BR +  office + Bal","s":4264,"p":7370000.0},{"u":605,"f":7,"t":"3BR","t1":"3BR +  office + Bal","s":4246,"p":7330000.0},{"u":606,"f":7,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":607,"f":7,"t":"1BR - Out","t1":"1BR + 2 Bal","s":1185,"p":2270000.0},{"u":608,"f":7,"t":"3BR","t1":"3BR + office + Bal","s":4228,"p":7290000.0},{"u":701,"f":8,"t":"3BR","t1":"3BR + Bal","s":4294,"p":7690000.0},{"u":702,"f":8,"t":"3BR","t1":"3BR + Bal","s":4316,"p":7740000.0},{"u":703,"f":8,"t":"3BR","t1":"3BR + Bal","s":4299,"p":7700000.0},{"u":704,"f":8,"t":"3BR","t1":"3BR + Bal","s":4285,"p":7670000.0}],"floors":{"1":{"units":0,"min":null,"max":null,"avg":0,"total":0.0,"suite":0,"types":[]},"2":{"units":14,"min":5470000.0,"max":7580000.0,"avg":5982857,"total":83760000.0,"suite":35330,"types":[{"name":"3BR Duplex","count":6},{"name":"4BR Duplex","count":8}]},"3":{"units":22,"min":1380000.0,"max":3650000.0,"avg":2278636,"total":50130000.0,"suite":19960,"types":[{"name":"1BR (ext)","count":8},{"name":"1BR (int)","count":2},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":7},{"name":"2BR + Bal + Stor.","count":1}]},"4":{"units":22,"min":1480000.0,"max":3270000.0,"avg":2250000,"total":49500000.0,"suite":19865,"types":[{"name":"1BR (int)","count":2},{"name":"1BR + Bal (ext)","count":8},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":4},{"name":"2BR + Bal + Stor.","count":4}]},"5":{"units":22,"min":1380000.0,"max":3110000.0,"avg":2101364,"total":46230000.0,"suite":18524,"types":[{"name":"1BR (int)","count":2},{"name":"1BR + Bal (ext)","count":8},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":8}]},"6":{"units":22,"min":1380000.0,"max":3110000.0,"avg":2101364,"total":46230000.0,"suite":18524,"types":[{"name":"1BR (int)","count":2},{"name":"1BR + Bal (ext)","count":8},{"name":"1BR + Bal (int)","count":4},{"name":"2BR + Bal","count":8}]},"7":{"units":8,"min":2270000.0,"max":7370000.0,"avg":4796250,"total":38370000.0,"suite":13645,"types":[{"name":"1BR + 2 Bal","count":4},{"name":"3BR +  office + Bal","count":2},{"name":"3BR + office + Bal","count":2}]},"8":{"units":4,"min":7670000.0,"max":7740000.0,"avg":7700000,"total":30800000.0,"suite":11544,"types":[{"name":"3BR + Bal","count":4}]}},"unitCount":114};
 const MAPS_URL="https://www.google.com/maps/place/Al+Wahaibi+Building+-+Al+Sufouh+1+-+Dubai/@25.1105188,55.1802741,18z";
 const MAPS_EMBED="https://www.google.com/maps?q=25.1105188,55.1802741&t=k&z=16&hl=en&output=embed";
 
 // Custom pixel-accurate coordinates traced from floor plan PNG overlays (800x800 viewBox space)
-const UNIT_POLYGONS = {
-  "1": {},
-  "2": {},
-  "3": {},
-  "4": {},
-  "5": {},
-  "6": {},
-  "7": {}
+const UNIT_POLYGONS = {};
+
+const FLOOR_PLAN_COLORED = {
+  1: 'aurum_assets/plan_view/floor_Ground_Floor_colored.png',
+  2: 'aurum_assets/plan_view/floor_1st_Floor_colored.png',
+  3: 'aurum_assets/plan_view/floor_2nd_Floor_colored.png',
+  4: 'aurum_assets/plan_view/floor_3rd_Floor_colored.png',
+  5: 'aurum_assets/plan_view/floor_4th_Floor_colored.png',
+  6: 'aurum_assets/plan_view/floor_5th_Floor_colored.png',
+  7: 'aurum_assets/plan_view/floor_6th_Floor_colored.png',
+  8: 'aurum_assets/plan_view/floor_7th_Floor_colored.png',
 };
+
+const UNIT_RECTS = {
+  1: [],
+  2: [
+    {id:'101', x:65.8, y:13.4, w:11.7, h:13.1},
+    {id:'102', x:41.7, y:21.9, w:11.7, h:14.5},
+    {id:'103', x:53.7, y:21.9, w:11.7, h:14.5},
+    {id:'104', x:73.8, y:21.9, w:9.9,  h:14.5},
+    {id:'105', x:28.4, y:36.8, w:12.9, h:11.8},
+    {id:'106', x:65.8, y:36.8, w:11.7, h:11.8},
+    {id:'107', x:29.7, y:54.6, w:11.7, h:11.8},
+    {id:'108', x:65.8, y:54.6, w:11.7, h:11.8},
+    {id:'109', x:25.8, y:69.9, w:7.5,  h:10.2},
+    {id:'110', x:41.7, y:66.8, w:11.7, h:14.5},
+    {id:'111', x:53.7, y:66.8, w:11.7, h:14.5},
+    {id:'112', x:73.8, y:66.8, w:9.9,  h:14.5},
+    {id:'113', x:29.7, y:76.7, w:11.7, h:13.1},
+    {id:'114', x:65.8, y:76.7, w:11.7, h:13.1},
+  ],
+  3: [
+    {id:'101', x:61.9, y:11.8, w:15.6, h:13.3},
+    {id:'102', x:41.7, y:13.8, w:11.7, h:21.2},
+    {id:'103', x:53.7, y:18.1, w:11.7, h:16.9},
+    {id:'104', x:73.8, y:20.6, w:10.1, h:19.4},
+    {id:'105', x:24.8, y:35.5, w:16.5, h:14.5},
+    {id:'106', x:65.8, y:35.5, w:13.6, h:14.6},
+    {id:'107', x:27.7, y:50.4, w:13.6, h:14.6},
+    {id:'108', x:65.8, y:50.4, w:13.6, h:14.6},
+    {id:'109', x:23.2, y:60.5, w:10.1, h:19.4},
+    {id:'110', x:41.7, y:65.4, w:11.7, h:16.9},
+    {id:'111', x:53.7, y:65.4, w:11.7, h:16.9},
+    {id:'112', x:73.8, y:60.5, w:10.1, h:19.4},
+    {id:'113', x:29.7, y:75.4, w:15.6, h:13.3},
+    {id:'114', x:61.9, y:75.4, w:15.6, h:13.3},
+  ],
+  4: [
+    {id:'201', x:33.2, y:15.6, w:12.0, h:14.5},
+    {id:'202', x:45.6, y:17.7, w:7.8,  h:12.4},
+    {id:'203', x:53.7, y:17.7, w:7.8,  h:12.4},
+    {id:'204', x:61.8, y:15.6, w:12.0, h:14.5},
+    {id:'205', x:25.7, y:19.3, w:11.7, h:20.6},
+    {id:'206', x:69.8, y:19.3, w:11.7, h:20.6},
+    {id:'207', x:48.1, y:33.2, w:11.5, h:6.8},
+    {id:'208', x:39.8, y:33.2, w:8.0,  h:11.7},
+    {id:'209', x:59.3, y:33.2, w:7.9,  h:11.7},
+    {id:'210', x:27.3, y:40.3, w:10.0, h:9.7},
+    {id:'211', x:69.8, y:40.3, w:10.0, h:9.7},
+    {id:'212', x:27.3, y:50.4, w:10.0, h:9.7},
+    {id:'213', x:69.8, y:50.4, w:10.0, h:9.7},
+    {id:'214', x:39.8, y:55.6, w:8.0,  h:11.7},
+    {id:'215', x:59.3, y:55.6, w:7.9,  h:11.7},
+    {id:'216', x:25.7, y:60.5, w:11.6, h:20.6},
+    {id:'217', x:69.8, y:60.5, w:11.6, h:20.6},
+    {id:'218', x:45.6, y:70.4, w:7.8,  h:12.4},
+    {id:'219', x:36.9, y:74.1, w:8.3,  h:10.7},
+    {id:'220', x:61.8, y:70.4, w:12.0, h:14.5},
+    {id:'221', x:53.7, y:70.4, w:6.9,  h:9.0},
+    {id:'222', x:33.2, y:70.4, w:6.0,  h:10.0},
+  ],
+  5: [
+    {id:'301', x:33.2, y:15.6, w:12.0, h:14.5},
+    {id:'302', x:45.6, y:17.7, w:7.8,  h:12.4},
+    {id:'303', x:53.7, y:17.7, w:7.8,  h:12.4},
+    {id:'304', x:61.8, y:15.6, w:12.0, h:14.5},
+    {id:'305', x:25.7, y:19.3, w:11.7, h:20.6},
+    {id:'306', x:69.8, y:19.3, w:11.7, h:20.6},
+    {id:'307', x:48.1, y:33.2, w:11.5, h:6.8},
+    {id:'308', x:39.8, y:33.2, w:8.0,  h:11.7},
+    {id:'309', x:59.3, y:33.2, w:7.9,  h:11.7},
+    {id:'310', x:27.3, y:40.3, w:10.0, h:9.7},
+    {id:'311', x:69.8, y:40.3, w:10.0, h:9.7},
+    {id:'312', x:27.3, y:50.4, w:10.0, h:9.7},
+    {id:'313', x:69.8, y:50.4, w:10.0, h:9.7},
+    {id:'314', x:39.8, y:55.6, w:8.0,  h:11.7},
+    {id:'315', x:59.3, y:55.6, w:7.9,  h:11.7},
+    {id:'316', x:25.7, y:60.5, w:11.6, h:20.6},
+    {id:'317', x:69.8, y:60.5, w:11.6, h:20.6},
+    {id:'318', x:45.6, y:70.4, w:7.8,  h:12.4},
+    {id:'319', x:36.9, y:74.1, w:8.3,  h:10.7},
+    {id:'320', x:61.8, y:70.4, w:12.0, h:14.5},
+    {id:'321', x:53.7, y:70.4, w:6.9,  h:9.0},
+    {id:'322', x:33.2, y:70.4, w:6.0,  h:10.0},
+  ],
+  6: [
+    {id:'401', x:33.2, y:17.6, w:12.0, h:12.5},
+    {id:'402', x:45.6, y:20.0, w:7.8,  h:10.1},
+    {id:'403', x:53.8, y:20.0, w:7.8,  h:10.1},
+    {id:'404', x:61.9, y:17.6, w:12.0, h:12.5},
+    {id:'405', x:27.3, y:19.3, w:10.0, h:20.5},
+    {id:'406', x:69.8, y:19.3, w:10.0, h:20.6},
+    {id:'407', x:48.1, y:33.2, w:11.4, h:6.8},
+    {id:'408', x:29.2, y:40.3, w:8.1,  h:9.6},
+    {id:'409', x:69.8, y:40.3, w:8.1,  h:9.7},
+    {id:'410', x:29.2, y:50.5, w:8.1,  h:9.6},
+    {id:'411', x:69.8, y:50.4, w:8.1,  h:9.7},
+    {id:'412', x:39.8, y:55.6, w:8.0,  h:11.7},
+    {id:'413', x:59.3, y:56.2, w:7.9,  h:11.0},
+    {id:'414', x:48.1, y:60.5, w:11.4, h:6.8},
+    {id:'415', x:27.3, y:60.6, w:10.0, h:20.5},
+    {id:'416', x:69.8, y:60.5, w:10.0, h:20.6},
+    {id:'417', x:33.2, y:70.4, w:9.6,  h:10.6},
+    {id:'418', x:45.6, y:70.4, w:7.8,  h:10.1},
+    {id:'419', x:53.8, y:70.4, w:7.8,  h:10.1},
+    {id:'420', x:61.9, y:70.4, w:12.0, h:12.4},
+    {id:'421', x:36.0, y:72.4, w:9.2,  h:10.4},
+    {id:'422', x:33.2, y:15.6, w:6.0,  h:10.0},
+  ],
+  7: [
+    {id:'501', x:33.2, y:17.6, w:12.0, h:12.5},
+    {id:'502', x:45.6, y:20.0, w:7.8,  h:10.1},
+    {id:'503', x:53.8, y:20.8, w:7.8,  h:9.3},
+    {id:'504', x:61.9, y:17.6, w:12.0, h:12.5},
+    {id:'505', x:27.3, y:19.3, w:10.0, h:20.6},
+    {id:'506', x:69.8, y:19.3, w:10.0, h:20.6},
+    {id:'507', x:48.1, y:33.2, w:11.4, h:6.8},
+    {id:'508', x:39.8, y:33.2, w:8.0,  h:11.7},
+    {id:'509', x:29.2, y:40.3, w:8.1,  h:9.6},
+    {id:'510', x:69.8, y:40.3, w:8.1,  h:9.7},
+    {id:'511', x:69.8, y:50.4, w:8.1,  h:9.7},
+    {id:'512', x:39.8, y:55.6, w:8.0,  h:11.7},
+    {id:'513', x:59.3, y:55.6, w:7.9,  h:11.7},
+    {id:'514', x:48.1, y:60.5, w:11.5, h:6.8},
+    {id:'515', x:27.3, y:60.6, w:10.0, h:20.5},
+    {id:'516', x:69.8, y:60.6, w:10.0, h:20.6},
+    {id:'517', x:33.2, y:70.4, w:12.0, h:12.5},
+    {id:'518', x:45.6, y:70.4, w:7.8,  h:10.1},
+    {id:'519', x:53.7, y:70.4, w:7.8,  h:10.1},
+    {id:'520', x:61.9, y:70.4, w:11.5, h:12.4},
+    {id:'521', x:66.1, y:73.0, w:7.8,  h:9.3},
+    {id:'522', x:27.3, y:50.4, w:8.1,  h:9.6},
+  ],
+  8: [
+    {id:'601', x:31.8, y:19.0, w:24.2, h:24.9},
+    {id:'602', x:56.3, y:19.0, w:24.2, h:24.9},
+    {id:'603', x:72.4, y:34.4, w:8.1,  h:14.7},
+    {id:'604', x:31.8, y:49.4, w:8.2,  h:14.7},
+    {id:'605', x:72.4, y:49.4, w:8.1,  h:14.7},
+    {id:'606', x:31.8, y:54.5, w:24.2, h:24.9},
+    {id:'607', x:56.3, y:54.5, w:24.2, h:24.9},
+    {id:'608', x:34.9, y:40.5, w:5.1,  h:8.6},
+  ]};
 
 /* ----- commercial pricing model (size × PSF) ----- */
 const PSF_LARGE=2350, PSF_SMALL=2500, LARGE_AT=1500;   // >=1500 sqft = larger
@@ -2854,12 +3164,13 @@ const TOTAL_SQFT = DATA.units.reduce((a,u)=>a+u.s,0);
 const TOTAL_GDV  = DATA.units.reduce((a,u)=>a+priceOf(u),0);
 
 /* ----- floor model (metres; 1 scene unit = 1 m) ----- */
-const FH={1:8.5,2:4.2,3:4.2,4:4.2,5:4.2,6:4.6,7:4.6};
-const INSET={1:1.0,2:1.0,3:1.0,4:1.0,5:1.0,6:0.86,7:0.70};
-const FLOOR_NAMES={1:'GROUND · G+1 DUPLEX UNITS',2:'LEVEL 02',3:'LEVEL 03',4:'LEVEL 04',5:'LEVEL 05',6:'LEVEL 06 · SKY BRIDGE',7:'LEVEL 07 · PREMIUM'};
+const FH={1:4.25,2:4.25,3:4.2,4:4.2,5:4.2,6:4.2,7:4.6,8:4.6};
+const INSET={1:1.0,2:1.0,3:1.0,4:1.0,5:1.0,6:1.0,7:0.86,8:0.70};
+const FLOOR_NAMES={1:'GROUND · G+1 DUPLEX UNITS',2:'LEVEL 01 · DUPLEX UPPER',3:'LEVEL 02',4:'LEVEL 03',5:'LEVEL 04',6:'LEVEL 05',7:'LEVEL 06 · SKY BRIDGE',8:'LEVEL 07 · PREMIUM'};
 const PLAN_BASE="aurum_assets/plans/";
-const FLOOR_PLAN={1:"architecture_page_01.pdf.png",2:"architecture_page_03.pdf.png",3:"architecture_page_04.pdf.png",
-  4:"architecture_page_05.pdf.png",5:"architecture_page_06.pdf.png",6:"architecture_page_07.pdf.png",7:"architecture_page_08.pdf.png"};
+const FLOOR_PLAN={1:"architecture_page_01.pdf.png",2:"architecture_page_02.pdf.png",3:"architecture_page_03.pdf.png",
+  4:"architecture_page_04.pdf.png",5:"architecture_page_05.pdf.png",6:"architecture_page_06.pdf.png",7:"architecture_page_07.pdf.png",8:"architecture_page_08.pdf.png"};
+
 
 const R="aurum_assets/render_candidates/3D_revised_render/";
 const RENDERS=[
@@ -2885,10 +3196,10 @@ const PAYMENT_PLAN=[
 
 const TYPE_TONE={ // size-grade neon colour
   boutique:0x9ab4ad, standard:0x8aab9e, premium:0xc9a878, full:0xc98a5e, duplex:0xd8b48a };
-function toneFor(u){ if(u.f===1) return TYPE_TONE.duplex; if(u.s>=3500)return TYPE_TONE.full;
+function toneFor(u){ if(u.f===1||u.f===2) return TYPE_TONE.duplex; if(u.s>=3500)return TYPE_TONE.full;
   if(u.s>=2000)return TYPE_TONE.premium; if(u.s>=1100)return TYPE_TONE.standard; return TYPE_TONE.boutique; }
 
-const BASE_Y={}; let _y=0; for(let f=1;f<=7;f++){BASE_Y[f]=_y;_y+=FH[f];}
+const BASE_Y={}; let _y=0; for(let f=1;f<=8;f++){BASE_Y[f]=_y;_y+=FH[f];}
 const ROOF_Y=_y, TOTAL_H=_y;
 
 /* ===== geometry helpers ===== */
@@ -2898,8 +3209,9 @@ function octPts(half,cham){const a=half,c=cham;return[[-a+c,-a],[a-c,-a],[a,-a+c
 function octShape(half,cham){const p=octPts(half,cham),s=new THREE.Shape();s.moveTo(p[0][0],p[0][1]);for(let i=1;i<p.length;i++)s.lineTo(p[i][0],p[i][1]);s.closePath();return s;}
 function octPath(half,cham){const p=octPts(half,cham),h=new THREE.Path();h.moveTo(p[0][0],p[0][1]);for(let i=1;i<p.length;i++)h.lineTo(p[i][0],p[i][1]);h.closePath();return h;}
 const MATS=[];
-function lineMat(c,o=.9,add=false){const m=new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o,blending:add?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});m.userData.base=o;MATS.push(m);return m;}
-function glassMat(c,o,add=false){const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,side:THREE.DoubleSide,blending:add?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});m.userData.base=o;MATS.push(m);return m;}
+function lineMat(c,o=.9,add=false){const m=new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o,blending:add?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});m.userData.base=o;m.userData.color=c;MATS.push(m);return m;}
+function glassMat(c,o,add=false){const m=new THREE.MeshStandardMaterial({color:c,transparent:true,opacity:o,side:THREE.DoubleSide,roughness:0.1,metalness:0.85,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});m.userData.base=o;m.userData.color=c;MATS.push(m);return m;}
+function roadMat(c,o,roughness=0.4,metalness=0.1){const m=new THREE.MeshStandardMaterial({color:c,roughness:roughness,metalness:metalness,transparent:true,opacity:o,side:THREE.DoubleSide,depthWrite:true,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});m.userData.base=o;m.userData.color=c;MATS.push(m);return m;}
 function ringLine(half,cham,y,c,o){const p=octPts(half,cham),g=new THREE.BufferGeometry(),v=[];for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];v.push(a[0],y,a[1],b[0],y,b[1]);}g.setAttribute('position',new THREE.Float32BufferAttribute(v,3));return new THREE.LineSegments(g,lineMat(c,o));}
 
 
@@ -2907,22 +3219,43 @@ function ringLine(half,cham,y,c,o){const p=octPts(half,cham),g=new THREE.BufferG
 /* ===== scene ===== */
 const app=document.getElementById('app');
 const scene=new THREE.Scene();
+
+// Create dynamic gradient sky background texture for Three.js scene (works with post-processing)
+const skyCanvas = document.createElement('canvas');
+skyCanvas.width = 2;
+skyCanvas.height = 512;
+const skyCtx = skyCanvas.getContext('2d');
+const skyGrad = skyCtx.createLinearGradient(0, 0, 0, 512);
+skyGrad.addColorStop(0, '#0B4F52'); // Deep Teal
+skyGrad.addColorStop(0.5, '#166B68'); // Emerald Teal
+skyGrad.addColorStop(1, '#5EA8A0'); // Atmospheric Aqua
+skyCtx.fillStyle = skyGrad;
+skyCtx.fillRect(0, 0, 2, 512);
+const skyTex = new THREE.CanvasTexture(skyCanvas);
+scene.background = skyTex;
+
 const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,0.1,3000);
 const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio,2)); 
-// Set clear color to solid slate-teal
-renderer.setClearColor(0x2E4542,1);
+scene.fog = new THREE.FogExp2(0x5EA8A0, 0.0003);
 app.appendChild(renderer.domElement);
 
 // Add twilight environment lighting
-const hemiLight = new THREE.HemisphereLight(0x0a1c33, 0xc9a878, 0.85);
+const hemiLight = new THREE.HemisphereLight(0x166B68, 0xc9a878, 0.95);
 scene.add(hemiLight);
 
 const composer=new EffectComposer(renderer); composer.addPass(new RenderPass(scene,camera));
-const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.0,0.5,0.3); composer.addPass(bloom);
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.55,0.4,0.9); composer.addPass(bloom);
 
-scene.add(new THREE.AmbientLight(0x4a6a8a,1.2));
-const key=new THREE.DirectionalLight(0x9fd0ff,.7); key.position.set(40,90,30); scene.add(key);
+scene.add(new THREE.AmbientLight(0x0B4F52,0.4));
+const key=new THREE.DirectionalLight(0x9fd0ff,.7); key.position.set(50,110,40); scene.add(key);
+
+// Bright focal zone around project location (0, 0, 0)
+const spotLight = new THREE.SpotLight(0xffecd0, 2.0, 300, Math.PI / 4, 0.5, 1);
+spotLight.position.set(0, 160, 0);
+spotLight.target.position.set(0, 0, 0);
+scene.add(spotLight);
+scene.add(spotLight.target);
 const controls=new OrbitControls(camera,renderer.domElement);
 controls.enableDamping=true; controls.dampingFactor=.07; controls.minDistance=18; controls.maxDistance=620; controls.maxPolarAngle=Math.PI*0.498;
 controls.target.set(0,TOTAL_H*0.42,0);
@@ -2932,11 +3265,66 @@ let pinRings=[], entranceGrp;
 const ground=new THREE.Group(); scene.add(ground);
 (function(){
   // Massive solid dark ground plane extending to the horizon (no circular cutoffs)
-  const mainGround=new THREE.Mesh(new THREE.PlaneGeometry(20000,20000),new THREE.MeshBasicMaterial({color:0x050b16,depthWrite:false}));
+  const mainGround=new THREE.Mesh(new THREE.PlaneGeometry(20000,20000),new THREE.MeshStandardMaterial({
+    color:0x0b1315, // premium dark slate teal
+    roughness: 0.9,
+    metalness: 0.1,
+    depthWrite:false
+  }));
   mainGround.rotation.x=-Math.PI/2; mainGround.position.y=-0.05; ground.add(mainGround);
-  const grid=new THREE.GridHelper(760,76,0x0d2a44,0x0a1f33); grid.material.transparent=true; grid.material.opacity=.5; ground.add(grid);
+  const grid=new THREE.GridHelper(760,76,0x173a34,0x0d221e); grid.material.transparent=true; grid.material.opacity=.06; ground.add(grid);
+
+  // Muted deep green parks
+  const createPark = (x, z, r) => {
+    const mesh = new THREE.Mesh(new THREE.RingGeometry(0, r, 32), new THREE.MeshStandardMaterial({
+      color: 0x12241e, // extremely muted deep slate green
+      roughness: 0.9,
+      metalness: 0.1,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false
+    }));
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(x, -0.04, z);
+    ground.add(mesh);
+    // boundary line
+    mesh.add(new THREE.LineLoop(new THREE.RingGeometry(r, r, 32), lineMat(0x163428, 0.2)));
+  };
+
+  // Low contrast empty land blocks
+  const createBlock = (x, z, w, d) => {
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshStandardMaterial({
+      color: 0x0c1418, // low contrast slate-teal block
+      roughness: 0.8,
+      metalness: 0.1,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false
+    }));
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(x, -0.045, z);
+    ground.add(mesh);
+    
+    const edgeGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-w/2, 0, -d/2), new THREE.Vector3(w/2, 0, -d/2),
+      new THREE.Vector3(w/2, 0, d/2), new THREE.Vector3(-w/2, 0, d/2),
+      new THREE.Vector3(-w/2, 0, -d/2)
+    ]);
+    const edges = new THREE.Line(edgeGeo, lineMat(0x121e24, 0.15));
+    edges.rotation.x = Math.PI / 2;
+    mesh.add(edges);
+  };
+
+  // Add procedural architectural elements
+  createPark(180, -120, 100);
+  createPark(-180, 200, 110);
+  createBlock(-300, -200, 160, 220);
+  createBlock(300, 150, 240, 180);
+  createBlock(-120, -250, 180, 140);
+  createBlock(100, -320, 200, 120);
+
   // plot boundary
-  ground.add(ringLine(HALF+10,CHAM+4,0.05,0xc9a878,.5));
+  ground.add(ringLine(HALF+10,CHAM+4,0.05,0xc9a878,.35));
   
   // location pin
   const pin=new THREE.Group(); ground.add(pin);
@@ -2991,7 +3379,7 @@ const STRUCT=0x6f9b96;
   columnGroup.add(new THREE.LineSegments(g,lineMat(STRUCT,.85)));               // perimeter columns (bright)
   columnGroup.add(ringLine(HALF,CHAM,0,STRUCT,.7)); columnGroup.add(ringLine(HALF,CHAM,ROOF_Y,STRUCT,.7));
   // per-floor structural beam rings (violet) — one frame per storey
-  for(let f=2;f<=7;f++) columnGroup.add(ringLine(HALF*INSET[f],CHAM*INSET[f],BASE_Y[f],STRUCT,.5));
+  for(let f=2;f<=8;f++) columnGroup.add(ringLine(HALF*INSET[f],CHAM*INSET[f],BASE_Y[f],STRUCT,.5));
   // interior columns around the atrium octagon (full height)
   const iv=[]; const ap=octPts(A_HALF+1.5,A_CHAM+0.6);
   for(const p of ap) iv.push(p[0],0,p[1], p[0],ROOF_Y,p[1]);
@@ -3014,7 +3402,7 @@ const CORE_X=11, COREW=5, CORED=6, YEL=0xc9a878;
     coresGrp.add(new THREE.LineSegments(new THREE.EdgesGeometry(shaft.geometry),lineMat(YEL,.6)));
     const gv=[]; for(let y=2;y<ROOF_Y;y+=2){gv.push(x0,y,z0,x1,y,z0, x1,y,z0,x1,y,z1, x1,y,z1,x0,y,z1, x0,y,z1,x0,y,z0);}
     coresGrp.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(gv,3)),lineMat(YEL,.16)));
-    for(let f=1;f<=7;f++){const rr=[x0,BASE_Y[f],z0,x1,BASE_Y[f],z0, x1,BASE_Y[f],z0,x1,BASE_Y[f],z1, x1,BASE_Y[f],z1,x0,BASE_Y[f],z1, x0,BASE_Y[f],z1,x0,BASE_Y[f],z0];
+    for(let f=1;f<=8;f++){const rr=[x0,BASE_Y[f],z0,x1,BASE_Y[f],z0, x1,BASE_Y[f],z0,x1,BASE_Y[f],z1, x1,BASE_Y[f],z1,x0,BASE_Y[f],z1, x0,BASE_Y[f],z1,x0,BASE_Y[f],z0];
       coresGrp.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(rr,3)),lineMat(YEL,.42)));}
     const car=new THREE.Mesh(new THREE.BoxGeometry(COREW*0.74,3,CORED*0.74),new THREE.MeshBasicMaterial({color:0xd8c08a,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));
     car.position.set(sx,BASE_Y[1]+FH[1]/2,zCore); car.add(new THREE.LineSegments(new THREE.EdgesGeometry(car.geometry),lineMat(0xefdcae,1.0))); coresGrp.add(car); liftCars.push(car);
@@ -3060,12 +3448,12 @@ function buildFloor(f){
   const ah=isTop?A_HALF*0.62:A_HALF, ac=isTop?A_CHAM*0.62:A_CHAM;
   // slab w/ courtyard void
   const shape=octShape(oh,oc); shape.holes.push(octPath(ah,ac));
-  const slab=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:0.4,bevelEnabled:false}),glassMat(f===1?0x2a3a52:0x1d4a72,.14));
+  const slab=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:0.4,bevelEnabled:false}),roadMat(f===1?0x263d50:0x1b3c59,.42,0.2,0.5));
   slab.rotation.x=-Math.PI/2; slab.userData.floor=f; slab.userData.isSlab=true; g.add(slab); pickFloors.push(slab);
-  const slabEdges=new THREE.LineSegments(new THREE.EdgesGeometry(slab.geometry,25),lineMat(f===1?0xc9a878:0xd8cdb4,.85));
+  const slabEdges=new THREE.LineSegments(new THREE.EdgesGeometry(slab.geometry,25),lineMat(f===1?0xffdfa9:0xe8d0ab,.95));
   slabEdges.rotateX(-Math.PI/2); slabEdges.userData.isSlabEdges=true; g.add(slabEdges);
-  g.add(ringLine(oh,oc,0,0xd8cdb4,.5)); g.add(ringLine(oh,oc,h-0.15,0xd8cdb4,.28));
-  g.add(ringLine(ah,ac,0,0xc9a878,.7)); g.add(ringLine(ah,ac,h-0.1,0xc9a878,.3));  // courtyard edges (top+bottom)
+  g.add(ringLine(oh,oc,0,0xe8d0ab,.6)); g.add(ringLine(oh,oc,h-0.15,0xe8d0ab,.35));
+  g.add(ringLine(ah,ac,0,0xffdfa9,.85)); g.add(ringLine(ah,ac,h-0.1,0xffdfa9,.45));  // courtyard edges (top+bottom)
 
   // facade glass + timber louvers + balcony band + curved corner balconies
   const fp=octPts(oh,oc);
@@ -3073,14 +3461,14 @@ function buildFloor(f){
     const a=fp[i],b=fp[(i+1)%fp.length],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz),nx=dx/len,nz=dz/len;
     const mx=(a[0]+b[0])/2,mz=(a[1]+b[1])/2,ang=Math.atan2(dz,dx),cham=(i%2===1);
     const gh=h*(cham?0.92:0.78);
-    const panel=new THREE.Mesh(new THREE.PlaneGeometry(len*0.94,gh),glassMat(cham?0x123a63:0x0e3056,cham?0.5:0.32));
+    const panel=new THREE.Mesh(new THREE.PlaneGeometry(len*0.94,gh),roadMat(cham?0x1d4e78:0x0c2540,cham?0.65:0.45,0.05,0.9));
     panel.position.set(mx,h*0.5,mz); panel.rotation.y=-ang+Math.PI/2; g.add(panel);
     const mg=new THREE.BufferGeometry(),mv=[],nn=Math.max(2,Math.round(len/3));
     for(let k=0;k<=nn;k++){const t=k/nn-0.5,px=mx+nx*len*0.94*t,pz=mz+nz*len*0.94*t; mv.push(px,h*0.1,pz,px,h*0.1+gh,pz);}
-    mg.setAttribute('position',new THREE.Float32BufferAttribute(mv,3)); g.add(new THREE.LineSegments(mg,lineMat(cham?0x9ab4ad:0x5c7a74,.45)));
-    if(!cham&&f>=2){const lg=new THREE.BufferGeometry(),lv=[];for(let k=0;k<5;k++){const t=(k+0.5)/5-0.5,px=mx+nx*len*0.7*t,pz=mz+nz*len*0.7*t;lv.push(px,h*0.16,pz,px,h*0.9,pz);}lg.setAttribute('position',new THREE.Float32BufferAttribute(lv,3));g.add(new THREE.LineSegments(lg,lineMat(0xc9a878,.65)));}
+    mg.setAttribute('position',new THREE.Float32BufferAttribute(mv,3)); g.add(new THREE.LineSegments(mg,lineMat(cham?0xffdfa9:0xd8b589,.75)));
+    if(!cham&&f>=2){const lg=new THREE.BufferGeometry(),lv=[];for(let k=0;k<5;k++){const t=(k+0.5)/5-0.5,px=mx+nx*len*0.7*t,pz=mz+nz*len*0.7*t;lv.push(px,h*0.16,pz,px,h*0.9,pz);}lg.setAttribute('position',new THREE.Float32BufferAttribute(lv,3));g.add(new THREE.LineSegments(lg,lineMat(0xffdfa9,.85)));}
     // balcony band (greenery)
-    const pb=new THREE.BufferGeometry(); pb.setAttribute('position',new THREE.Float32BufferAttribute([a[0],0.45,a[1],b[0],0.45,b[1]],3)); g.add(new THREE.LineSegments(pb,lineMat(0x8aab9e,.5)));
+    const pb=new THREE.BufferGeometry(); pb.setAttribute('position',new THREE.Float32BufferAttribute([a[0],0.45,a[1],b[0],0.45,b[1]],3)); g.add(new THREE.LineSegments(pb,lineMat(0x8aab9e,.55)));
     // curved corner balcony projection on chamfer faces
     if(cham&&f>=1){
       const proj=2.4, bx=mx+nx*0, bz=mz+nz*0, ox=Math.cos(ang-Math.PI/2), oz=Math.sin(ang-Math.PI/2);
@@ -3108,10 +3496,10 @@ function buildFloor(f){
   unitGroups[f]=ug;
   g.position.y=BASE_Y[f]; g.userData={f,base:BASE_Y[f]}; floorGroups[f]=g; tower.add(g);
 }
-for(let f=1;f<=7;f++) buildFloor(f);
+for(let f=1;f<=8;f++) buildFloor(f);
 
 /* office boundary toward the courtyard — YELLOW gallery ring each floor */
-for(let f=2;f<=7;f++){ const ah=f>=6?A_HALF*0.62:A_HALF, ac=f>=6?A_CHAM*0.62:A_CHAM;
+for(let f=2;f<=8;f++){ const ah=f>=7?A_HALF*0.62:A_HALF, ac=f>=7?A_CHAM*0.62:A_CHAM;
   const gal=ringLine(ah+1.6,ac+0.6,0.4,0xc9a878,.5); gal.position.y=BASE_Y[f]; tower.add(gal); }
 
 /* selected-unit balcony marker — placed on the facade at the unit's location */
@@ -3224,7 +3612,34 @@ const courtyards=[];
 })();
 
 /* floor labels */
-function makeLabel(text,color='#cfe0d6',size=46){const c=document.createElement('canvas');c.width=512;c.height=128;const x=c.getContext('2d');x.fillStyle=color;x.font=`700 ${size}px Inter,Arial`;x.textBaseline='middle';x.fillText(text,8,70);const t=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));s.scale.set(18,4.5,1);return s;}
+function makeLabel(text,color='#cfe0d6',size=46){
+  const c=document.createElement('canvas');
+  c.width=512;
+  c.height=128;
+  const x=c.getContext('2d');
+  x.font=`700 ${size}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  const textWidth = x.measureText(text).width;
+  x.fillStyle = 'rgba(10, 32, 28, 0.7)';
+  x.beginPath();
+  if (typeof x.roundRect === 'function') {
+    x.roundRect(8, 70 - size/2 - 6, textWidth + 24, size + 12, 6);
+  } else {
+    x.rect(8, 70 - size/2 - 6, textWidth + 24, size + 12);
+  }
+  x.fill();
+  x.strokeStyle = 'rgba(201, 168, 120, 0.4)';
+  x.lineWidth = 2;
+  x.stroke();
+  x.shadowColor = color;
+  x.shadowBlur = 8;
+  x.fillStyle=color;
+  x.textBaseline='middle';
+  x.fillText(text,20,70);
+  const t=new THREE.CanvasTexture(c);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+  s.scale.set(18,4.5,1);
+  return s;
+}
 
 let bigLabel = null;
 function updateBigFloorLabel(f) {
@@ -3232,7 +3647,7 @@ function updateBigFloorLabel(f) {
     scene.remove(bigLabel);
     bigLabel = null;
   }
-  const text = f === 1 ? 'GROUND' : 'LEVEL 0' + f;
+  const text = f === 1 ? 'GROUND' : (f === 2 ? 'LEVEL 01' : 'LEVEL 0' + (f - 1));
   bigLabel = makeLabel(text, '#c9a878', 84);
   bigLabel.position.set(HALF + 22, BASE_Y[f] + FH[f] * 0.5, -5);
   bigLabel.scale.set(40, 10, 1);
@@ -3246,18 +3661,15 @@ function hideBigFloorLabel() {
 }
 
 const labels=[];
-for(let f=1;f<=7;f++){const lb=makeLabel(f===1?'G':'0'+f,f===1?'#c9a878':'#cfe0d6',60);lb.position.set(HALF+9,BASE_Y[f]+FH[f]*0.5,0);floorGroups[f].add(lb);labels.push(lb);}
+for(let f=1;f<=8;f++){
+  const text = f === 1 ? 'G' : (f === 2 ? '01' : '0' + (f - 1));
+  const lb=makeLabel(text, f===1?'#c9a878':'#cfe0d6',60);
+  lb.position.set(HALF+9,BASE_Y[f]+FH[f]*0.5,0);
+  floorGroups[f].add(lb);
+  labels.push(lb);
+}
 
 // Component 7 - Permanent Facade & Entrance labels
-const lobbyLabel = makeLabel('LOBBY', '#ffffff', 36);
-lobbyLabel.position.set(-HALF*0.3, FH[1]*0.35, HALF+4);
-lobbyLabel.scale.set(14, 3, 1);
-tower.add(lobbyLabel);
-
-const entranceLabel = makeLabel('ENTRANCE', '#ffffff', 36);
-entranceLabel.position.set(HALF*0.5, FH[1]*0.35, HALF+4);
-entranceLabel.scale.set(18, 3, 1);
-tower.add(entranceLabel);
 
 const brandLabel = makeLabel('AURUM', '#c9a878', 42);
 brandLabel.position.set(0, TOTAL_H*0.45, HALF+2);
@@ -3393,7 +3805,7 @@ const pickBackgroundBuildings = [];
 const sightRaycaster = new THREE.Raycaster();
 
 function _getBuildingColors(name) {
-  return { body: 0x0c2b28, edge: 0x6fd2ff };
+  return { body: 0x103338, edge: 0x1a454c };
 }
 
 function _buildOneLandmarkMesh(b, idx) {
@@ -3402,8 +3814,16 @@ function _buildOneLandmarkMesh(b, idx) {
   const group = new THREE.Group();
   group.userData.landmarkIndex = idx;
 
-  const solidMat = new THREE.MeshBasicMaterial({ color: bodyColor, transparent: true, opacity: 0.20, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
-  const edgeMat  = new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.15 });
+  const solidMat = new THREE.MeshStandardMaterial({ 
+    color: bodyColor, 
+    transparent: true, 
+    opacity: 0.9, 
+    depthWrite: true, 
+    side: THREE.DoubleSide,
+    roughness: 0.75,
+    metalness: 0.25
+  });
+  const edgeMat  = new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.2 });
 
   // Footprint outline at ground level
   const fpGeo = new THREE.BufferGeometry();
@@ -3413,7 +3833,7 @@ function _buildOneLandmarkMesh(b, idx) {
      halfW,0.1, halfD,-halfW,0.1, halfD,
     -halfW,0.1, halfD,-halfW,0.1,-halfD
   ], 3));
-  group.add(new THREE.LineSegments(fpGeo, new THREE.LineBasicMaterial({ color: edgeColor })));
+  group.add(new THREE.LineSegments(fpGeo, new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.3 })));
 
   if (b.h > 0) {
     const geom = new THREE.BoxGeometry(b.w, b.h, b.d);
@@ -3423,7 +3843,7 @@ function _buildOneLandmarkMesh(b, idx) {
     mesh.userData.defaultOpacity = 1.0;
     mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geom), edgeMat));
 
-    // Interior window light bands
+    // Interior window light bands (warm interior lighting)
     const lightPts = [];
     for (let yL = 4; yL < b.h; yL += 4)
       for (let k = -halfW + 2; k < halfW - 2; k += b.w / 5)
@@ -3432,15 +3852,18 @@ function _buildOneLandmarkMesh(b, idx) {
     if (lightPts.length > 0) {
       const lg = new THREE.BufferGeometry();
       lg.setAttribute('position', new THREE.Float32BufferAttribute(lightPts, 3));
-      mesh.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x4A6460 })));
+      mesh.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0xc9a878, transparent: true, opacity: 0.45 })));
     }
     group.add(mesh);
     pickLandmarks.push(mesh);   // register for raycasting
 
-    const label = makeLabel(b.name, b.labelCol, 28);
-    label.position.set(0, b.h + 5, 0);
-    label.scale.set(Math.max(18, b.name.length * 1.5), 3, 1);
-    group.add(label);
+    const essentialLandmarks = ["PEARL RESIDENCE", "HILLIANA TOWER", "FAIRMONT DUBAI SKYLINE"];
+    if (essentialLandmarks.includes(b.name)) {
+      const label = makeLabel(b.name, '#c9a878', 28);
+      label.position.set(0, b.h + 5, 0);
+      label.scale.set(Math.max(18, b.name.length * 1.5), 3, 1);
+      group.add(label);
+    }
   }
 
   group.position.set(b.cx, 0, b.cz);
@@ -3448,9 +3871,9 @@ function _buildOneLandmarkMesh(b, idx) {
 
   // Distance-based fade: buildings further from origin recede into the background
   const dist = Math.sqrt(b.cx * b.cx + b.cz * b.cz);
-  const distFactor = Math.max(0.08, Math.min(1.0, 70 / dist));
-  solidMat.opacity = 0.20 * distFactor;
-  edgeMat.opacity  = 0.15 * distFactor;
+  const distFactor = Math.max(0.08, Math.min(1.0, 90 / dist));
+  solidMat.opacity = 0.85 * distFactor;
+  edgeMat.opacity  = 0.20 * distFactor;
 
   return group;
 }
@@ -3832,10 +4255,10 @@ function renderOSM(data) {
   
   // 1. Group and merge road geometries
   const roadGroups = {
-    motorway: { width: 16, color: 0xc9a878, opacity: 0.55, verts: [], edgeVerts: [], centerlineVerts: [] },
-    primary: { width: 12, color: 0x1a1e24, opacity: 0.80, verts: [], edgeVerts: [], centerlineVerts: [] },
-    secondary: { width: 8, color: 0x1a1e24, opacity: 0.75, verts: [], edgeVerts: [], centerlineVerts: [] },
-    other: { width: 6, color: 0x1a1e24, opacity: 0.68, verts: [], edgeVerts: [], centerlineVerts: [] }
+    motorway: { width: 16, color: 0x1f2226, opacity: 0.85, verts: [], shoulderVerts: [], edgeVerts: [], centerlineVerts: [] },
+    primary: { width: 12, color: 0x181a1d, opacity: 0.90, verts: [], shoulderVerts: [], edgeVerts: [], centerlineVerts: [] },
+    secondary: { width: 8, color: 0x181a1d, opacity: 0.85, verts: [], shoulderVerts: [], edgeVerts: [], centerlineVerts: [] },
+    other: { width: 6, color: 0x181a1d, opacity: 0.80, verts: [], shoulderVerts: [], edgeVerts: [], centerlineVerts: [] }
   };
 
   data.roads.forEach(road => {
@@ -3849,12 +4272,26 @@ function renderOSM(data) {
     }
     
     const g = roadGroups[groupKey];
-    const points = road.path;
+    const originalPoints = road.path;
+    if (originalPoints.length < 2) return;
+
+    // Interpolate using CatmullRomCurve3 to create flowing curves
+    let curvePoints = [];
+    try {
+      const threePts = originalPoints.map(p => new THREE.Vector3(p[0], 0, p[1]));
+      const curve = new THREE.CatmullRomCurve3(threePts);
+      const divisions = Math.max(12, originalPoints.length * 4);
+      curvePoints = curve.getPoints(divisions).map(pt => [pt.x, pt.z]);
+    } catch (e) {
+      curvePoints = originalPoints;
+    }
+
     const width = g.width;
+    const shoulderWidth = width + 2.0;
     
-    for (let i = 0; i < points.length - 1; i++) {
-      const p1 = points[i];
-      const p2 = points[i + 1];
+    for (let i = 0; i < curvePoints.length - 1; i++) {
+      const p1 = curvePoints[i];
+      const p2 = curvePoints[i + 1];
       
       const dx = p2[0] - p1[0];
       const dz = p2[1] - p1[1];
@@ -3865,28 +4302,46 @@ function renderOSM(data) {
       const nz = dx / len;
       
       const halfW = width / 2;
+      const halfSW = shoulderWidth / 2;
       
+      // Main road layer
       const p1L = [p1[0] + nx * halfW, p1[1] + nz * halfW];
       const p1R = [p1[0] - nx * halfW, p1[1] - nz * halfW];
       const p2L = [p2[0] + nx * halfW, p2[1] + nz * halfW];
       const p2R = [p2[0] - nx * halfW, p2[1] - nz * halfW];
       
       g.verts.push(
-        p1L[0], 0.08, p1L[1],
-        p1R[0], 0.08, p1R[1],
-        p2L[0], 0.08, p2L[1],
+        p1L[0], 0.06, p1L[1],
+        p1R[0], 0.06, p1R[1],
+        p2L[0], 0.06, p2L[1],
         
-        p1R[0], 0.08, p1R[1],
-        p2R[0], 0.08, p2R[1],
-        p2L[0], 0.08, p2L[1]
+        p1R[0], 0.06, p1R[1],
+        p2R[0], 0.06, p2R[1],
+        p2L[0], 0.06, p2L[1]
+      );
+
+      // Beveled shoulder layer (slightly lower)
+      const p1SL = [p1[0] + nx * halfSW, p1[1] + nz * halfSW];
+      const p1SR = [p1[0] - nx * halfSW, p1[1] - nz * halfSW];
+      const p2SL = [p2[0] + nx * halfSW, p2[1] + nz * halfSW];
+      const p2SR = [p2[0] - nx * halfSW, p2[1] - nz * halfSW];
+
+      g.shoulderVerts.push(
+        p1SL[0], 0.02, p1SL[1],
+        p1SR[0], 0.02, p1SR[1],
+        p2SL[0], 0.02, p2SL[1],
+        
+        p1SR[0], 0.02, p1SR[1],
+        p2SR[0], 0.02, p2SR[1],
+        p2SL[0], 0.02, p2SL[1]
       );
       
       g.edgeVerts.push(
-        p1L[0], 0.09, p1L[1], p2L[0], 0.09, p2L[1],
-        p1R[0], 0.09, p1R[1], p2R[0], 0.09, p2R[1]
+        p1L[0], 0.07, p1L[1], p2L[0], 0.07, p2L[1],
+        p1R[0], 0.07, p1R[1], p2R[0], 0.07, p2R[1]
       );
 
-      // Generate dashed centerline white strips procedurally!
+      // Generate dashed centerline markings
       const dirX = dx / len;
       const dirZ = dz / len;
       const dashLen = 2.0;
@@ -3896,8 +4351,8 @@ function renderOSM(data) {
         const d1 = d;
         const d2 = Math.min(len, d + dashLen);
         g.centerlineVerts.push(
-          p1[0] + dirX * d1, 0.1, p1[1] + dirZ * d1,
-          p1[0] + dirX * d2, 0.1, p1[1] + dirZ * d2
+          p1[0] + dirX * d1, 0.08, p1[1] + dirZ * d1,
+          p1[0] + dirX * d2, 0.08, p1[1] + dirZ * d2
         );
       }
     }
@@ -3905,23 +4360,37 @@ function renderOSM(data) {
 
   Object.keys(roadGroups).forEach(key => {
     const g = roadGroups[key];
+    // Render shoulder layer
+    if (g.shoulderVerts.length > 0) {
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(g.shoulderVerts, 3));
+      geo.computeVertexNormals();
+      const mesh = new THREE.Mesh(geo, roadMat(0x181c20, 1.0, 0.85, 0.0));
+      osmGroup.add(mesh);
+    }
+    // Render main road layer
     if (g.verts.length > 0) {
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.Float32BufferAttribute(g.verts, 3));
       geo.computeVertexNormals();
-      const mesh = new THREE.Mesh(geo, glassMat(g.color, g.opacity));
+      const mesh = new THREE.Mesh(geo, roadMat(0x2c353d, 1.0, 0.35, 0.3));
       osmGroup.add(mesh);
     }
     if (g.edgeVerts.length > 0) {
       const edgeGeo = new THREE.BufferGeometry();
       edgeGeo.setAttribute('position', new THREE.Float32BufferAttribute(g.edgeVerts, 3));
-      const lines = new THREE.LineSegments(edgeGeo, lineMat(0x2d3540, 0.45, false));
+      const lines = new THREE.LineSegments(edgeGeo, lineMat(0x38454f, 0.3, false));
       osmGroup.add(lines);
     }
     if (g.centerlineVerts.length > 0) {
       const lineGeo = new THREE.BufferGeometry();
       lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(g.centerlineVerts, 3));
-      const centerlines = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, depthWrite: false }));
+      const centerlines = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
+        color: 0xe5d2b3, // soft warm lane markings
+        transparent: true,
+        opacity: 0.9,
+        depthWrite: false
+      }));
       osmGroup.add(centerlines);
     }
   });
@@ -4118,18 +4587,30 @@ function renderOSM(data) {
         geo.setAttribute('position', new THREE.Float32BufferAttribute(buildingVerts, 3));
         geo.computeVertexNormals();
         
-        // Premium holographic body styling: highly transparent dark slate teal
-        const mesh = new THREE.Mesh(geo, glassMat(0x0a1c2a, 0.12));
-        mesh.userData.defaultOpacity = 0.12;
+        // Premium solid context building masses: semi-opaque deep slate teal
+        const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
+          color: 0x0c252a,
+          roughness: 0.85,
+          metalness: 0.15,
+          transparent: true,
+          opacity: 0.85,
+          depthWrite: true
+        }));
+        mesh.userData.defaultOpacity = 0.85;
         osmGroup.add(mesh);
         pickBackgroundBuildings.push(mesh);
 
         if (buildingEdgeVerts.length > 0) {
           const edgeGeo = new THREE.BufferGeometry();
           edgeGeo.setAttribute('position', new THREE.Float32BufferAttribute(buildingEdgeVerts, 3));
-          // Sharp, glowing, fine-line holographic wireframes
-          const lines = new THREE.LineSegments(edgeGeo, lineMat(0x284b66, 0.28, true));
-          lines.userData.defaultOpacity = 0.28;
+          // Extremely subtle wireframe accents
+          const lines = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({
+            color: 0x143c44,
+            transparent: true,
+            opacity: 0.15,
+            depthWrite: true
+          }));
+          lines.userData.defaultOpacity = 0.15;
           mesh.add(lines);
         }
       }
@@ -4466,10 +4947,10 @@ function drawFallbackSurroundings() {
     const o=new THREE.BufferGeometry(); o.setAttribute('position',new THREE.Float32BufferAttribute(
       [cx-w/2,0.06,cz-d/2, cx+w/2,0.06,cz-d/2, cx+w/2,0.06,cz-d/2, cx+w/2,0.06,cz+d/2, cx+w/2,0.06,cz+d/2, cx-w/2,0.06,cz+d/2, cx-w/2,0.06,cz+d/2, cx-w/2,0.06,cz-d/2],3));
     neighbors.add(new THREE.LineSegments(o,lineMat(col,.45)));
-    if(h){
-      const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),glassMat(0x173837,.22)); 
+    if (h) {
+      const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),glassMat(0x06111a,.65)); 
       b.position.set(cx,h/2,cz); 
-      b.add(new THREE.LineSegments(new THREE.EdgesGeometry(b.geometry),lineMat(0x1F3432,.15))); 
+      b.add(new THREE.LineSegments(new THREE.EdgesGeometry(b.geometry),lineMat(0x0f2230,.15))); 
       neighbors.add(b);
       
       // Interior window lights — local to the building mesh (origin = centre of box)
@@ -4488,7 +4969,10 @@ function drawFallbackSurroundings() {
         b.add(new THREE.LineSegments(lightGeo, lineMat(0xc9a878, 0.65, true)));
       }
     }
-    const l=makeLabel(name,cssCol,28); l.position.set(cx,(h||0)+4,cz); l.scale.set(Math.max(18,name.length*1.5),3,1); neighbors.add(l);
+    const essentialLandmarks = ["PEARL RESIDENCE", "HILLIANA TOWER", "FAIRMONT DUBAI SKYLINE", "AURUM", "DUBAI METRO", "SHEIKH ZAYED ROAD"];
+    if (essentialLandmarks.includes(name)) {
+      const l=makeLabel(name,cssCol,28); l.position.set(cx,(h||0)+4,cz); l.scale.set(Math.max(18,name.length*1.5),3,1); neighbors.add(l);
+    }
   }
 
   plot("PEARL RESIDENCE", -48, 12, 34, 45, 0x9ab4ad, 0x093332, 32);
@@ -4680,10 +5164,10 @@ function layout(dt){
   S.explode+=(S.explodeT-S.explode)*Math.min(1,dt*4);
   S.courts+=((S.courts>0.5?1:0?1:0)-0)*0; // (courts handled separately)
   const ease=x=>1-Math.pow(1-x,3);
-  for(let f=1;f<=7;f++){const g=floorGroups[f];const local=Math.max(0,Math.min(1,(S.reveal*8-(f-1))/1.6));const rev=ease(local);
+  for(let f=1;f<=8;f++){const g=floorGroups[f];const local=Math.max(0,Math.min(1,(S.reveal*9-(f-1))/1.6));const rev=ease(local);
     g.position.y=g.userData.base*rev+(f-1)*9*S.explode; g.visible=rev>0.001 && !(S.walk&&f>=2);}
-  bridgeGrp.position.y=BASE_Y[6]*1+(6-1)*9*S.explode*0; bridgeGrp.position.y=floorGroups[6].position.y; bridgeGrp.visible=!S.walk;
-  roofGroup.position.y=ROOF_Y+6*9*S.explode; roofGroup.visible=(S.reveal*8-6.5)>0 && !S.walk;
+  bridgeGrp.position.y=BASE_Y[7]*1+(7-1)*9*S.explode*0; bridgeGrp.position.y=floorGroups[7].position.y; bridgeGrp.visible=!S.walk;
+  roofGroup.position.y=ROOF_Y+7*9*S.explode; roofGroup.visible=(S.reveal*9-7.5)>0 && !S.walk;
   columnGroup.visible=S.columns>0.5 && !S.walk;
 }
 function applySelection(){
@@ -4692,48 +5176,59 @@ function applySelection(){
   osmGroup.visible = showSurroundings;
   neighbors.visible = showSurroundings;
 
-  for(let f=1;f<=7;f++){
+  for(let f=1;f<=8;f++){
     const sel=(S.selected===null)||(S.selected===f);
     const isSelected = S.selected === f;
     const isTrans = S.transitioningFloor === f;
     const glowColor = 0xffa500; // Bright orange-gold
+    const selectedGlowColor = 0xd4af37; // Solid premium gold
 
     floorGroups[f].traverse(o=>{
       if(o.material&&o.material.userData&&o.material.userData.base!==undefined){
         const hasColor = o.material.color && typeof o.material.color.setHex === 'function';
-        if(o.userData.isSlab){
-          if (isTrans) {
-            if (hasColor) o.material.color.setHex(glowColor);
-            o.material.opacity = 0.55 + 0.15 * Math.sin(S.t * 8); // glowing pulse
-          } else if (isSelected) {
-            if (hasColor) o.material.color.setHex(0x11222e); // Deep charcoal selected base
-            o.material.opacity = 0.92; // Solid backdrop for unit segments
-          } else {
-            if (hasColor) o.material.color.setHex(f===1?0x2a3a52:0x1d4a72);
-            o.material.opacity = o.material.userData.base*(sel?1:0.1);
+        if (isSelected) {
+          // Entire selected floor dimension glows with solid gold
+          if (hasColor) o.material.color.setHex(selectedGlowColor);
+          if (o.material.emissive && typeof o.material.emissive.setHex === 'function') {
+            o.material.emissive.setHex(selectedGlowColor);
+            o.material.emissiveIntensity = 2.0; // High emissive intensity to catch bloom glow
           }
-        } else if(o.userData.isSlabEdges){
-          if (isTrans) {
-            if (hasColor) o.material.color.setHex(glowColor);
-            o.material.opacity = 1.0;
-          } else {
-            if (hasColor) o.material.color.setHex(isSelected ? 0xa48b6a : (f===1?0xc9a878:0xd8cdb4));
-            o.material.opacity = isSelected ? 0.7 : o.material.userData.base*(sel?1:0.1);
+          o.material.opacity = 1.0;
+        } else if (isTrans) {
+          if (hasColor) o.material.color.setHex(glowColor);
+          if (o.material.emissive && typeof o.material.emissive.setHex === 'function') {
+            o.material.emissive.setHex(glowColor);
+            o.material.emissiveIntensity = 1.5;
           }
+          o.material.opacity = o.userData.isSlab ? (0.55 + 0.15 * Math.sin(S.t * 8)) : 1.0;
         } else {
-          // Keep regular outlines and elements completely sharp, clear and in their original color
+          // Restore original colors
+          if (hasColor && o.material.userData.color !== undefined) {
+            o.material.color.setHex(o.material.userData.color);
+          } else if (hasColor) {
+            // Fallbacks
+            if (o.userData.isSlab) {
+              o.material.color.setHex((f===1||f===2)?0x2a3a52:0x1d4a72);
+            } else if (o.userData.isSlabEdges) {
+              o.material.color.setHex((f===1||f===2)?0xc9a878:0xd8cdb4);
+            }
+          }
+          if (o.material.emissive && typeof o.material.emissive.setHex === 'function') {
+            o.material.emissive.setHex(0x000000);
+            o.material.emissiveIntensity = 0.0;
+          }
           o.material.opacity = o.material.userData.base*(sel?1:0.1);
         }
       }
     });
-    unitGroups[f].visible=(S.selected===f);
-    const row=document.querySelector(`.frow[data-f="${f}"]`); if(row)row.classList.toggle('active',S.selected===f);}
+    document.querySelectorAll(`.frow[data-f="${f}"]`).forEach(row => row.classList.toggle('active', S.selected===f));}
 }
 
 /* ===== floor rail ===== */
 const rail=document.getElementById('rail');
-for(let f=7;f>=1;f--){const fl=DATA.floors[f];const row=document.createElement('div');row.className='frow';row.dataset.f=f;
-  row.innerHTML=`<div class="fchip">${f===1?'G':'0'+f}</div>`;
+for(let f=8;f>=1;f--){
+  const row=document.createElement('div');row.className='frow';row.dataset.f=f;
+  row.innerHTML=`<div class="fchip">${f===1?'G':(f===2?'01':'0'+(f-1))}</div>`;
   row.onclick=()=>playFloorSelectionCinematic(f); rail.appendChild(row);}
 
 /* ===== floor detail card ===== */
@@ -4799,7 +5294,7 @@ function centerCanvas() {
   const vw = viewport.clientWidth;
   const vh = viewport.clientHeight;
   panX = (vw - 800) / 2;
-  panY = (vh - 800) / 2;
+  panY = (vh - 645) / 2;
   zoom = vw < 768 ? 0.42 : 0.82;
   updateCanvasTransform();
 }
@@ -4807,165 +5302,161 @@ function centerCanvas() {
 // Deterministic sales status generator
 function statusOf(u) {
   const lastDigit = u.u % 10;
-  const lastTwo = u.u % 100;
-  // Make it look exactly like the mockup colors (e.g. 402 Available, 403 Reserved, 404 Sold...)
-  if ([2, 5, 9, 21, 1, 16, 22].includes(lastTwo) || [2, 5, 9].includes(lastDigit)) return 'Available';
-  if ([3, 11, 12, 18, 19].includes(lastTwo) || [3, 8].includes(lastDigit)) return 'Reserved';
-  if ([4, 6, 7, 10, 20].includes(lastTwo) || [4, 6, 7].includes(lastDigit)) return 'Sold';
+  const lastTwo   = u.u % 100;
+  if ([2,5,9,21,1,16,22].includes(lastTwo) || [2,5,9].includes(lastDigit)) return 'Available';
+  if ([3,11,12,18,19].includes(lastTwo)    || [3,8].includes(lastDigit))   return 'Reserved';
+  if ([4,6,7,10,20].includes(lastTwo)      || [4,6,7].includes(lastDigit)) return 'Sold';
   return 'On Hold';
 }
-
 function statusClass(status) {
   if (status === 'Available') return 'status-available';
-  if (status === 'Reserved') return 'status-reserved';
-  if (status === 'Sold') return 'status-sold';
-  return 'status-on-hold';
+  if (status === 'Reserved')  return 'status-reserved';
+  if (status === 'Sold')      return 'status-sold';
+  if (status === 'On Hold')   return 'status-on-hold';
+  return 'status-unknown';
 }
 
-// Generate dynamic mathematical SVG sectors overlaying blueprint
+// ─── Colour helpers ─────────────────────────────────────────────────────────
+const STATUS_FILL = {
+  'Available': { fill:'rgba(56,210,130,0.50)', stroke:'#1fa060' },
+  'Reserved' : { fill:'rgba(210,168,50,0.52)',  stroke:'#a87c10' },
+  'Sold'     : { fill:'rgba(230,55,90,0.48)',   stroke:'#b82040' },
+  'On Hold'  : { fill:'rgba(130,130,158,0.42)', stroke:'#7878a0' },
+};
+
+// Build a sidebar unit list
+function renderUnitListSidebar(f) {
+  const fu = DATA.units.filter(u => u.f === f);
+  const listContainer = document.getElementById('fusList');
+  if (!listContainer) return;
+  listContainer.innerHTML = '';
+  if (!fu.length) return;
+  const sorted = [...fu].sort((a,b)=>a.u-b.u);
+  sorted.forEach(u => {
+    const status = statusOf(u);
+    const badgeCls = statusClass(status).replace('status-','fus-status-');
+    const item = document.createElement('div');
+    item.className = 'fus-item';
+    item.onclick = () => {
+      const path = document.getElementById(`svg-unit-${u.u}`);
+      if (path) path.dispatchEvent(new Event('click'));
+      else openUnitDetail(u);
+    };
+    item.innerHTML = `
+      <div class="fus-item-left">
+        <div class="fus-item-name">Unit ${u.u}</div>
+        <div class="fus-item-meta">${unitClass(u)} · ${u.s.toLocaleString()} sq ft</div>
+      </div>
+      <div class="fus-item-right">
+        <div class="fus-item-price">${priceOf(u)?fmtAED(priceOf(u)):'Price on request'}</div>
+        <div class="fus-status-badge ${badgeCls}">${status}</div>
+      </div>`;
+    listContainer.appendChild(item);
+  });
+}
+
 function renderSVGFloorPlan(f) {
-  const svgSectors = document.getElementById('svgSectorsGroup');
-  const svgConnector = document.getElementById('svgConnectorGroup');
-  const card = document.getElementById('unitDetailCard');
-  
+  const svgSectors  = document.getElementById('svgSectorsGroup');
+  const svgConnector= document.getElementById('svgConnectorGroup');
+  const canvas      = document.getElementById('blueprintCanvas');
+  const imgEl       = document.getElementById('blueprintImage');
+  const card        = document.getElementById('unitDetailCard');
+
   svgSectors.innerHTML = '';
   svgConnector.innerHTML = '';
   card.classList.remove('show');
   selectedFloorUnit = null;
 
-  // Center the blueprint image source - loading the real high-contrast readable floorplan
-  document.getElementById('blueprintImage').src = `aurum_assets/plan_view/floor_${f}.png`;
-
-  // Auto-refresh Dev Tracer list and state on floor navigation
+  // Dev-tracer housekeeping
   if (isTracerMode) {
-    populateTracerUnits();
-    tracePoints = [];
-    updateDevTraceOverlay();
-    updatePointsList();
-    document.getElementById('dtStatus').textContent = "Select a unit from the dropdown above to start.";
-    document.getElementById('dtOutputJson').value = "";
+    populateTracerUnits(); tracePoints = [];
+    updateDevTraceOverlay(); updatePointsList();
+    document.getElementById('dtStatus').textContent = 'Select a unit from the dropdown above to start.';
+    document.getElementById('dtOutputJson').value = '';
   }
 
-  const fu = DATA.units.filter(u => u.f === f);
-  if (!fu.length) return;
+  // Display the colored PNG base plan image
+  canvas.classList.add('svg-floor-mode');
+  imgEl.src = FLOOR_PLAN_COLORED[f] || `aurum_assets/plan_view/floor_${f}.png`;
 
-  // Render the scrollable units checklist sidebar next to the floorplan canvas
-  const listContainer = document.getElementById('fusList');
-  if (listContainer) {
-    listContainer.innerHTML = '';
-    // Sort units numerically for the sidebar listing (e.g. 701, 702, 703...)
-    const sortedUnits = [...fu].sort((a, b) => a.u - b.u);
-    sortedUnits.forEach(u => {
-      const status = statusOf(u);
-      const badgeCls = statusClass(status); // status-available, status-reserved, etc.
-      const fusBadgeCls = badgeCls.replace('status-', 'fus-status-');
-      
-      const item = document.createElement('div');
-      item.className = 'fus-item';
-      item.onclick = () => {
-        openUnitDetail(u);
-      };
-      
-      item.innerHTML = `
-        <div class="fus-item-left">
-          <div class="fus-item-name">Unit ${u.u}</div>
-          <div class="fus-item-meta">${unitClass(u)} · ${u.s.toLocaleString()} sq ft</div>
-        </div>
-        <div class="fus-item-right">
-          <div class="fus-item-price">${priceOf(u) ? fmtAED(priceOf(u)) : 'Price on request'}</div>
-          <div class="fus-status-badge ${fusBadgeCls}">${status}</div>
-        </div>
-      `;
-      listContainer.appendChild(item);
+  renderUnitListSidebar(f);
+
+  const mkEl = (tag,attrs={}) => {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+    return el;
+  };
+
+  const rects = UNIT_RECTS[f] || [];
+  rects.forEach(r => {
+    // Translate percentage-based coordinates to SVG viewbox units (800 x 645)
+    const svg_x = r.x * 8.0;
+    const svg_y = r.y * 6.45;
+    const svg_w = r.w * 8.0;
+    const svg_h = r.h * 6.45;
+
+    // Center coordinates for detail line connectors and labels
+    const tx = svg_x + svg_w / 2;
+    const ty = svg_y + svg_h / 2;
+
+    // Find the unit in inventory database matching this rectangle's ID
+    const unit = DATA.units.find(u => String(u.u) === String(r.id));
+    const unitStatus = unit ? statusOf(unit).toLowerCase().replace(' ', '-') : 'unknown';
+
+    // Interactive unit path element
+    const path = mkEl('rect', {
+      x: svg_x.toFixed(1),
+      y: svg_y.toFixed(1),
+      width: svg_w.toFixed(1),
+      height: svg_h.toFixed(1),
+      rx: 4,
+      id: `svg-unit-${r.id}`
     });
-  }
 
-  const ratio = INSET[f];
-  const pxScale = 350 / (30.5 * ratio); // outer boundaries map to 350px
-  const cx = 400, cy = 400;
+    path.setAttribute('fill', 'transparent');
+    path.style.cursor = 'pointer';
+    path.classList.add('unit-path', `status-${unitStatus}`);
 
-  const isTop = f >= 6;
-  const ah = isTop ? A_HALF * 0.62 : A_HALF;
-  const Atot = fu.reduce((s, u) => s + u.s, 0);
-  const Rin = ah + 1.2;
-  const Rout = 30.5 * ratio - 1.2;
-  let acc = -Math.PI / 2;
-
-  fu.forEach(u => {
-    const customPoints = (UNIT_POLYGONS[f] && UNIT_POLYGONS[f][u.u]) ? UNIT_POLYGONS[f][u.u] : null;
-
-    let pathData = "";
-    let tx = 0, ty = 0;
-
-    if (customPoints && customPoints.length > 0) {
-      // Use hand-drawn coordinates from floor plan tracing
-      pathData = 'M ' + customPoints.map(p => `${p[0]} ${p[1]}`).join(' L ') + ' Z';
-      
-      // Compute polygon centroid for perfect label & floating line anchoring
-      let sumX = 0, sumY = 0;
-      customPoints.forEach(p => {
-        sumX += p[0];
-        sumY += p[1];
-      });
-      tx = sumX / customPoints.length;
-      ty = sumY / customPoints.length;
-      
-      // Increment accumulator angle to maintain fallback layout consistency if needed
-      const span = (u.s / Atot) * Math.PI * 2;
-      acc += span;
-    } else {
-      // Fallback: Generate mathematical sector ring wedge proportional to sq ft area
-      const span = (u.s / Atot) * Math.PI * 2;
-      const a0 = acc + span * 0.05;
-      const a1 = acc + span * 0.95;
-      acc += span;
-
-      const pts = [];
-      const steps = 16;
-      for (let j = 0; j <= steps; j++) {
-        const theta = a0 + (a1 - a0) * (j / steps);
-        const x = Rout * Math.cos(theta);
-        const z = Rout * Math.sin(theta);
-        pts.push({ x: cx + x * pxScale, y: cy + z * pxScale });
-      }
-      for (let j = steps; j >= 0; j--) {
-        const theta = a0 + (a1 - a0) * (j / steps);
-        const x = Rin * Math.cos(theta);
-        const z = Rin * Math.sin(theta);
-        pts.push({ x: cx + x * pxScale, y: cy + z * pxScale });
-      }
-
-      pathData = 'M ' + pts.map(p => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ') + ' Z';
-
-      const midAng = (a0 + a1) / 2;
-      const midR = (Rin + Rout) / 2;
-      tx = cx + midR * Math.cos(midAng) * pxScale;
-      ty = cy + midR * Math.sin(midAng) * pxScale;
-    }
-
-    const status = statusOf(u);
-    const sCls = statusClass(status);
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', pathData);
-    path.setAttribute('class', `unit-path ${sCls}`);
-    path.setAttribute('id', `svg-unit-${u.u}`);
-
-    path.onclick = (e) => {
+    path.onclick = e => {
       e.stopPropagation();
-      openUnitDetail(u);
+      if (unit) {
+        selectFloorUnit(unit, tx, ty);
+      }
     };
-
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', tx.toFixed(1));
-    text.setAttribute('y', ty.toFixed(1));
-    text.setAttribute('class', 'unit-text');
-    text.setAttribute('dominant-baseline', 'middle');
-    text.setAttribute('text-anchor', 'middle');
-    text.textContent = u.u;
-
     svgSectors.appendChild(path);
-    svgSectors.appendChild(text);
+
+    // Render small dark pill badge and white unit label overlay if unit exists in database
+    if (unit) {
+      const badgeW = r.id.length * 7 + 12;
+      const badgeH = 16;
+      const badgeX = tx - badgeW / 2;
+      const badgeY = ty - badgeH / 2;
+
+      const badge = mkEl('rect', {
+        x: badgeX.toFixed(1),
+        y: badgeY.toFixed(1),
+        width: badgeW,
+        height: badgeH,
+        rx: 8,
+        fill: 'rgba(20, 20, 20, 0.85)',
+        'pointer-events': 'none'
+      });
+      svgSectors.appendChild(badge);
+
+      const lbl = mkEl('text', {
+        x: tx.toFixed(1),
+        y: (ty + 0.5).toFixed(1),
+        'text-anchor': 'middle',
+        'dominant-baseline': 'middle',
+        'font-family': "'Inter', 'Helvetica Neue', sans-serif",
+        'font-size': 9,
+        'font-weight': 700,
+        fill: '#ffffff',
+        'pointer-events': 'none'
+      });
+      lbl.textContent = r.id;
+      svgSectors.appendChild(lbl);
+    }
   });
 }
 
@@ -4990,17 +5481,22 @@ function selectFloorUnit(u, tx, ty) {
 
   // Float card on the left side of the blueprint layout
   const card = document.getElementById('unitDetailCard');
-  card.style.left = '40px';
-  card.style.top = '260px';
+  card.style.left = '30px';
+  card.style.top = '360px';
   card.classList.add('show');
+
+  // Bind View Unit button to open unit details modal
+  document.getElementById('udcViewBtn').onclick = () => {
+    openUnitDetail(u);
+  };
 
   // Draw glowing curved connector line in SVG space
   const svgConnector = document.getElementById('svgConnectorGroup');
   svgConnector.innerHTML = '';
 
-  // Card anchor point is at x=220 (right edge of the 20px offset card), y=380
-  const cx = 220;
-  const cy = 380;
+  // Card anchor point is at x=260 (right edge of the 30px offset card), y=480
+  const cx = 260;
+  const cy = 480;
 
   const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   // Draw premium organic bezier curve from unit center to card anchor
@@ -5030,18 +5526,29 @@ function selectFloorUnit(u, tx, ty) {
 function renderFloorRightSlider(selectedFloor) {
   const sidebar = document.getElementById('floorRightSidebar');
   sidebar.innerHTML = '';
-  for (let f = 7; f >= 1; f--) {
+  for (let f = 8; f >= 1; f--) {
     const item = document.createElement('div');
     item.className = 'frs-item' + (f === selectedFloor ? ' active' : '');
-    item.textContent = f === 1 ? 'G' : '0' + f;
+    item.textContent = f === 1 ? 'G' : (f === 2 ? '01' : '0' + (f - 1));
     item.onclick = () => {
-      playFloorSelectionCinematic(f);
+      if (S.selected !== null) {
+        if (S.selected === f) {
+          clearSelection();
+        } else {
+          selectFloor(f);
+        }
+      } else {
+        playFloorSelectionCinematic(f);
+      }
     };
     sidebar.appendChild(item);
   }
 }
 
 function playFloorSelectionCinematic(f) {
+  // Close mobile floor selection dropdown menu if open
+  document.getElementById('rail').classList.remove('open');
+
   // If clicking the same floor that is already active, deselect it and return to main 3D Site view!
   if (S.selected === f) {
     clearSelection();
@@ -5066,6 +5573,9 @@ function playFloorSelectionCinematic(f) {
   
   // Instantly apply the golden selection visual state (glow slab immediately)
   applySelection();
+  
+  // Instantly trigger lift rise to the target floor during transition
+  liftTargetY = BASE_Y[f] + FH[f] / 2;
   
   // Cinematic camera views list
   const y = BASE_Y[f] + FH[f] * 0.5;
@@ -5108,7 +5618,7 @@ function selectFloor(f){
   document.body.classList.add('floor-view-active');
 
   // Update left branding sidebar stats
-  document.getElementById('flsFloorNum').textContent = f === 1 ? 'GROUND' : 'LEVEL 0' + f;
+  document.getElementById('flsFloorNum').textContent = f === 1 ? 'GROUND' : (f === 2 ? 'LEVEL 01' : 'LEVEL 0' + (f - 1));
   const fl = DATA.floors[f];
   document.getElementById('flsUnits').textContent = fl.units;
   document.getElementById('flsArea').textContent = fl.suite.toLocaleString() + ' sq ft';
@@ -5136,6 +5646,7 @@ function selectFloor(f){
     dur: 1.25,
     onEnd: () => {
       controls.enableRotate = false; // lock rotation in floor view
+      // openPlans(f);
     }
   };
 
@@ -5427,9 +5938,9 @@ document.getElementById('blueprintSvg').addEventListener('click', (e) => {
   const svg = document.getElementById('blueprintSvg');
   const rect = svg.getBoundingClientRect();
   
-  // Calculate exact coordinates in 800x800 coordinate box
+  // Calculate exact coordinates in 800x645 coordinate box
   const x = Math.round(((e.clientX - rect.left) / rect.width) * 800);
-  const y = Math.round(((e.clientY - rect.top) / rect.height) * 800);
+  const y = Math.round(((e.clientY - rect.top) / rect.height) * 645);
   
   tracePoints.push([x, y]);
   
@@ -5516,7 +6027,7 @@ function openUnitDetail(u){
   
   // 2. Quick stats chips
   document.getElementById('umChipArea').textContent = u.s.toLocaleString() + ' sqft';
-  document.getElementById('umChipLevel').textContent = u.f === 1 ? 'Ground' : 'Level 0' + u.f;
+  document.getElementById('umChipLevel').textContent = u.f === 1 ? 'Ground' : (u.f === 2 ? 'Level 01' : 'Level 0' + (u.f - 1));
   document.getElementById('umChipAspect').textContent = aspectOf(u);
   document.getElementById('umChipStatus').innerHTML = `<span class="um-status-dot">●</span> ${statusOf(u)}`;
   
@@ -5527,7 +6038,7 @@ function openUnitDetail(u){
   // 4. Specs Grid
   const W=Math.round(Math.sqrt(u.s/1.4)), L=Math.round(W*1.4);
   const specs = [
-    ['Level', u.u + ' · ' + (u.f === 1 ? 'Ground (G+1)' : 'Level ' + u.f), `<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg>`],
+    ['Level', u.u + ' · ' + (u.f === 1 ? 'Ground (G+1)' : (u.f === 2 ? 'Level 01' : 'Level 0' + (u.f - 1))), `<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg>`],
     ['Unit Type', unitClass(u), `<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>`],
     ['Built-up Area', u.s.toLocaleString() + ' sqft', `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>`],
     ['Dimensions (approx)', `${W} × ${L} ft (${(W*0.3048).toFixed(1)} × ${(L*0.3048).toFixed(1)} m)`, `<svg viewBox="0 0 24 24"><path d="M5 3v18M19 3v18M5 12h14"/></svg>`],
@@ -5688,7 +6199,7 @@ document.getElementById('umOffer').onclick=()=>{closeModal('unitModal');buildOff
 
 /* ===== offer ===== */
 function buildOffer(u){
-  const P=priceOf(u), ref='AUR-'+(u.f===1?'G':'0'+u.f)+u.u+'-'+new Date().toISOString().slice(2,10).replace(/-/g,'');
+  const P=priceOf(u), ref='AUR-'+(u.f===1?'G':(u.f===2?'01':'0'+(u.f-1)))+u.u+'-'+new Date().toISOString().slice(2,10).replace(/-/g,'');
   const date=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
   const rows=PAYMENT_PLAN.map(p=>`<tr><td>${p.label}</td><td class="right">${p.pct}%</td><td class="right">${fmtAED(P*p.pct/100)}</td></tr>`).join('');
   const monthly=emi(P,20,6.5,25), below=((MKT_PSF-psfOf(u))/MKT_PSF*100);
@@ -5702,7 +6213,7 @@ function buildOffer(u){
    <h3>Unit details</h3>
    <table>
      <tr><th>Unit</th><th>Floor</th><th>Class</th><th>Aspect</th><th class="right">Built-up (sqft)</th><th class="right">Rate</th></tr>
-     <tr><td><b>${u.u}</b></td><td>${u.f===1?'Ground (G+1)':'Level '+u.f}</td><td>${unitClass(u)}</td><td>${aspectOf(u)}</td><td class="right">${u.s.toLocaleString()}</td><td class="right">${psfOf(u).toLocaleString()} /sqft</td></tr>
+     <tr><td><b>${u.u}</b></td><td>${u.f===1?'Ground (G+1)':(u.f===2?'Level 01':'Level '+(u.f-1))}</td><td>${unitClass(u)}</td><td>${aspectOf(u)}</td><td class="right">${u.s.toLocaleString()}</td><td class="right">${psfOf(u).toLocaleString()} /sqft</td></tr>
    </table>
    <h3>Price</h3>
    <table><tr><td>Total purchase price</td><td class="right big">${fmtAED(P)}</td></tr></table>
@@ -5752,7 +6263,7 @@ function buildInv(){
   DATA.units.filter(u=>invFilter==='all'||unitClass(u)===invFilter)
     .sort((a,b)=>a.f-b.f||a.u-b.u).forEach(u=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td><b>${u.u}</b></td><td>${u.f===1?'G':'0'+u.f}</td><td>${unitClass(u)}</td><td>${u.s.toLocaleString()}</td><td>${psfOf(u).toLocaleString()}</td><td class="pp">${fmtAED(priceOf(u))}</td><td><span class="tag">AVAILABLE</span></td>`;
+    tr.innerHTML=`<td><b>${u.u}</b></td><td>${u.f===1?'G':(u.f===2?'01':'0'+(u.f-1))}</td><td>${unitClass(u)}</td><td>${u.s.toLocaleString()}</td><td>${psfOf(u).toLocaleString()}</td><td class="pp">${fmtAED(priceOf(u))}</td><td><span class="tag">AVAILABLE</span></td>`;
     tr.onclick=()=>{closeModal('invModal');openUnitDetail(u);}; body.appendChild(tr);});
 }
 
@@ -5851,13 +6362,17 @@ document.getElementById('bInv').onclick=()=>{buildInv();document.getElementById(
 function openPlans(f){
   f=f||S.selected||1;
   const tabs=document.getElementById('fpTabs'); tabs.innerHTML='';
-  for(let i=7;i>=1;i--){const fl=DATA.floors[i];const t=document.createElement('div');t.className='fptab'+(i===f?' on':'');
-    t.innerHTML=(i===1?'GROUND':'LEVEL 0'+i)+'<b>'+fl.units+' units</b>'; t.onclick=()=>openPlans(i); tabs.appendChild(t);}
+  for(let i=8;i>=1;i--){const fl=DATA.floors[i];const t=document.createElement('div');t.className='fptab'+(i===f?' on':'');
+    t.innerHTML=(i===1?'GROUND':(i===2?'LEVEL 01':'LEVEL 0'+(i-1)))+'<b>'+fl.units+' units</b>'; t.onclick=()=>openPlans(i); tabs.appendChild(t);}
   document.getElementById('fpImg').src='aurum_assets/plan_view/floor_'+f+'.png';
   const fl=DATA.floors[f], side=document.getElementById('fpSide');
   const types=fl.types.map(t=>`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted)"><span>${t.name}</span><span>×${t.count}</span></div>`).join('');
+  const sampleUnit = DATA.units.find(u=>u.f===f) || DATA.units.find(u=>u.f===1);
+  const floorMinPrice = floorFrom(f);
+  const priceText = isFinite(floorMinPrice) ? (floorMinPrice/1e6).toFixed(2) + 'M' : 'N/A';
+  const psfText = sampleUnit ? psfOf(sampleUnit) : 'N/A';
   side.innerHTML=`<div class="fpstat"><div class="v">${fl.units}</div><div class="k">UNITS · ${FLOOR_NAMES[f].split('·')[0].trim()}</div></div>
-    <div class="fpstat"><div class="v g">${(floorFrom(f)/1e6).toFixed(2)}M</div><div class="k">FROM (AED) · ${psfOf(DATA.units.find(u=>u.f===f))} PSF</div></div>
+    <div class="fpstat"><div class="v g">${priceText}</div><div class="k">FROM (AED) · ${psfText} PSF</div></div>
     <div class="fpstat fptypes">${types}</div><div class="fpunits" id="fpUnits"></div>`;
   const u=document.getElementById('fpUnits');
   DATA.units.filter(x=>x.f===f).forEach(x=>{const d=document.createElement('div');d.className='u';d.textContent=x.u;d.onclick=()=>{closeModal('planModal');openUnitDetail(x);};u.appendChild(d);});
@@ -6083,8 +6598,17 @@ addEventListener('resize',()=>{
 /* ===== init ===== */
 document.getElementById('stGFA').textContent=(TOTAL_SQFT/1000).toFixed(0)+'K';
 document.getElementById('stGDV').textContent='AED '+(TOTAL_GDV/1e6).toFixed(0)+'M';
-camera.position.copy(VIEWS.orbit.pos); applySelection(); requestAnimationFrame(tick);
-setTimeout(()=>document.getElementById('load').classList.add('hide'),700);
+camera.position.copy(VIEWS.site.pos);
+controls.target.copy(VIEWS.site.tgt);
+camera.lookAt(controls.target);
+controls.update();
+applySelection();
+requestAnimationFrame(tick);
+setTimeout(()=>{
+  document.getElementById('load').classList.add('hide');
+  flyTo('orbit');
+  if (camTween) camTween.dur = 0.85; // Fast and smooth (0.85s duration)
+},100);
 
 
 /* POI Labels */
@@ -6143,6 +6667,57 @@ function updatePOILabels() {
     }
   });
 }
+
+/* Mobile Menu / Dropdown Toggle for Floor Selection */
+document.getElementById('menuBtn').onclick = (e) => {
+  if (window.innerWidth <= 768) {
+    e.stopPropagation();
+    const rail = document.getElementById('rail');
+    const isOpen = rail.classList.toggle('open');
+    if (isOpen) {
+      // Zoom out to fit the entire building in the view
+      const zoomFactor = 1.35;
+      camTween = {
+        fromP: camera.position.clone(),
+        toP: VIEWS.orbit.pos.clone().multiplyScalar(zoomFactor),
+        fromT: controls.target.clone(),
+        toT: VIEWS.orbit.tgt.clone(),
+        t: 0,
+        dur: 0.85
+      };
+    } else {
+      // Return to original orbit view
+      camTween = {
+        fromP: camera.position.clone(),
+        toP: VIEWS.orbit.pos.clone(),
+        fromT: controls.target.clone(),
+        toT: VIEWS.orbit.tgt.clone(),
+        t: 0,
+        dur: 0.85
+      };
+    }
+  }
+};
+
+/* Close mobile dropdown menu on click outside */
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768) {
+    const rail = document.getElementById('rail');
+    const menuBtn = document.getElementById('menuBtn');
+    if (rail && rail.classList.contains('open') && !rail.contains(e.target) && !menuBtn.contains(e.target)) {
+      rail.classList.remove('open');
+      // Zoom back to orbit
+      camTween = {
+        fromP: camera.position.clone(),
+        toP: VIEWS.orbit.pos.clone(),
+        fromT: controls.target.clone(),
+        toT: VIEWS.orbit.tgt.clone(),
+        t: 0,
+        dur: 0.85
+      };
+    }
+  }
+});
 
 /* live Dubai clock (intro + top bar) */
 function tickClock(){const d=new Date(),t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
