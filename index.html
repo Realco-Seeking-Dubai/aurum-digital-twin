@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AURUM · Digital Sales Twin · Al Sufouh, Dubai</title>
+<link rel="icon" type="image/png" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@300;400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -214,7 +215,7 @@
   .modal{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;
     background:rgba(2,6,14,.74);}
   .modal.show{display:flex}
-  .sheet{background:linear-gradient(160deg,#163f38,#0b211c);border:1px solid var(--line);border-radius:16px;
+  .sheet{background:#082a29 !important;border:1px solid rgba(201, 168, 120, 0.28) !important;border-radius:16px;
     width:min(960px,94vw);max-height:92vh;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.6);display:flex;flex-direction:column}
   .shead{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
   .shead h2{margin:0;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.02em}.shead h2 small{font-family:'Inter',sans-serif;color:var(--gold);font-size:10px;letter-spacing:.16em;display:block;margin-top:4px;font-weight:600}
@@ -382,7 +383,7 @@
   body.floor-view-active #dock {
     opacity: 1 !important;
     pointer-events: auto !important;
-    transform: translateY(0) !important;
+    transform: translateX(-50%) translateY(0) !important;
     z-index: 30 !important;
   }
   body.floor-view-active .ui:not(.floor-ui):not(#dock) {
@@ -417,7 +418,8 @@
   /* Left Sidebar Overlay */
   #floorLeftSidebar {
     left: 24px;
-    top: 24px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 290px;
     padding: 24px;
     display: flex;
@@ -753,13 +755,7 @@
   
   /* Top Stats Bar */
   #floorTopStats {
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    padding: 6px 16px;
-    gap: 4px;
+    display: none !important;
   }
   .fts-stat {
     display: flex;
@@ -851,7 +847,7 @@
   
   /* Bottom Interaction Guide Capsule */
   #floorBottomCapsule {
-    top: 86px;
+    top: 24px;
     bottom: auto;
     left: 50%;
     transform: translateX(-50%);
@@ -929,18 +925,19 @@
   }
   
   /* Fullscreen Blueprint Viewport */
+  #blueprintViewport, #blueprintCanvas {
+    background: #082a29 !important;
+  }
   #blueprintViewport {
     display: none;
     position: fixed;
     inset: 0;
     z-index: 24;
-    background: #082a29 !important;
     overflow: hidden;
     cursor: grab;
   }
   body.floor-view-active #blueprintViewport {
     display: block;
-    background: #082a29 !important;
   }
   #blueprintCanvas {
     position: absolute;
@@ -948,7 +945,6 @@
     height: 645px;
     transform-origin: center center;
     transition: transform 0.05s ease-out;
-    background: #082a29 !important;
     border-radius: 16px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     overflow: hidden;
@@ -1142,6 +1138,7 @@
       right: 10px;
       top: 10px;
       width: auto;
+      transform: none !important;
       padding: 14px;
       gap: 12px;
     }
@@ -1527,40 +1524,7 @@
       <g id="svgDevTraceGroup"></g>
     </svg>
 
-    <!-- Developer Blueprint Tracer Panel -->
-    <div id="devTracerPanel" class="glass-card">
-      <div class="dt-header">
-        <div class="dt-title">Blueprint Tracer DevTool</div>
-        <div class="dt-subtitle">Click corners on the plan to trace exact unit polygons</div>
-      </div>
-      <div class="dt-body">
-        <div class="dt-row">
-          <label>Target Unit:</label>
-          <select id="dtUnitSelect">
-            <option value="">-- Choose Unit --</option>
-          </select>
-        </div>
-        <div class="dt-row" style="margin-top:2px; display:flex; align-items:center; gap:8px;">
-          <label style="flex:1; font-size:11px;">Opacity:</label>
-          <input type="range" id="dtOpacitySlider" min="10" max="100" value="85" style="flex:2; accent-color:var(--gold); cursor:pointer;">
-          <span id="dtOpacityValue" style="min-width:32px; font-size:11px; text-align:right;">85%</span>
-        </div>
-        <div class="dt-row" style="margin-top:-2px; display:flex; align-items:center; gap:8px;">
-          <label style="flex:1; cursor:pointer; font-size:11px; display:flex; align-items:center; gap:6px;">
-            <input type="checkbox" id="dtInvertCheck" checked style="accent-color:var(--gold); cursor:pointer;">
-            Invert (Dark Mode)
-          </label>
-        </div>
-        <div class="dt-status" id="dtStatus">Select a unit to begin tracing...</div>
-        <div class="dt-points-list" id="dtPointsList">No points added yet. Click on the map to place vertices.</div>
-        <div class="dt-actions">
-          <button id="dtUndoBtn" class="dt-btn">Undo Point</button>
-          <button id="dtClearBtn" class="dt-btn">Clear All</button>
-          <button id="dtCopyBtn" class="dt-btn gold-btn">Copy JSON</button>
-        </div>
-        <textarea id="dtOutputJson" readonly placeholder="Output JSON will appear here..."></textarea>
-      </div>
-    </div>
+
     
     <div id="unitDetailCard" class="glass-card">
       <div class="udc-header">
@@ -1631,10 +1595,7 @@
   Back to Orbit
 </button>
 
-<button id="devTracerToggle" class="floor-ui">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-  Tracer DevTool
-</button>
+
 
 <div id="floorRightSidebar" class="floor-ui glass-card">
   <!-- Dynamic vertical floor buttons will be injected here -->
@@ -1711,6 +1672,146 @@
   </div>
 </div>
 <div class="g-attr">Imagery &copy; Google, Maxar, Airbus</div>
+
+<!-- MOBILE FLOOR PLAN VIEW OVERLAY -->
+<div id="mobileFloorView">
+  <!-- Top Navigation Bar -->
+  <div id="mfv-topbar">
+    <button id="mfv-back-btn">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Orbit
+    </button>
+    <div id="mfv-title-block">
+      <div id="mfv-level-label">Level 04</div>
+      <div id="mfv-floor-type">Commercial Floor <span id="mfv-status-dot" class="mfv-dot"></span></div>
+    </div>
+    <button id="mfv-doc-btn">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </button>
+  </div>
+
+  <!-- Stats Row -->
+  <div id="mfv-stats-row">
+    <div class="mfv-stat-cell">
+      <div class="mfv-stat-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+      </div>
+      <div class="mfv-stat-info">
+        <span id="mfv-units-val">22</span>
+        <span class="mfv-stat-label">UNITS</span>
+      </div>
+    </div>
+    <div class="mfv-stat-cell">
+      <div class="mfv-stat-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+      </div>
+      <div class="mfv-stat-info">
+        <span id="mfv-area-val" class="mfv-gold">18,524 sq ft</span>
+        <span class="mfv-stat-label">TOTAL AREA</span>
+      </div>
+    </div>
+    <div class="mfv-stat-divider"></div>
+    <div class="mfv-availability-grid">
+      <div class="mfv-avail-item">
+        <span id="mfv-avail-count" class="mfv-count-available">4</span>
+        <span class="mfv-avail-label mfv-label-available">AVAILABLE</span>
+      </div>
+      <div class="mfv-avail-item">
+        <span id="mfv-reserved-count" class="mfv-count-reserved">3</span>
+        <span class="mfv-avail-label mfv-label-reserved">RESERVED</span>
+      </div>
+      <div class="mfv-avail-item">
+        <span id="mfv-sold-count" class="mfv-count-sold">2</span>
+        <span class="mfv-avail-label mfv-label-sold">SOLD</span>
+      </div>
+      <div class="mfv-avail-item">
+        <span id="mfv-onhold-count" class="mfv-count-onhold">0</span>
+        <span class="mfv-avail-label mfv-label-onhold">ON HOLD</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floor Plan Canvas Area -->
+  <div id="mfv-canvas-wrap">
+    <!-- Reuse the existing blueprint viewport inside this container via CSS -->
+    <div id="mfv-canvas-placeholder"></div>
+    <!-- Zoom controls top-left -->
+    <div id="mfv-map-controls">
+      <button class="mfv-ctrl-btn mfv-ctrl-3d" id="mfv3dBtn">3D</button>
+      <div class="mfv-ctrl-divider"></div>
+      <button class="mfv-ctrl-btn" id="mfvZoomIn">+</button>
+      <button class="mfv-ctrl-btn" id="mfvZoomOut">−</button>
+      <button class="mfv-ctrl-btn mfv-compass-icon" id="mfvCompass">⊕</button>
+    </div>
+    <!-- Compass arrow bottom right -->
+    <div id="mfv-compass-arrow">
+      <div class="mfv-compass-n">N</div>
+      <svg viewBox="0 0 24 24" width="28" height="28">
+        <polygon points="12,2 16,14 12,11 8,14" fill="#c9a878"/>
+        <polygon points="12,22 16,10 12,13 8,10" fill="rgba(201,168,120,0.35)"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Bottom Panel: Level Inventory + Floor Tabs -->
+  <div id="mfv-bottom-panel">
+    <!-- Level Inventory -->
+    <div id="mfv-inventory-wrap">
+      <div id="mfv-inventory-header">
+        <div>
+          <div id="mfv-inventory-title">Level Inventory</div>
+          <div id="mfv-inventory-sub">Select a unit to view details</div>
+        </div>
+        <button id="mfv-menu-btn">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+        </button>
+      </div>
+      <div id="mfv-unit-list">
+        <!-- Populated by JS -->
+      </div>
+      <!-- Legend -->
+      <div id="mfv-legend">
+        <div class="mfv-legend-item"><span class="mfv-dot-sm mfv-dot-available"></span> Available</div>
+        <div class="mfv-legend-item"><span class="mfv-dot-sm mfv-dot-reserved"></span> Reserved</div>
+        <div class="mfv-legend-item"><span class="mfv-dot-sm mfv-dot-sold"></span> Sold</div>
+        <div class="mfv-legend-item"><span class="mfv-dot-sm mfv-dot-onhold"></span> On Hold</div>
+      </div>
+    </div>
+
+    <!-- Right: Floor Tabs -->
+    <div id="mfv-floor-tabs">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Bottom Dock Navigation -->
+  <div id="mfv-dock">
+    <button class="mfv-dock-btn" data-view="orbit">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <span>Orbit</span>
+    </button>
+    <button class="mfv-dock-btn" data-view="street">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+      <span>Entrance</span>
+    </button>
+    <button class="mfv-dock-btn" data-view="parking">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 16V8h3a3 3 0 010 6H9"/></svg>
+      <span>Parking</span>
+    </button>
+    <button class="mfv-dock-btn" id="mfvLocBtn">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+      <span>Location</span>
+    </button>
+    <button class="mfv-dock-btn mfv-dock-active" id="mfvStructureBtn">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M6 3v18M12 3v18M18 3v18M4 3h16M4 21h16"/></svg>
+      <span>Structure</span>
+    </button>
+    <button class="mfv-dock-btn" id="mfvMoreBtn">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>
+      <span>More</span>
+    </button>
+  </div>
+</div>
 <div id="neon">
   <div class="ncard" style="left:84%;top:84%;animation-duration:30s;animation-delay:3s"><div class="k">HANDOVER</div><div class="v g">SEPTEMBER 2026</div></div>
   <div class="ncard" style="left:7%;top:90%;animation-duration:34s;animation-delay:13s"><div class="k">PAYMENT PLAN</div><div class="v c">20% · 80% / 4 MO</div></div>
@@ -1775,30 +1876,40 @@
 </div>
 
 <div id="leftSidebar" class="ui">
-  <div id="buildingInfo">
-    <div class="bi-title">AURUM BUILDING</div>
-    <div class="bi-sub">Redefining commercial excellence<br>in Al Sufouh 1, Dubai.</div>
-    <table class="bi-table">
-      <tr><td><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg> Location</td><td>Al Sufouh 1, Dubai</td></tr>
-      <tr><td><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 20v-8h6v8M9 4v4h6V4"/></svg> Building Type</td><td>Commercial</td></tr>
-      <tr><td><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg> Structure</td><td>B + G + 7 Floors</td></tr>
-      <tr><td><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> Total Units</td><td>114</td></tr>
-      <tr><td><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 12h16M12 4v16"/></svg> Saleable Area</td><td>168,000 sqft</td></tr>
-      <tr><td><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg> GDV</td><td>AED 406M</td></tr>
-      <tr><td><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Handover</td><td>September 2026</td></tr>
-    </table>
-    <button id="exploreBtn">Explore Building <span>→</span></button>
-  </div>
-
-  <div id="keyHighlights">
-    <div class="kh-title">KEY HIGHLIGHTS</div>
-    <div class="kh-grid">
-      <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg></div>Prime Location<br>Al Sufouh 1</div>
-      <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg></div>Modern<br>Architecture</div>
-      <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>Flexible Unit<br>Layouts</div>
-      <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>High Visibility &<br>Accessibility</div>
-      <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 16V8h3a3 3 0 010 6H9"/></svg></div>Ample Parking<br>Spaces</div>
-      <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Sustainable<br>Design</div>
+  <div id="unifiedBuildingCard" class="glass-card">
+    <div class="ubc-header">
+      <div>
+        <div class="ubc-title">AURUM BUILDING</div>
+        <div class="ubc-sub">Commercial · Al Sufouh 1, Dubai</div>
+      </div>
+      <div class="ubc-toggle-btn">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    
+    <div class="ubc-content">
+      <div class="ubc-intro">Redefining commercial excellence in Al Sufouh 1, Dubai.</div>
+      <table class="bi-table">
+        <tr><td><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg> Location</td><td>Al Sufouh 1, Dubai</td></tr>
+        <tr><td><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 20v-8h6v8M9 4v4h6V4"/></svg> Building Type</td><td>Commercial</td></tr>
+        <tr><td><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg> Structure</td><td>B + G + 7 Floors</td></tr>
+        <tr><td><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> Total Units</td><td>114</td></tr>
+        <tr><td><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 12h16M12 4v16"/></svg> Saleable Area</td><td>168,000 sqft</td></tr>
+        <tr><td><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg> GDV</td><td>AED 406M</td></tr>
+        <tr><td><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Handover</td><td>September 2026</td></tr>
+      </table>
+      
+      <div class="ubc-divider"></div>
+      
+      <div class="kh-title">KEY HIGHLIGHTS</div>
+      <div class="kh-grid">
+        <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg></div>Prime Location<br>Al Sufouh 1</div>
+        <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg></div>Modern<br>Architecture</div>
+        <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>Flexible Unit<br>Layouts</div>
+        <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>High Visibility &<br>Accessibility</div>
+        <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 16V8h3a3 3 0 010 6H9"/></svg></div>Ample Parking<br>Spaces</div>
+        <div class="kh-item"><div class="kh-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Sustainable<br>Design</div>
+      </div>
     </div>
   </div>
 </div>
@@ -1861,205 +1972,251 @@
 
 <!-- UNIT MODAL -->
 <div class="modal" id="unitModal">
-  <div class="sheet" style="width:min(1140px,96vw); max-height:92vh; display:flex; flex-direction:column;">
-    <div class="shead">
-      <h2>Unit Details<small id="umHeroUnitSub">FULL-FLOOR SUITE • LEVEL 07</small></h2>
-      <div style="display:flex; align-items:center; gap:16px;">
-        <button class="um-nav-meeting" id="umNavMeetingBtn" style="padding: 6px 14px; font-size: 10px; border-radius: 16px; margin: 0; display: flex; align-items: center; gap: 6px; height: 32px; border: 1px solid var(--gold); color: var(--gold); background: rgba(201,168,120,0.05);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          BOOK A MEETING
-        </button>
-        <div class="x" data-close="unitModal">×</div>
-      </div>
-    </div>
-    <div class="sbody" style="padding:16px 20px; overflow:auto; display:flex; flex-direction:column; gap:16px;">
-      <div class="um-container">
-    <!-- Left Column: Workspace & Architectural Plan -->
-    <div class="um-left-panel">
-      <div class="um-nav-links" style="display:flex;gap:24px;align-items:center;">
-        <div class="um-back-link" data-close="unitModal" style="margin:0;">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  <div class="sheet" style="width:100vw !important; height:100vh !important; max-width:none !important; max-height:none !important; border-radius:0 !important; border:none !important; background:#082a29 !important; display:flex; flex-direction:column; margin:0 !important;">
+    <!-- Top Navigation Bar -->
+    <div class="um-navbar" style="height:64px; flex-shrink:0; display:flex; justify-content:space-between; align-items:center; padding:0 24px; border-bottom:1px solid var(--line); background:rgba(8, 42, 41, 0.95); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); z-index:10;">
+      <div style="display:flex; align-items:center;">
+        <div class="um-back-link-btn" data-close="unitModal" style="display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--muted); font-size:13px; font-weight:500; transition:0.2s;">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
           Back to Units
         </div>
-        <div style="color:rgba(201,168,120,0.3);font-size:12px;">|</div>
-        <div class="um-back-link" id="umBackToOrbitLink" style="margin:0;">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-          Back to Orbit
-        </div>
+        <span style="font-size:18px; font-weight:600; color:#fff; margin-left:24px;">Unit Details</span>
       </div>
-      
-      <div class="um-hero-title">
-        <h1 id="umHeroUnitName">Unit 703</h1>
-        <div class="um-hero-subtitle" id="umHeroUnitSub">FULL-FLOOR SUITE • LEVEL 07</div>
-      </div>
-      
-      <!-- Horizontal Quick Stats Chips -->
-      <div class="um-stats-chips">
-        <div class="um-chip">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
-          <div class="um-chip-body">
-            <span class="v" id="umChipArea">4,299 sqft</span>
-            <span class="k">TOTAL AREA</span>
-          </div>
-        </div>
-        <div class="um-chip">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg>
-          <div class="um-chip-body">
-            <span class="v" id="umChipLevel">Level 07</span>
-            <span class="k">FLOOR</span>
-          </div>
-        </div>
-        <div class="um-chip">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-          <div class="um-chip-body">
-            <span class="v" id="umChipAspect">External Facing</span>
-            <span class="k">ASPECT</span>
-          </div>
-        </div>
-        <div class="um-chip">
-          <div class="um-chip-body">
-            <span class="v status-available-color" id="umChipStatus"><span class="um-status-dot">●</span> Available</span>
-            <span class="k">STATUS</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Center drawing canvas container -->
-      <div class="um-canvas-card">
-        <!-- Floating zoom/reset/3D panel on the left inside the card -->
-        <div class="um-canvas-controls">
-          <button class="ctrl" id="umZoomIn" title="Zoom In">+</button>
-          <button class="ctrl" id="umZoomOut" title="Zoom Out">−</button>
-          <button class="ctrl" id="umZoomReset" title="Reset View">⛶</button>
-          <button class="ctrl active" id="umBtn3D" title="Toggle 3D View">3D</button>
-        </div>
-        
-        <div class="um-canvas-draw" id="umDrawingContainer">
-          <img id="umPlan" class="luxury-blueprint-img" alt="Architectural Plan" src="">
-          <div id="umInteractiveFitout" style="display:none;width:100%;height:100%;"></div>
-        </div>
-        
-        <!-- Compass North Arrow Indicator -->
-        <div class="um-compass-indicator">
-          <svg viewBox="0 0 24 24" width="36" height="36"><polygon points="18 2 21 12 18 22 15 12 18 2"/><polygon fill="#c9a878" points="18 2 21 12 18 12 18 2"/><text x="18" y="2" font-size="8" fill="#fff" font-weight="bold" text-anchor="middle">N</text></svg>
-        </div>
-      </div>
-      
-      <!-- Multi-tab blueprint switcher -->
-      <div class="um-blueprint-tabs">
-        <div class="um-tab active" id="tabPlan">FLOOR PLAN</div>
-        <div class="um-tab" id="tabFurnished">FURNISHED LAYOUT</div>
-        <div class="um-tab" id="tabShell">SHELL LAYOUT</div>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <button class="um-nav-meeting-btn" id="umNavMeetingBtn" style="background:#e8c266; color:#1a1205; font-size:11px; font-weight:700; letter-spacing:0.04em; padding:8px 18px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; transition:0.2s; box-shadow:0 4px 12px rgba(232,194,102,0.2);">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Book a Meeting
+        </button>
+        <button style="background:transparent; border:1px solid rgba(255,255,255,0.15); width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="x" data-close="unitModal" style="font-size:24px; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; width:36px; height:36px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; line-height:36px; text-align:center;">×</div>
       </div>
     </div>
     
-    <!-- Right Column: Specs, Sliders, Investment Overview -->
-    <div class="um-right-panel">
-      <!-- Total Price Card -->
-      <div class="um-price-card">
-        <div class="um-price-details">
-          <span class="k">TOTAL PRICE</span>
-          <span class="v" id="umPriceReadout">AED 10,102,650</span>
-          <span class="rate" id="umRateReadout">AED 2,350 / sqft</span>
+    <!-- Three Column Workspace -->
+    <div class="um-workspace" style="display:flex; flex:1; min-height:0; width:100%;">
+      <!-- Column 1: Left Branding Sidebar -->
+      <div class="um-left-sidebar" style="width:260px; border-right:1px solid var(--line); padding:24px; display:flex; flex-direction:column; flex-shrink:0; background:rgba(8, 42, 41, 0.45); overflow-y:auto;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+          <div style="width:36px; height:36px; border:1px solid var(--gold); border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03);">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--gold)" fill="none" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--serif); font-weight:700; letter-spacing:0.2em; font-size:18px; color:var(--gold);">AURUM</div>
+            <div style="font-size:10px; letter-spacing:0.1em; color:var(--gold); margin-top:-2px;">by Meteora</div>
+          </div>
         </div>
-        <div class="um-status-pill green-pill">● AVAILABLE</div>
+        <div style="font-size:11px; letter-spacing:0.05em; color:var(--muted); margin-bottom:24px;">AL SUFOUH 1, DUBAI<br><span style="color:#fff;">Commercial · G+7 Floors</span></div>
+        
+        <div id="umLeftFloorName" style="font-family:var(--serif); font-size:24px; color:#fff; font-weight:700; margin-bottom:2px;">LEVEL 01</div>
+        <div style="font-size:11px; color:var(--muted); margin-bottom:20px;">Commercial Floor</div>
+        
+        <table class="bi-table" style="width:100%; border-collapse:collapse; margin-bottom:24px;">
+          <tr style="border-bottom:1px solid var(--line);">
+            <td style="padding:10px 0; font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px;">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+              Units
+            </td>
+            <td id="umLeftUnits" style="padding:10px 0; font-size:11px; text-align:right; color:#fff; font-weight:700;">14</td>
+          </tr>
+          <tr style="border-bottom:none;">
+            <td style="padding:10px 0; font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px;">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+              Total Area
+            </td>
+            <td id="umLeftArea" style="padding:10px 0; font-size:11px; text-align:right; color:#fff; font-weight:700;">35,330 sq ft</td>
+          </tr>
+        </table>
+        
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:#fff; margin-bottom:12px; text-transform:uppercase;">LEGEND</div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px; font-size:11px;">
+          <div style="display:flex; align-items:center; gap:8px;"><span style="color:#4fe090;">●</span> Available</div>
+          <div style="display:flex; align-items:center; gap:8px;"><span style="color:#c9a878;">●</span> Reserved</div>
+          <div style="display:flex; align-items:center; gap:8px;"><span style="color:#ff5e5e;">●</span> Sold</div>
+          <div style="display:flex; align-items:center; gap:8px;"><span style="color:#b38eff;">●</span> On Hold</div>
+        </div>
+        
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:#fff; margin-bottom:12px; text-transform:uppercase;">FLOORS</div>
+        <div class="um-left-floors-grid" id="umLeftFloorsGrid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:24px;">
+          <!-- Populated dynamically -->
+        </div>
+        
+        <!-- Promo Brochure Card -->
+        <div class="um-promo-card" style="margin-top:auto; background:var(--glass); border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+          <img src="aurum_assets/building_render_front.jpg" style="width:100%; height:90px; object-fit:cover; border-radius:8px;" alt="Promo">
+          <div style="font-size:11px; font-weight:700; color:#fff;">Premium Commercial Spaces</div>
+          <div style="font-size:9px; color:var(--muted); line-height:1.3;">Designed for success. Built for the future.</div>
+          <button class="um-brochure-btn" style="width:100%; height:32px; border-radius:16px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:10px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Download Brochure
+          </button>
+        </div>
       </div>
       
-      <!-- Unit Details Specs Card -->
-      <div class="um-specs-card">
-        <div class="um-card-title">UNIT DETAILS</div>
-        <div class="um-specs-grid" id="umSpecsList">
-          <!-- Dynamically populated rows with level, type, area, aspect, status -->
+      <!-- Column 2: Center Content Area -->
+      <div class="um-center-content" style="flex:1; padding:24px; display:flex; flex-direction:column; gap:16px; min-width:0; overflow-y:auto;">
+        <!-- Top Stats Row -->
+        <div class="um-stats-chips" style="display:flex; gap:16px;">
+          <div class="um-chip" style="display:flex; align-items:center; gap:12px; background:var(--glass); border:1px solid var(--line); border-radius:12px; padding:12px 18px; flex:1;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+            <div class="um-chip-body">
+              <span class="v" id="umChipArea" style="font-size:13px; font-weight:700; color:#fff;">2,908 sqft</span>
+              <span class="k" style="font-size:8px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; display:block;">TOTAL AREA</span>
+            </div>
+          </div>
+          <div class="um-chip" style="display:flex; align-items:center; gap:12px; background:var(--glass); border:1px solid var(--line); border-radius:12px; padding:12px 18px; flex:1;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg>
+            <div class="um-chip-body">
+              <span class="v" id="umChipLevel" style="font-size:13px; font-weight:700; color:#fff;">Level 01</span>
+              <span class="k" style="font-size:8px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; display:block;">FLOOR</span>
+            </div>
+          </div>
+          <div class="um-chip" style="display:flex; align-items:center; gap:12px; background:var(--glass); border:1px solid var(--line); border-radius:12px; padding:12px 18px; flex:1;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            <div class="um-chip-body">
+              <span class="v" id="umChipAspect" style="font-size:13px; font-weight:700; color:#fff;">External facing</span>
+              <span class="k" style="font-size:8px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; display:block;">ASPECT</span>
+            </div>
+          </div>
+          <div class="um-chip" style="display:flex; align-items:center; gap:12px; background:var(--glass); border:1px solid var(--line); border-radius:12px; padding:12px 18px; flex:1;">
+            <div class="um-chip-body" style="padding-left:8px;">
+              <span class="v status-available-color" id="umChipStatus" style="font-size:13px; font-weight:700; color:#4fe090;"><span class="um-status-dot">●</span> Available</span>
+              <span class="k" style="font-size:8px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; display:block;">STATUS</span>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <!-- Two-column Calculators Card -->
-      <div class="um-calc-card">
-        <div class="um-calc-grid">
-          <!-- Left Column: Investment Yield ROI -->
-          <div class="um-calc-col">
-            <div class="um-card-title">INVESTMENT OVERVIEW</div>
-            <div class="um-yield-block">
-              <div class="um-yield-box">
-                <span class="val" id="roiLow">11.9%</span>
-                <span class="lbl">@ 280 AED/sqft</span>
-                <span class="sub">RENTAL YIELD (LOW)</span>
-              </div>
-              <div class="um-yield-box">
-                <span class="val" id="roiHigh">14.9%</span>
-                <span class="lbl">@ 350 AED/sqft</span>
-                <span class="sub">RENTAL YIELD (HIGH)</span>
-              </div>
-            </div>
-            <div class="um-rent-range-box">
-              <span class="k">ANNUAL RENT RANGE</span>
-              <span class="v" id="rentRange">AED 1,203,720 – AED 1,504,650</span>
-            </div>
+        
+        <!-- Canvas Card -->
+        <div class="um-canvas-card" style="position:relative; flex:1; min-height:520px; background:#082a29; border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 30px rgba(0,0,0,0.8);">
+          <!-- Floating zoom controls in bottom-left -->
+          <div class="um-canvas-controls" style="position:absolute; left:20px; bottom:20px; display:flex; gap:8px; z-index:5;">
+            <button class="ctrl" id="umZoomIn" title="Zoom In" style="width:36px; height:36px; border-radius:8px; border:1px solid rgba(201,168,120,0.25); background:rgba(3,7,8,0.85); color:#fff; font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
+            <button class="ctrl" id="umZoomOut" title="Zoom Out" style="width:36px; height:36px; border-radius:8px; border:1px solid rgba(201,168,120,0.25); background:rgba(3,7,8,0.85); color:#fff; font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center;">−</button>
+            <button class="ctrl" id="umZoomReset" title="Reset View" style="width:36px; height:36px; border-radius:8px; border:1px solid rgba(201,168,120,0.25); background:rgba(3,7,8,0.85); color:#fff; font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center;">⛶</button>
+            <button class="ctrl" id="umBtn3D" title="Toggle 3D View" style="width:36px; height:36px; border-radius:8px; border:1px solid rgba(201,168,120,0.25); background:rgba(3,7,8,0.85); color:#fff; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center;">3D</button>
           </div>
           
-          <!-- Right Column: Mortgage Slider EMI Calculator -->
-          <div class="um-calc-col border-left">
-            <div class="um-card-title">MORTGAGE / EMI CALCULATOR</div>
-            <div class="um-slider-group">
-              <div class="um-slider-item">
-                <div class="um-slider-header">
-                  <label>Down Payment</label>
-                  <span id="valDown">20%</span>
-                </div>
-                <input id="cDown" type="range" min="5" max="80" step="5" value="20" class="um-range-slider">
-              </div>
-              <div class="um-slider-item">
-                <div class="um-slider-header">
-                  <label>Interest Rate p.a.</label>
-                  <span id="valRate">6.5%</span>
-                </div>
-                <input id="cRate" type="range" min="1" max="15" step="0.1" value="6.5" class="um-range-slider">
-              </div>
-              <div class="um-slider-item">
-                <div class="um-slider-header">
-                  <label>Tenure (years)</label>
-                  <span id="valYears">25 Years</span>
-                </div>
-                <input id="cYears" type="range" min="5" max="30" step="1" value="25" class="um-range-slider">
-              </div>
-            </div>
-            <div class="um-emi-result">
-              <span class="k">MONTHLY EMI</span>
-              <span class="v" id="cEmi">AED 54,571 /mo</span>
-            </div>
+          <div class="um-canvas-draw" id="umDrawingContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:24px;">
+            <img id="umPlan" class="luxury-blueprint-img" alt="Architectural Plan" src="" style="width:100%; height:100%; object-fit:contain; filter:none; pointer-events:none;">
+            <div id="umInteractiveFitout" style="display:none; width:100%; height:100%;"></div>
           </div>
+          
+          <!-- Compass Arrow -->
+          <div class="um-compass-indicator" style="position:absolute; right:20px; bottom:20px; pointer-events:none; z-index:5;">
+            <svg viewBox="0 0 24 24" width="36" height="36"><polygon points="18 2 21 12 18 22 15 12 18 2"/><polygon fill="#c9a878" points="18 2 21 12 18 12 18 2"/><text x="18" y="2" font-size="8" fill="#fff" font-weight="bold" text-anchor="middle">N</text></svg>
+          </div>
+        </div>
+        
+        <!-- Tabs & CTAs Row -->
+        <div class="um-tabs-actions-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+          <div class="um-blueprint-tabs" style="display:flex; gap:8px; background:rgba(6,16,18,0.4); border:1px solid rgba(201,168,120,0.1); border-radius:12px; padding:4px; width:fit-content;">
+            <div class="um-tab active" id="tabPlan" style="padding:10px 16px; font-size:10px; font-weight:700; letter-spacing:0.08em; color:var(--muted); border-radius:8px; cursor:pointer; transition:0.2s;">Floor Plan</div>
+            <div class="um-tab" id="tabFurnished" style="padding:10px 16px; font-size:10px; font-weight:700; letter-spacing:0.08em; color:var(--muted); border-radius:8px; cursor:pointer; transition:0.2s;">Furnished Layout</div>
+            <div class="um-tab" id="tabShell" style="padding:10px 16px; font-size:10px; font-weight:700; letter-spacing:0.08em; color:var(--muted); border-radius:8px; cursor:pointer; transition:0.2s;">Shell Layout</div>
+          </div>
+          
+          <div class="um-ctas-row" style="display:flex; gap:12px;">
+            <button class="um-btn-primary" id="umOffer" style="background:#e8c266; border:1px solid #e8c266; color:#1a1205; font-size:11px; font-weight:700; letter-spacing:0.05em; height:40px; padding:0 20px; border-radius:20px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:0.2s; box-shadow:0 4px 12px rgba(232,194,102,0.15); border:none;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Generate Sales Offer
+            </button>
+            <button class="um-btn-secondary" id="umScheduleViewingBtn" style="background:transparent; border:1px solid rgba(201,168,120,0.35); color:var(--gold); font-size:11px; font-weight:600; letter-spacing:0.05em; height:40px; padding:0 20px; border-radius:20px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:0.2s;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Schedule Viewing
+            </button>
+          </div>
+        </div>
+        
+        <!-- Bottom Gallery Carousel -->
+        <div class="um-bottom-gallery" style="display:flex; align-items:center; padding:8px 0; gap:12px; flex-shrink:0; margin-top:auto;">
+          <button class="um-scroll-arrow left" id="umScrollLeft" style="width:36px; height:36px; border-radius:50%; border:1px solid rgba(201,168,120,0.2); background:rgba(6,16,18,0.6); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          
+          <div class="um-gallery-rail" id="umGalleryRail" style="flex:1; display:flex; gap:12px; overflow-x:auto; scroll-behavior:smooth; padding-bottom:6px;">
+            <!-- Populate photo cards dynamically -->
+          </div>
+          
+          <button class="um-scroll-arrow right" id="umScrollRight" style="width:36px; height:36px; border-radius:50%; border:1px solid rgba(201,168,120,0.2); background:rgba(6,16,18,0.6); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
         </div>
       </div>
       
-      <!-- CTA Buttons Row -->
-      <div class="um-ctas-row">
-        <button class="um-btn-primary" id="umOffer">
-          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          GENERATE SALES OFFER
-        </button>
-        <button class="um-btn-secondary" id="umScheduleViewingBtn">
-          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          SCHEDULE VIEWING
-        </button>
+      <!-- Column 3: Right Details Sidebar -->
+      <div class="um-right-sidebar" style="width:360px; border-left:1px solid var(--line); padding:24px; display:flex; flex-direction:column; gap:16px; flex-shrink:0; background:rgba(8, 42, 41, 0.45); overflow-y:auto;">
+        <!-- Header title, type and status badge -->
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <h1 id="umRightUnitName" style="font-family:var(--serif); font-size:32px; font-weight:700; color:#fff; margin:0;">UNIT 105</h1>
+            <span class="status-available-color" id="umRightUnitStatus" style="font-size:10px; font-weight:700; border:1px solid #4fe090; background:rgba(79,224,144,0.08); padding:4px 8px; border-radius:12px; text-transform:uppercase;">● Available</span>
+          </div>
+          <div id="umRightUnitSub" style="font-size:12px; color:var(--gold); font-weight:600; margin-top:4px;">Premium Suite</div>
+        </div>
+        
+        <!-- Specifications list -->
+        <div class="um-specs-card" style="background:var(--glass); border:1px solid var(--line); border-radius:16px; padding:16px 20px;">
+          <div class="um-specs-grid" id="umSpecsList" style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Dynamically populated spec rows -->
+          </div>
+        </div>
+        
+        <!-- Investment Overview -->
+        <div class="um-specs-card" style="background:var(--glass); border:1px solid var(--line); border-radius:16px; padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
+          <div style="font-size:10px; font-weight:700; color:#fff; letter-spacing:0.1em; text-transform:uppercase;">INVESTMENT OVERVIEW</div>
+          <div style="display:flex; gap:12px;">
+            <div style="flex:1; background:rgba(255,255,255,0.02); border:1px solid rgba(201,168,120,0.08); border-radius:8px; padding:8px 12px;">
+              <div id="roiLow" style="font-size:18px; font-weight:700; color:var(--gold);">11.9%</div>
+              <div id="valRoiLowPrice" style="font-size:9px; color:var(--muted); margin-top:2px;">@ 280 AED/sqft</div>
+              <div style="font-size:7.5px; color:var(--muted); letter-spacing:0.08em; margin-top:2px; font-weight:700;">RENTAL YIELD (LOW)</div>
+            </div>
+            <div style="flex:1; background:rgba(255,255,255,0.02); border:1px solid rgba(201,168,120,0.08); border-radius:8px; padding:8px 12px;">
+              <div id="roiHigh" style="font-size:18px; font-weight:700; color:var(--gold);">14.9%</div>
+              <div id="valRoiHighPrice" style="font-size:9px; color:var(--muted); margin-top:2px;">@ 350 AED/sqft</div>
+              <div style="font-size:7.5px; color:var(--muted); letter-spacing:0.08em; margin-top:2px; font-weight:700;">RENTAL YIELD (HIGH)</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:8px; letter-spacing:0.1em; color:var(--muted); font-weight:700;">ANNUAL RENT RANGE</div>
+            <div id="rentRange" style="font-size:13px; font-weight:700; color:#fff; margin-top:2px;">AED 814,240 - AED 1,017,800</div>
+          </div>
+        </div>
+        
+        <!-- Mortgage Calculator -->
+        <div class="um-calc-card" style="background:var(--glass); border:1px solid var(--line); border-radius:16px; padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
+          <div style="font-size:10px; font-weight:700; color:#fff; letter-spacing:0.1em; text-transform:uppercase;">MORTGAGE / EMI CALCULATOR</div>
+          <div class="um-slider-group" style="display:flex; flex-direction:column; gap:10px;">
+            <div class="um-slider-item" style="display:flex; flex-direction:column; gap:4px;">
+              <div class="um-slider-header" style="display:flex; justify-content:space-between; font-size:10px; color:var(--muted);">
+                <label>Down Payment</label>
+                <span id="valDown" style="font-weight:700; color:var(--gold);">20%</span>
+              </div>
+              <input id="cDown" type="range" min="5" max="80" step="5" value="20" class="um-range-slider" style="width:100%; height:4px; border-radius:2px; background:rgba(255,255,255,0.1); outline:none;">
+            </div>
+            <div class="um-slider-item" style="display:flex; flex-direction:column; gap:4px;">
+              <div class="um-slider-header" style="display:flex; justify-content:space-between; font-size:10px; color:var(--muted);">
+                <label>Interest Rate p.a.</label>
+                <span id="valRate" style="font-weight:700; color:var(--gold);">6.5%</span>
+              </div>
+              <input id="cRate" type="range" min="1" max="15" step="0.1" value="6.5" class="um-range-slider" style="width:100%; height:4px; border-radius:2px; background:rgba(255,255,255,0.1); outline:none;">
+            </div>
+            <div class="um-slider-item" style="display:flex; flex-direction:column; gap:4px;">
+              <div class="um-slider-header" style="display:flex; justify-content:space-between; font-size:10px; color:var(--muted);">
+                <label>Tenure (years)</label>
+                <span id="valYears" style="font-weight:700; color:var(--gold);">25 Years</span>
+              </div>
+              <input id="cYears" type="range" min="5" max="30" step="1" value="25" class="um-range-slider" style="width:100%; height:4px; border-radius:2px; background:rgba(255,255,255,0.1); outline:none;">
+            </div>
+          </div>
+          <div style="border-top:1px dashed var(--line); padding-top:10px;">
+            <div style="font-size:8px; letter-spacing:0.1em; color:var(--muted); font-weight:700;">MONTHLY EMI</div>
+            <div id="cEmi" style="font-size:18px; font-weight:700; color:#fff; margin-top:2px;">AED 36,914/mo</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Bottom Horizontal Render Slideshow Gallery Carousel -->
-  <div class="um-bottom-gallery">
-    <button class="um-scroll-arrow left" id="umScrollLeft">
-      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    
-    <div class="um-gallery-rail" id="umGalleryRail">
-      <!-- Photo cards will be populated dynamically -->
-    </div>
-    
-    <button class="um-scroll-arrow right" id="umScrollRight">
-      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-  </div>
-  </div></div>
 </div>
 
 <!-- OFFER -->
@@ -2132,7 +2289,7 @@
     align-items: center;
     padding: 16px 40px;
     border-bottom: 1px solid rgba(201, 168, 120, 0.12);
-    background: rgba(3, 7, 8, 0.85);
+    background: rgba(10, 32, 28, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     z-index: 10;
@@ -2274,11 +2431,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    background: rgba(6, 16, 18, 0.45);
+    background: var(--glass);
     border: 1px solid rgba(201, 168, 120, 0.12);
     border-radius: 12px;
     padding: 10px 18px;
     flex: 1;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .um-chip svg {
     width: 20px;
@@ -2314,7 +2473,7 @@
   .um-canvas-card {
     position: relative;
     height: 380px;
-    background: rgba(6, 16, 18, 0.55);
+    background: #082a29;
     border: 1px solid rgba(201, 168, 120, 0.14);
     border-radius: 16px;
     overflow: hidden;
@@ -2369,7 +2528,7 @@
     max-width: 90%;
     max-height: 90%;
     object-fit: contain;
-    filter: invert(0.9) contrast(1.1) brightness(1.2) sepia(1) hue-rotate(340deg) saturate(3.2);
+    filter: none;
     pointer-events: none;
   }
   .um-compass-indicator {
@@ -2422,10 +2581,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(6, 16, 18, 0.55);
+    background: var(--glass);
     border: 1px solid rgba(201, 168, 120, 0.14);
     border-radius: 16px;
     padding: 20px 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .um-price-details {
     display: flex;
@@ -2461,10 +2622,12 @@
   }
   
   .um-specs-card {
-    background: rgba(6, 16, 18, 0.55);
+    background: var(--glass);
     border: 1px solid rgba(201, 168, 120, 0.14);
     border-radius: 16px;
     padding: 20px 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .um-card-title {
     font-size: 10px;
@@ -2510,10 +2673,12 @@
   }
   
   .um-calc-card {
-    background: rgba(6, 16, 18, 0.55);
+    background: var(--glass);
     border: 1px solid rgba(201, 168, 120, 0.14);
     border-radius: 16px;
     padding: 20px 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .um-calc-grid {
     display: grid;
@@ -2795,9 +2960,96 @@
   #menuBtn { display: none; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line); background: var(--glass); align-items: center; justify-content: center;  cursor: pointer; color: var(--ink); transition: 0.2s; }
   #menuBtn:hover { border-color: var(--gold); color: var(--gold); }
   
-  #buildingInfo { position: fixed; z-index: 20; left: 32px; top: 160px; width: 260px; background: var(--glass); border: 1px solid var(--line); border-radius: 16px;  padding: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-  .bi-title { font-family: var(--serif); font-size: 18px; color: var(--ink); letter-spacing: 0.1em; font-weight: 600; margin-bottom: 8px; }
-  .bi-sub { font-size: 11px; color: var(--muted); line-height: 1.4; margin-bottom: 16px; }
+  #leftSidebar {
+    position: fixed;
+    z-index: 20;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 290px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: auto;
+  }
+  
+  #unifiedBuildingCard {
+    width: 100%;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .ubc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .ubc-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  
+  .ubc-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  
+  .ubc-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: transform 0.3s ease, color 0.2s ease;
+  }
+  
+  .ubc-toggle-btn:hover {
+    color: var(--gold);
+    background: rgba(255,255,255,0.05);
+  }
+  
+  .ubc-content {
+    margin-top: 14px;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin-top 0.3s ease;
+    overflow: hidden;
+  }
+  
+  #unifiedBuildingCard.collapsed .ubc-content {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    pointer-events: none;
+  }
+  
+  #unifiedBuildingCard.collapsed .ubc-toggle-btn {
+    transform: rotate(-90deg);
+  }
+  
+  .ubc-intro {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+  
   .bi-table { width: 100%; border-collapse: collapse; margin-bottom: 0px; }
   .bi-table tr { border-bottom: 1px solid var(--line); }
   .bi-table tr:last-child { border-bottom: none; }
@@ -2805,6 +3057,11 @@
   .bi-table td:first-child { color: var(--muted); display: flex; align-items: center; gap: 6px; }
   .bi-table td:first-child svg { width: 13px; height: 13px; stroke: var(--muted); fill: none; }
   .bi-table td:last-child { text-align: right; color: var(--ink); font-weight: 600; }
+  
+  .ubc-divider {
+    border-top: 1px solid var(--line);
+    margin: 16px 0;
+  }
   
   #exploreBtn { display: none !important; }
   
@@ -2946,6 +3203,587 @@
     }
   }
   
+
+  /* ============================================================== */
+  /* ===== MOBILE FLOOR PLAN VIEW OVERLAY ===== */
+  /* ============================================================== */
+
+  #mobileFloorView {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    background: #0d1a18;
+    flex-direction: column;
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+  }
+
+  /* Show the mobile view ONLY on mobile when floor-view-active */
+  @media (max-width: 768px) {
+    body.floor-view-active #mobileFloorView {
+      display: flex !important;
+    }
+    /* Hide all desktop floor UI elements on mobile */
+    body.floor-view-active #blueprintViewport,
+    body.floor-view-active #floorLeftSidebar,
+    body.floor-view-active #floorRightSidebar,
+    body.floor-view-active #floorUnitsSidebar,
+    body.floor-view-active #floorTopStats,
+    body.floor-view-active #floorTopRightActions,
+    body.floor-view-active #floorBottomCapsule,
+    body.floor-view-active #floorCompass,
+    body.floor-view-active #floorBackButton,
+    body.floor-view-active #devTracerToggle {
+      display: none !important;
+    }
+    /* Blueprint viewport stays visible on mobile floor view, shown below the UI overlay */
+    body.floor-view-active #blueprintViewport {
+      display: block !important;
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 245 !important;
+    }
+    /* Ensure dock is hidden under mobile floor view */
+    body.floor-view-active #dock {
+      z-index: 10 !important;
+    }
+  }
+
+  /* Top Navigation Bar */
+  #mfv-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid rgba(201, 168, 120, 0.12);
+    flex-shrink: 0;
+    background: rgba(11, 28, 24, 0.98);
+  }
+
+  #mfv-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    padding: 0;
+    letter-spacing: 0.02em;
+  }
+
+  #mfv-title-block {
+    text-align: center;
+  }
+
+  #mfv-level-label {
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+  }
+
+  #mfv-floor-type {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .mfv-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4fe090;
+    box-shadow: 0 0 8px #4fe090;
+    display: inline-block;
+  }
+
+  #mfv-doc-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(201,168,120,0.25);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Stats Row */
+  #mfv-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(201,168,120,0.1);
+    flex-shrink: 0;
+    background: rgba(11, 28, 24, 0.95);
+  }
+
+  .mfv-stat-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .mfv-stat-icon {
+    color: rgba(201,168,120,0.7);
+    display: flex;
+    align-items: center;
+  }
+
+  .mfv-stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .mfv-stat-info span:first-child {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .mfv-stat-label {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+  }
+
+  .mfv-gold {
+    color: #c9a878 !important;
+  }
+
+  .mfv-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(201,168,120,0.2);
+    margin: 0 12px;
+    flex-shrink: 0;
+  }
+
+  .mfv-availability-grid {
+    display: flex;
+    gap: 14px;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .mfv-avail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .mfv-avail-item span:first-child {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .mfv-avail-label {
+    font-size: 7.5px;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+
+  .mfv-count-available { color: #4fe090; }
+  .mfv-count-reserved  { color: #ffa550; }
+  .mfv-count-sold      { color: #ff5e5e; }
+  .mfv-count-onhold    { color: rgba(255,255,255,0.45); }
+  .mfv-label-available { color: #4fe090; }
+  .mfv-label-reserved  { color: #ffa550; }
+  .mfv-label-sold      { color: #ff5e5e; }
+  .mfv-label-onhold    { color: rgba(255,255,255,0.45); }
+
+  /* Canvas Area — transparent window; blueprint shows through */
+  #mfv-canvas-wrap {
+    position: relative;
+    flex: 0 0 auto;
+    height: 44vw;
+    min-height: 220px;
+    max-height: 300px;
+    background: transparent;
+    border-bottom: 1px solid rgba(201,168,120,0.1);
+    overflow: visible;
+    z-index: 1;
+    /* Pass pointer events through to the blueprint below, except for controls */
+    pointer-events: none;
+  }
+  #mfv-map-controls, #mfv-compass-arrow {
+    pointer-events: auto;
+  }
+
+  /* Map Controls (top-left of canvas) */
+  #mfv-map-controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    background: rgba(8, 18, 22, 0.9);
+    border: 1px solid rgba(201,168,120,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .mfv-ctrl-btn {
+    width: 34px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .mfv-ctrl-btn:hover {
+    background: rgba(201,168,120,0.1);
+    color: #c9a878;
+  }
+
+  .mfv-ctrl-3d {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: rgba(201,168,120,0.85);
+  }
+
+  .mfv-ctrl-divider {
+    height: 1px;
+    background: rgba(201,168,120,0.15);
+    margin: 0 6px;
+  }
+
+  .mfv-compass-icon {
+    font-size: 14px;
+    color: rgba(201,168,120,0.6);
+  }
+
+  /* Compass arrow bottom-right of canvas */
+  #mfv-compass-arrow {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    background: rgba(8,18,22,0.75);
+    border: 1px solid rgba(201,168,120,0.2);
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+
+  .mfv-compass-n {
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  /* Bottom Panel */
+  #mfv-bottom-panel {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+    background: #0e1e1b;
+  }
+
+  /* Inventory wrap */
+  #mfv-inventory-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    padding: 14px 14px 0;
+  }
+
+  #mfv-inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+
+  #mfv-inventory-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.08em;
+  }
+
+  #mfv-inventory-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+  }
+
+  #mfv-menu-btn {
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid rgba(201,168,120,0.2);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* Unit List */
+  #mfv-unit-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    overflow-y: auto;
+    padding-bottom: 8px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  #mfv-unit-list::-webkit-scrollbar { width: 3px; }
+  #mfv-unit-list::-webkit-scrollbar-track { background: transparent; }
+  #mfv-unit-list::-webkit-scrollbar-thumb { background: rgba(201,168,120,0.2); border-radius: 2px; }
+
+  .mfv-unit-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mfv-unit-card:hover {
+    background: rgba(201,168,120,0.06);
+    border-color: rgba(201,168,120,0.2);
+  }
+
+  .mfv-unit-card.active {
+    border-color: rgba(201,168,120,0.5);
+    background: rgba(201,168,120,0.08);
+  }
+
+  .mfv-unit-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+
+  .mfv-unit-meta {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .mfv-unit-price-label {
+    font-size: 8px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .mfv-unit-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .mfv-unit-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mfv-badge-available {
+    background: rgba(79,224,144,0.15);
+    color: #4fe090;
+    border: 1px solid rgba(79,224,144,0.3);
+  }
+  .mfv-badge-reserved {
+    background: rgba(255,165,80,0.15);
+    color: #ffa550;
+    border: 1px solid rgba(255,165,80,0.3);
+  }
+  .mfv-badge-sold {
+    background: rgba(255,94,94,0.15);
+    color: #ff5e5e;
+    border: 1px solid rgba(255,94,94,0.3);
+  }
+  .mfv-badge-onhold {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.45);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  /* Legend */
+  #mfv-legend {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .mfv-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .mfv-dot-sm {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .mfv-dot-available { background: #4fe090; box-shadow: 0 0 5px rgba(79,224,144,0.6); }
+  .mfv-dot-reserved  { background: #ffa550; box-shadow: 0 0 5px rgba(255,165,80,0.6); }
+  .mfv-dot-sold      { background: #ff5e5e; box-shadow: 0 0 5px rgba(255,94,94,0.6); }
+  .mfv-dot-onhold    { background: #6b7280; }
+
+  /* Right Floor Tabs */
+  #mfv-floor-tabs {
+    display: flex;
+    flex-direction: column;
+    width: 44px;
+    border-left: 1px solid rgba(201,168,120,0.1);
+    overflow-y: auto;
+    flex-shrink: 0;
+    padding: 8px 0;
+    background: #0b1b18;
+    align-items: center;
+    gap: 4px;
+  }
+
+  #mfv-floor-tabs::-webkit-scrollbar { display: none; }
+
+  .mfv-floor-tab {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: transparent;
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .mfv-floor-tab:hover {
+    border-color: rgba(201,168,120,0.3);
+    color: #c9a878;
+  }
+
+  .mfv-floor-tab.active {
+    background: #c9a878;
+    color: #0d1a18;
+    border-color: #c9a878;
+    box-shadow: 0 0 12px rgba(201,168,120,0.4);
+  }
+
+  /* Bottom Dock */
+  #mfv-dock {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 62px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    background: rgba(10, 22, 19, 0.98);
+    flex-shrink: 0;
+    padding: 0 8px;
+  }
+
+  .mfv-dock-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-size: 9px;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    min-width: 50px;
+  }
+
+  .mfv-dock-btn:hover {
+    color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .mfv-dock-btn.mfv-dock-active {
+    color: #c9a878;
+  }
+
+  .mfv-dock-btn svg {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .mfv-dock-btn.mfv-dock-active svg {
+    opacity: 1;
+    stroke: #c9a878;
+  }
+
+  /* ============================================================== */
+  /* ===== END MOBILE FLOOR PLAN VIEW ===== */
+  /* ============================================================== */
+
   /* --- END NEW UI CSS --- */
 
 </style>
@@ -2957,6 +3795,7 @@
     <div class="fpside" id="fpSide"></div>
   </div></div>
 </div></div>
+
 
 <!-- LIGHTBOX -->
 <div id="lightbox"><div class="lx" id="lbClose">×</div><img id="lbImg"/><div class="cap" id="lbCap"></div></div>
@@ -2978,18 +3817,18 @@ const MAPS_EMBED="https://www.google.com/maps?q=25.1105188,55.1802741&t=k&z=16&h
 const UNIT_POLYGONS = {};
 
 const FLOOR_PLAN_COLORED = {
-  1: 'aurum_assets/plan_view/floor_1.png',
-  2: 'aurum_assets/plan_view/floor_1.png',
-  3: 'aurum_assets/plan_view/floor_2.png',
-  4: 'aurum_assets/plan_view/floor_3.png',
-  5: 'aurum_assets/plan_view/floor_4.png',
-  6: 'aurum_assets/plan_view/floor_5.png',
-  7: 'aurum_assets/plan_view/floor_6.png',
-  8: 'aurum_assets/plan_view/floor_7.png',
+  1: 'aurum_assets/plan_view/floor_Ground_Floor_colored.png',
+  2: 'aurum_assets/plan_view/floor_1st_Floor_colored.png',
+  3: 'aurum_assets/plan_view/floor_2nd_Floor_colored.png',
+  4: 'aurum_assets/plan_view/floor_3rd_Floor_colored.png',
+  5: 'aurum_assets/plan_view/floor_4th_Floor_colored.png',
+  6: 'aurum_assets/plan_view/floor_5th_Floor_colored.png',
+  7: 'aurum_assets/plan_view/floor_6th_Floor_colored.png',
+  8: 'aurum_assets/plan_view/floor_7th_Floor_colored.png',
 };
 
 const UNIT_RECTS = {
-  1: [],
+  // Ground Floor (f=2) - 14 units
   2: [
     {id:'101', x:65.8, y:13.4, w:11.7, h:13.1},
     {id:'102', x:41.7, y:21.9, w:11.7, h:14.5},
@@ -2999,135 +3838,149 @@ const UNIT_RECTS = {
     {id:'106', x:65.8, y:36.8, w:11.7, h:11.8},
     {id:'107', x:29.7, y:54.6, w:11.7, h:11.8},
     {id:'108', x:65.8, y:54.6, w:11.7, h:11.8},
-    {id:'109', x:25.8, y:69.9, w:7.5,  h:10.2},
+    {id:'109', x:23.4, y:66.8, w:9.9,  h:14.5},
     {id:'110', x:41.7, y:66.8, w:11.7, h:14.5},
     {id:'111', x:53.7, y:66.8, w:11.7, h:14.5},
     {id:'112', x:73.8, y:66.8, w:9.9,  h:14.5},
-    {id:'113', x:29.7, y:76.7, w:11.7, h:13.1},
-    {id:'114', x:65.8, y:76.7, w:11.7, h:13.1},
+    {id:'113', x:29.7, y:76.8, w:11.7, h:13.0},
+    {id:'114', x:65.8, y:76.8, w:11.7, h:13.0},
   ],
+  // Level 01 (f=3) - 14 units
   3: [
     {id:'101', x:61.9, y:11.8, w:15.6, h:13.3},
-    {id:'102', x:41.7, y:13.8, w:11.7, h:21.2},
+    {id:'102', x:41.7, y:13.9, w:11.7, h:21.2},
     {id:'103', x:53.7, y:18.1, w:11.7, h:16.9},
     {id:'104', x:73.8, y:20.6, w:10.1, h:19.4},
     {id:'105', x:24.8, y:35.5, w:16.5, h:14.5},
     {id:'106', x:65.8, y:35.5, w:13.6, h:14.6},
-    {id:'107', x:27.7, y:50.4, w:13.6, h:14.6},
-    {id:'108', x:65.8, y:50.4, w:13.6, h:14.6},
-    {id:'109', x:23.2, y:60.5, w:10.1, h:19.4},
-    {id:'110', x:41.7, y:65.4, w:11.7, h:16.9},
-    {id:'111', x:53.7, y:65.4, w:11.7, h:16.9},
-    {id:'112', x:73.8, y:60.5, w:10.1, h:19.4},
+    {id:'107', x:27.7, y:50.4, w:13.6, h:14.5},
+    {id:'108', x:65.8, y:50.4, w:13.6, h:14.5},
+    {id:'109', x:23.2, y:60.5, w:10.1, h:19.3},
+    {id:'110', x:73.8, y:60.5, w:10.1, h:19.3},
+    {id:'111', x:41.7, y:65.4, w:11.7, h:16.9},
+    {id:'112', x:53.7, y:65.4, w:11.7, h:16.9},
     {id:'113', x:29.7, y:75.4, w:15.6, h:13.3},
     {id:'114', x:61.9, y:75.4, w:15.6, h:13.3},
   ],
+  // Level 02 (f=4) - 22 units
   4: [
-    {id:'201', x:33.2, y:15.6, w:12.0, h:14.5},
+    {id:'201', x:33.2, y:15.6, w:12.0, h:14.4},
     {id:'202', x:45.6, y:17.7, w:7.8,  h:12.4},
     {id:'203', x:53.7, y:17.7, w:7.8,  h:12.4},
-    {id:'204', x:61.8, y:15.6, w:12.0, h:14.5},
-    {id:'205', x:25.7, y:19.3, w:11.7, h:20.6},
-    {id:'206', x:69.8, y:19.3, w:11.7, h:20.6},
-    {id:'207', x:48.1, y:33.2, w:11.5, h:6.8},
-    {id:'208', x:39.8, y:33.2, w:8.0,  h:11.7},
+    {id:'204', x:61.9, y:15.6, w:12.0, h:14.4},
+    {id:'205', x:25.7, y:19.3, w:11.6, h:20.6},
+    {id:'206', x:69.8, y:19.3, w:11.6, h:20.6},
+    {id:'207', x:48.1, y:33.2, w:10.8, h:6.8},
+    {id:'208', x:39.9, y:33.2, w:7.9,  h:11.7},
     {id:'209', x:59.3, y:33.2, w:7.9,  h:11.7},
     {id:'210', x:27.3, y:40.3, w:10.0, h:9.7},
     {id:'211', x:69.8, y:40.3, w:10.0, h:9.7},
     {id:'212', x:27.3, y:50.4, w:10.0, h:9.7},
     {id:'213', x:69.8, y:50.4, w:10.0, h:9.7},
-    {id:'214', x:39.8, y:55.6, w:8.0,  h:11.7},
+    {id:'214', x:39.9, y:55.6, w:7.9,  h:11.7},
     {id:'215', x:59.3, y:55.6, w:7.9,  h:11.7},
     {id:'216', x:25.7, y:60.5, w:11.6, h:20.6},
     {id:'217', x:69.8, y:60.5, w:11.6, h:20.6},
     {id:'218', x:45.6, y:70.4, w:7.8,  h:12.4},
-    {id:'219', x:36.9, y:74.1, w:8.3,  h:10.7},
-    {id:'220', x:61.8, y:70.4, w:12.0, h:14.5},
-    {id:'221', x:53.7, y:70.4, w:6.9,  h:9.0},
-    {id:'222', x:33.2, y:70.4, w:6.0,  h:10.0},
+    {id:'219', x:33.2, y:70.4, w:12.0, h:14.4},
+    {id:'220', x:61.9, y:70.4, w:12.0, h:14.4},
+    {id:'221', x:53.7, y:70.4, w:7.8,  h:12.4},
+    {id:'222', x:48.1, y:60.5, w:10.8, h:6.7},
   ],
+  // Level 03 (f=5) - 22 units
   5: [
-    {id:'301', x:33.2, y:15.6, w:12.0, h:14.5},
+    {id:'301', x:33.2, y:15.6, w:12.0, h:14.4},
     {id:'302', x:45.6, y:17.7, w:7.8,  h:12.4},
     {id:'303', x:53.7, y:17.7, w:7.8,  h:12.4},
-    {id:'304', x:61.8, y:15.6, w:12.0, h:14.5},
-    {id:'305', x:25.7, y:19.3, w:11.7, h:20.6},
-    {id:'306', x:69.8, y:19.3, w:11.7, h:20.6},
-    {id:'307', x:48.1, y:33.2, w:11.5, h:6.8},
-    {id:'308', x:39.8, y:33.2, w:8.0,  h:11.7},
+    {id:'304', x:61.9, y:15.6, w:12.0, h:14.4},
+    {id:'305', x:25.7, y:19.3, w:11.6, h:20.6},
+    {id:'306', x:69.8, y:19.3, w:11.6, h:20.6},
+    {id:'307', x:48.1, y:33.2, w:10.8, h:6.8},
+    {id:'308', x:39.9, y:33.2, w:7.9,  h:11.7},
     {id:'309', x:59.3, y:33.2, w:7.9,  h:11.7},
     {id:'310', x:27.3, y:40.3, w:10.0, h:9.7},
     {id:'311', x:69.8, y:40.3, w:10.0, h:9.7},
     {id:'312', x:27.3, y:50.4, w:10.0, h:9.7},
     {id:'313', x:69.8, y:50.4, w:10.0, h:9.7},
-    {id:'314', x:39.8, y:55.6, w:8.0,  h:11.7},
+    {id:'314', x:39.9, y:55.6, w:7.9,  h:11.7},
     {id:'315', x:59.3, y:55.6, w:7.9,  h:11.7},
     {id:'316', x:25.7, y:60.5, w:11.6, h:20.6},
     {id:'317', x:69.8, y:60.5, w:11.6, h:20.6},
-    {id:'318', x:45.6, y:70.4, w:7.8,  h:12.4},
-    {id:'319', x:36.9, y:74.1, w:8.3,  h:10.7},
-    {id:'320', x:61.8, y:70.4, w:12.0, h:14.5},
-    {id:'321', x:53.7, y:70.4, w:6.9,  h:9.0},
-    {id:'322', x:33.2, y:70.4, w:6.0,  h:10.0},
+    {id:'318', x:48.1, y:60.5, w:10.8, h:6.7},
+    {id:'319', x:45.6, y:70.4, w:7.8,  h:12.4},
+    {id:'320', x:53.7, y:70.4, w:7.8,  h:12.4},
+    {id:'321', x:33.2, y:70.4, w:12.0, h:14.4},
+    {id:'322', x:61.9, y:70.4, w:12.0, h:14.4},
   ],
+  // Level 04 (f=6) - 22 units
   6: [
-    {id:'401', x:33.2, y:17.6, w:12.0, h:12.5},
-    {id:'402', x:45.6, y:20.0, w:7.8,  h:10.1},
-    {id:'403', x:53.8, y:20.0, w:7.8,  h:10.1},
-    {id:'404', x:61.9, y:17.6, w:12.0, h:12.5},
+    {id:'401', x:33.2, y:17.7, w:12.0, h:12.4},
+    {id:'402', x:45.6, y:20.0, w:7.8,  h:10.0},
+    {id:'403', x:53.8, y:20.0, w:7.7,  h:10.0},
+    {id:'404', x:61.9, y:17.7, w:12.0, h:12.4},
     {id:'405', x:27.3, y:19.3, w:10.0, h:20.5},
-    {id:'406', x:69.8, y:19.3, w:10.0, h:20.6},
-    {id:'407', x:48.1, y:33.2, w:11.4, h:6.8},
-    {id:'408', x:29.2, y:40.3, w:8.1,  h:9.6},
-    {id:'409', x:69.8, y:40.3, w:8.1,  h:9.7},
-    {id:'410', x:29.2, y:50.5, w:8.1,  h:9.6},
-    {id:'411', x:69.8, y:50.4, w:8.1,  h:9.7},
-    {id:'412', x:39.8, y:55.6, w:8.0,  h:11.7},
-    {id:'413', x:59.3, y:56.2, w:7.9,  h:11.0},
-    {id:'414', x:48.1, y:60.5, w:11.4, h:6.8},
-    {id:'415', x:27.3, y:60.6, w:10.0, h:20.5},
-    {id:'416', x:69.8, y:60.5, w:10.0, h:20.6},
-    {id:'417', x:33.2, y:70.4, w:9.6,  h:10.6},
-    {id:'418', x:45.6, y:70.4, w:7.8,  h:10.1},
-    {id:'419', x:53.8, y:70.4, w:7.8,  h:10.1},
-    {id:'420', x:61.9, y:70.4, w:12.0, h:12.4},
-    {id:'421', x:36.0, y:72.4, w:9.2,  h:10.4},
-    {id:'422', x:33.2, y:15.6, w:6.0,  h:10.0},
+    {id:'406', x:69.8, y:19.3, w:10.0, h:20.5},
+    {id:'407', x:48.1, y:33.2, w:11.3, h:6.8},
+    {id:'408', x:39.9, y:33.2, w:7.9,  h:11.7},
+    {id:'409', x:59.3, y:33.2, w:7.9,  h:11.7},
+    {id:'410', x:29.2, y:40.3, w:8.1,  h:9.6},
+    {id:'411', x:69.8, y:40.3, w:8.1,  h:9.7},
+    {id:'412', x:29.2, y:50.5, w:8.1,  h:9.6},
+    {id:'413', x:69.8, y:50.4, w:8.1,  h:9.7},
+    {id:'414', x:39.9, y:55.6, w:7.9,  h:11.7},
+    {id:'415', x:59.3, y:55.6, w:7.9,  h:11.7},
+    {id:'416', x:48.1, y:60.5, w:10.8, h:6.7},
+    {id:'417', x:27.3, y:60.6, w:10.0, h:20.5},
+    {id:'418', x:69.8, y:60.6, w:10.0, h:20.6},
+    {id:'419', x:33.2, y:70.4, w:12.0, h:12.4},
+    {id:'420', x:45.6, y:70.4, w:7.8,  h:10.1},
+    {id:'421', x:53.8, y:70.4, w:7.7,  h:10.1},
+    {id:'422', x:61.9, y:70.4, w:12.0, h:12.4},
   ],
+  // Level 05 (f=7) - 22 units
   7: [
-    {id:'501', x:33.2, y:17.6, w:12.0, h:12.5},
-    {id:'502', x:45.6, y:20.0, w:7.8,  h:10.1},
-    {id:'503', x:53.8, y:20.8, w:7.8,  h:9.3},
-    {id:'504', x:61.9, y:17.6, w:12.0, h:12.5},
-    {id:'505', x:27.3, y:19.3, w:10.0, h:20.6},
-    {id:'506', x:69.8, y:19.3, w:10.0, h:20.6},
+    {id:'501', x:33.2, y:17.7, w:12.0, h:12.4},
+    {id:'502', x:45.6, y:20.0, w:7.8,  h:10.0},
+    {id:'503', x:53.8, y:20.0, w:7.7,  h:10.0},
+    {id:'504', x:61.9, y:17.7, w:12.0, h:12.4},
+    {id:'505', x:27.3, y:19.3, w:10.0, h:20.5},
+    {id:'506', x:69.8, y:19.3, w:10.0, h:20.5},
     {id:'507', x:48.1, y:33.2, w:11.4, h:6.8},
-    {id:'508', x:39.8, y:33.2, w:8.0,  h:11.7},
-    {id:'509', x:29.2, y:40.3, w:8.1,  h:9.6},
-    {id:'510', x:69.8, y:40.3, w:8.1,  h:9.7},
-    {id:'511', x:69.8, y:50.4, w:8.1,  h:9.7},
-    {id:'512', x:39.8, y:55.6, w:8.0,  h:11.7},
-    {id:'513', x:59.3, y:55.6, w:7.9,  h:11.7},
-    {id:'514', x:48.1, y:60.5, w:11.5, h:6.8},
-    {id:'515', x:27.3, y:60.6, w:10.0, h:20.5},
-    {id:'516', x:69.8, y:60.6, w:10.0, h:20.6},
-    {id:'517', x:33.2, y:70.4, w:12.0, h:12.5},
-    {id:'518', x:45.6, y:70.4, w:7.8,  h:10.1},
-    {id:'519', x:53.7, y:70.4, w:7.8,  h:10.1},
-    {id:'520', x:61.9, y:70.4, w:11.5, h:12.4},
-    {id:'521', x:66.1, y:73.0, w:7.8,  h:9.3},
-    {id:'522', x:27.3, y:50.4, w:8.1,  h:9.6},
+    {id:'508', x:39.9, y:33.2, w:7.9,  h:11.7},
+    {id:'509', x:59.3, y:33.2, w:7.9,  h:11.7},
+    {id:'510', x:29.2, y:40.3, w:8.1,  h:9.6},
+    {id:'511', x:69.8, y:40.3, w:8.1,  h:9.7},
+    {id:'512', x:29.2, y:50.5, w:8.1,  h:9.6},
+    {id:'513', x:69.8, y:50.4, w:8.1,  h:9.7},
+    {id:'514', x:39.9, y:55.6, w:7.9,  h:11.7},
+    {id:'515', x:59.3, y:55.6, w:7.9,  h:11.7},
+    {id:'516', x:48.1, y:60.5, w:10.8, h:6.7},
+    {id:'517', x:27.3, y:60.6, w:10.0, h:20.5},
+    {id:'518', x:69.8, y:60.6, w:10.0, h:20.5},
+    {id:'519', x:33.2, y:70.4, w:12.0, h:12.4},
+    {id:'520', x:45.6, y:70.4, w:7.8,  h:10.1},
+    {id:'521', x:53.7, y:70.4, w:7.8,  h:10.1},
+    {id:'522', x:61.9, y:70.4, w:12.0, h:12.4},
   ],
+  // Level 06 (f=8) - 8 units
   8: [
     {id:'601', x:31.8, y:19.0, w:24.2, h:24.9},
     {id:'602', x:56.3, y:19.0, w:24.2, h:24.9},
-    {id:'603', x:72.4, y:34.4, w:8.1,  h:14.7},
-    {id:'604', x:31.8, y:49.4, w:8.2,  h:14.7},
-    {id:'605', x:72.4, y:49.4, w:8.1,  h:14.7},
-    {id:'606', x:31.8, y:54.5, w:24.2, h:24.9},
-    {id:'607', x:56.3, y:54.5, w:24.2, h:24.9},
-    {id:'608', x:34.9, y:40.5, w:5.1,  h:8.6},
-  ]};
+    {id:'603', x:31.8, y:34.4, w:8.2,  h:14.7},
+    {id:'604', x:72.4, y:34.4, w:8.1,  h:14.7},
+    {id:'605', x:31.8, y:49.4, w:8.1,  h:14.7},
+    {id:'606', x:72.4, y:49.4, w:8.1,  h:14.7},
+    {id:'607', x:31.8, y:54.6, w:24.2, h:24.9},
+    {id:'608', x:56.3, y:54.6, w:24.2, h:24.9},
+  ],
+  // Level 07 (f=9) - 4 units
+  9: [
+    {id:'701', x:29.2, y:20.0, w:20.1, h:25.0},
+    {id:'702', x:57.8, y:20.0, w:20.1, h:25.0},
+    {id:'703', x:29.2, y:55.4, w:20.1, h:25.0},
+    {id:'704', x:57.8, y:55.4, w:20.1, h:25.0},
+  ],
+};
 
 /* ----- commercial pricing model (size × PSF) ----- */
 const PSF_LARGE=2350, PSF_SMALL=2500, LARGE_AT=1500;   // >=1500 sqft = larger
@@ -4028,24 +4881,90 @@ function openBuildingEditor(idx) {
     left: 32px;
     top: 50%;
     transform: translateY(-50%);
-    width: 260px;
+    width: 290px;
     display: flex;
     flex-direction: column;
     gap: 12px;
     pointer-events: auto;
   }
   
-  #buildingInfo {
+  #unifiedBuildingCard {
     width: 100%;
     background: var(--glass);
     border: 1px solid var(--line);
     border-radius: 16px;
-    padding: 16px;
+    padding: 18px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 90vh;
+    overflow-y: auto;
   }
-  .bi-title { font-family: var(--serif); font-size: 18px; color: var(--ink); letter-spacing: 0.1em; font-weight: 600; margin-bottom: 8px; }
-  .bi-sub { font-size: 11px; color: var(--muted); line-height: 1.4; margin-bottom: 16px; }
+  
+  .ubc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .ubc-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  
+  .ubc-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  
+  .ubc-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: transform 0.3s ease, color 0.2s ease;
+  }
+  
+  .ubc-toggle-btn:hover {
+    color: var(--gold);
+    background: rgba(255,255,255,0.05);
+  }
+  
+  .ubc-content {
+    margin-top: 14px;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin-top 0.3s ease;
+    overflow: hidden;
+  }
+  
+  #unifiedBuildingCard.collapsed .ubc-content {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    pointer-events: none;
+  }
+  
+  #unifiedBuildingCard.collapsed .ubc-toggle-btn {
+    transform: rotate(-90deg);
+  }
+  
+  .ubc-intro {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+  
   .bi-table { width: 100%; border-collapse: collapse; margin-bottom: 0px; }
   .bi-table tr { border-bottom: 1px solid var(--line); }
   .bi-table tr:last-child { border-bottom: none; }
@@ -4054,22 +4973,18 @@ function openBuildingEditor(idx) {
   .bi-table td:first-child svg { width: 13px; height: 13px; stroke: var(--muted); fill: none; }
   .bi-table td:last-child { text-align: right; color: var(--ink); font-weight: 600; }
   
-  #exploreBtn { display: none !important; }
-  
-  #keyHighlights {
-    width: 100%;
-    background: var(--glass);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    flex-shrink: 0;
+  .ubc-divider {
+    border-top: 1px solid var(--line);
+    margin: 16px 0;
   }
+  
   .kh-title { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink); margin-bottom: 12px; }
   .kh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .kh-item { display: flex; align-items: center; gap: 8px; font-size: 10px; color: var(--ink); line-height: 1.3; }
   .kh-icon { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--gold-glow); display: flex; align-items: center; justify-content: center; }
   .kh-icon svg { width: 12px; height: 12px; stroke: var(--gold); fill: none; }
+  
+  #exploreBtn { display: none !important; }
   
   @media (max-width: 768px) {
     #leftSidebar {
@@ -5374,7 +6289,7 @@ function renderSVGFloorPlan(f) {
 
   // Display the colored PNG base plan image
   canvas.classList.add('svg-floor-mode');
-  imgEl.src = FLOOR_PLAN_COLORED[f] || `aurum_assets/plan_view/floor_${f}.png`;
+  imgEl.src = FLOOR_PLAN_COLORED[f] || 'aurum_assets/plan_view/floor_1.png';
 
   renderUnitListSidebar(f);
 
@@ -5384,7 +6299,7 @@ function renderSVGFloorPlan(f) {
     return el;
   };
 
-  const rects = UNIT_RECTS[f] || [];
+  const rects = UNIT_RECTS[f + 1] || [];
   rects.forEach(r => {
     // Translate percentage-based coordinates to SVG viewbox units (800 x 645)
     const svg_x = r.x * 8.0;
@@ -5625,6 +6540,11 @@ function selectFloor(f){
   renderFloorRightSlider(f);
   centerCanvas();
 
+  // Update mobile floor view if on mobile
+  if (window.innerWidth <= 768) {
+    setTimeout(() => { if (typeof renderMobileFloorView === 'function') renderMobileFloorView(f); }, 60);
+  }
+
   // Update top stats GDV & GFA
   document.getElementById('ftsGFA').textContent = (TOTAL_SQFT/1000).toFixed(0)+'K';
   document.getElementById('ftsGDV').textContent = 'AED '+(TOTAL_GDV/1e6).toFixed(0)+'M';
@@ -5689,8 +6609,165 @@ document.getElementById('floorSearchBtn').onclick = () => {
 document.getElementById('floorFullscreenBtn').onclick = () => {
   document.getElementById('bFullscreen').click();
 };
+
+/* =====================================================
+   MOBILE FLOOR PLAN VIEW — DATA BINDING & INTERACTION
+   ===================================================== */
+
+// Update clip-path to show blueprint only in the canvas area on mobile
+function updateMobileClipPath() {
+  if (window.innerWidth > 768) return;
+  const canvasWrap = document.getElementById('mfv-canvas-wrap');
+  if (!canvasWrap) return;
+  const rect = canvasWrap.getBoundingClientRect();
+  const top = Math.round(rect.top);
+  const bottom = Math.round(window.innerHeight - rect.bottom);
+  document.documentElement.style.setProperty('--mfv-canvas-top', top + 'px');
+  document.documentElement.style.setProperty('--mfv-canvas-bottom', bottom + 'px');
+}
+
+function renderMobileFloorView(f) {
+  if (!f || !DATA) return;
+
+  const fl = DATA.floors[f];
+  if (!fl) return;
+
+  // 1. Top bar — level label
+  const floorName = f === 1 ? 'Ground Floor' : (f === 2 ? 'Level 01' : 'Level 0' + (f - 1));
+  const el = document.getElementById('mfv-level-label');
+  if (el) el.textContent = floorName;
+
+  // 2. Stats
+  const unitsEl = document.getElementById('mfv-units-val');
+  if (unitsEl) unitsEl.textContent = fl.units;
+  const areaEl = document.getElementById('mfv-area-val');
+  if (areaEl) areaEl.textContent = fl.suite.toLocaleString() + ' sq ft';
+
+  // 3. Status counts
+  const floorUnits = DATA.units.filter(u => u.f === f);
+  const counts = { Available: 0, Reserved: 0, Sold: 0, 'On Hold': 0 };
+  floorUnits.forEach(u => {
+    const s = statusOf(u);
+    if (counts[s] !== undefined) counts[s]++;
+  });
+  const availEl = document.getElementById('mfv-avail-count');
+  if (availEl) availEl.textContent = counts['Available'];
+  const resEl = document.getElementById('mfv-reserved-count');
+  if (resEl) resEl.textContent = counts['Reserved'];
+  const soldEl = document.getElementById('mfv-sold-count');
+  if (soldEl) soldEl.textContent = counts['Sold'];
+  const holdEl = document.getElementById('mfv-onhold-count');
+  if (holdEl) holdEl.textContent = counts['On Hold'];
+
+  // 4. Unit list (2-column grid)
+  const listEl = document.getElementById('mfv-unit-list');
+  if (listEl) {
+    listEl.innerHTML = '';
+    const sorted = [...floorUnits].sort((a, b) => a.u - b.u);
+    sorted.forEach(u => {
+      const status = statusOf(u);
+      const badgeCls = 'mfv-badge-' + status.toLowerCase().replace(' ', '');
+      const price = priceOf(u);
+      const card = document.createElement('div');
+      card.className = 'mfv-unit-card';
+      card.innerHTML = `
+        <div class="mfv-unit-name">Unit ${u.u}</div>
+        <div class="mfv-unit-meta">${unitClass(u)} · ${u.s.toLocaleString()} sq ft</div>
+        <div class="mfv-unit-price-label">AED</div>
+        <div class="mfv-unit-price">${price ? (price/1e6).toFixed(2) + 'M' : '—'}</div>
+        <span class="mfv-unit-badge ${badgeCls}">${status}</span>
+      `;
+      card.onclick = () => {
+        // Highlight on blueprint & open detail
+        const path = document.getElementById(`svg-unit-${u.u}`);
+        if (path) path.dispatchEvent(new Event('click'));
+        else openUnitDetail(u);
+        // Mark active card
+        document.querySelectorAll('.mfv-unit-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      };
+      listEl.appendChild(card);
+    });
+  }
+
+  // 5. Floor tabs (right column)
+  const tabsEl = document.getElementById('mfv-floor-tabs');
+  if (tabsEl) {
+    tabsEl.innerHTML = '';
+    for (let i = 8; i >= 1; i--) {
+      const label = i === 1 ? 'G' : (i === 2 ? '01' : '0' + (i - 1));
+      const tab = document.createElement('button');
+      tab.className = 'mfv-floor-tab' + (i === f ? ' active' : '');
+      tab.textContent = label;
+      tab.onclick = () => {
+        if (S.selected === i) { clearSelectionWithMobile(); flyTo('orbit'); }
+        else selectFloorWithMobile(i);
+      };
+      tabsEl.appendChild(tab);
+    }
+  }
+
+  // 6. Re-center the canvas blueprint in the viewport
+  requestAnimationFrame(() => {
+    centerCanvas();
+  });
+}
+
+// Hook: patch selectFloor to also update mobile view
+const _origSelectFloor = selectFloor;
+function selectFloorWithMobile(f) {
+  _origSelectFloor(f);
+  if (window.innerWidth <= 768) {
+    setTimeout(() => renderMobileFloorView(f), 50);
+  }
+}
+// Override globally
+window.selectFloor = selectFloorWithMobile;
+
+// Hook: patch clearSelection to also work on mobile
+const _origClearSelection = clearSelection;
+function clearSelectionWithMobile() {
+  _origClearSelection();
+}
+window.clearSelection = clearSelectionWithMobile;
+
+// Mobile back button
+const mfvBack = document.getElementById('mfv-back-btn');
+if (mfvBack) {
+  mfvBack.onclick = () => {
+    clearSelectionWithMobile();
+    flyTo('orbit');
+  };
+}
+
+// Mobile zoom controls (delegate to existing blueprint controls)
+document.getElementById('mfvZoomIn').onclick = () => {
+  zoom = Math.min(3.5, zoom * 1.2);
+  updateCanvasTransform();
+};
+document.getElementById('mfvZoomOut').onclick = () => {
+  zoom = Math.max(0.3, zoom / 1.2);
+  updateCanvasTransform();
+};
+
+// Mobile dock navigation buttons
+document.querySelectorAll('#mfv-dock .mfv-dock-btn[data-view]').forEach(btn => {
+  btn.onclick = () => {
+    clearSelectionWithMobile();
+    flyTo(btn.dataset.view);
+  };
+});
+
+document.getElementById('mfvLocBtn').onclick = () => {
+  document.getElementById('bLoc').click();
+};
+
+/* =====================================================
+   END MOBILE FLOOR PLAN VIEW
+   ===================================================== */
+
+
 viewport.onclick = () => {
-  if (isTracerMode) return; // bypass selection reset clicks when busy tracing
   // Clear unit details when clicking blank blueprint spaces
   document.querySelectorAll('.unit-path').forEach(p => p.classList.remove('active'));
   document.getElementById('unitDetailCard').classList.remove('show');
@@ -5698,313 +6775,10 @@ viewport.onclick = () => {
   selectedFloorUnit = null;
 };
 
-/* ===== DEVELOPER BLUEPRINT TRACER TOOL LOGIC ===== */
-
-// Helper to update blueprint styling during tracing dynamically
-function updateBlueprintStyle() {
-  const img = document.getElementById('blueprintImage');
-  const slider = document.getElementById('dtOpacitySlider');
-  const invertCheck = document.getElementById('dtInvertCheck');
-  
-  if (img) {
-    if (slider) {
-      img.style.opacity = slider.value / 100;
-      document.getElementById('dtOpacityValue').textContent = slider.value + '%';
-    }
-    if (invertCheck) {
-      img.style.filter = invertCheck.checked 
-        ? 'invert(0.9) contrast(1.1) brightness(1.2)' 
-        : 'none';
-    }
-  }
-}
-
-// Toggle Tracer mode state and UI elements
-function toggleDevTracer(forceState) {
-  isTracerMode = (forceState !== undefined) ? forceState : !isTracerMode;
-  
-  const toggleBtn = document.getElementById('devTracerToggle');
-  const panel = document.getElementById('devTracerPanel');
-  const svg = document.getElementById('blueprintSvg');
-  
-  if (isTracerMode) {
-    toggleBtn.classList.add('active');
-    panel.classList.add('show');
-    svg.classList.add('tracer-mode-active');
-    
-    // Clear unit selection card to focus on dev panel
-    document.getElementById('unitDetailCard').classList.remove('show');
-    document.getElementById('svgConnectorGroup').innerHTML = '';
-    document.querySelectorAll('.unit-path').forEach(p => p.classList.remove('active'));
-    selectedFloorUnit = null;
-    
-    // Populate unit dropdown for current floor
-    populateTracerUnits();
-    
-    // Clear current points
-    tracePoints = [];
-    updateDevTraceOverlay();
-    updatePointsList();
-    document.getElementById('dtStatus').textContent = "Select a unit from the dropdown above to start.";
-    document.getElementById('dtOutputJson').value = "";
-    
-    // Apply initial tracer visual styles
-    updateBlueprintStyle();
-  } else {
-    toggleBtn.classList.remove('active');
-    panel.classList.remove('show');
-    svg.classList.remove('tracer-mode-active');
-    tracePoints = [];
-    updateDevTraceOverlay();
-    
-    // Revert blueprint styling back to subtle premium look
-    const img = document.getElementById('blueprintImage');
-    if (img) {
-      img.style.opacity = '0.45';
-      img.style.filter = 'invert(0.9) contrast(1.1) brightness(1.2)';
-    }
-  }
-}
-
-// Attach event listeners for dynamic blueprint visual controls
-document.getElementById('dtOpacitySlider').addEventListener('input', updateBlueprintStyle);
-document.getElementById('dtInvertCheck').addEventListener('change', updateBlueprintStyle);
-
-// Populate units select dropdown for the active level
-function populateTracerUnits() {
-  const select = document.getElementById('dtUnitSelect');
-  select.innerHTML = '<option value="">-- Choose Unit --</option>';
-  
-  if (S.selected === null) return;
-  
-  const fu = DATA.units.filter(u => u.f === S.selected);
-  fu.forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u.u;
-    
-    const hasPoly = (UNIT_POLYGONS[S.selected] && UNIT_POLYGONS[S.selected][u.u]) ? " (Traced)" : "";
-    opt.textContent = `Unit ${u.u}${hasPoly}`;
-    select.appendChild(opt);
-  });
-}
-
-// Handle unit selection change in dropdown
-document.getElementById('dtUnitSelect').addEventListener('change', (e) => {
-  const unitId = e.target.value;
-  const statusEl = document.getElementById('dtStatus');
-  
-  if (!unitId) {
-    tracePoints = [];
-    statusEl.textContent = "Select a unit from the dropdown above to start.";
-    updatePointsList();
-    updateDevTraceOverlay();
-    document.getElementById('dtOutputJson').value = "";
-    return;
-  }
-  
-  // Load existing polygon points if already traced locally or hardcoded
-  if (UNIT_POLYGONS[S.selected] && UNIT_POLYGONS[S.selected][unitId]) {
-    tracePoints = JSON.parse(JSON.stringify(UNIT_POLYGONS[S.selected][unitId])); // deep copy
-    statusEl.textContent = `Editing Unit ${unitId}. Click on map to add more points.`;
-  } else {
-    tracePoints = [];
-    statusEl.textContent = `Tracing Unit ${unitId}. Click corners on the map to define vertices.`;
-  }
-  
-  updatePointsList();
-  updateDevTraceOverlay();
-  generateOutputJSON();
-});
-
-// Update vertices coordinates list inside dev panel
-function updatePointsList() {
-  const container = document.getElementById('dtPointsList');
-  if (tracePoints.length === 0) {
-    container.textContent = "No points added yet. Click on the map to place vertices.";
-    return;
-  }
-  
-  let html = '<strong>Vertices (x, y):</strong><ol style="margin:4px 0 0 16px; padding:0;">';
-  tracePoints.forEach((p, i) => {
-    html += `<li>[${p[0]}, ${p[1]}]</li>`;
-  });
-  html += '</ol>';
-  container.innerHTML = html;
-}
-
-// Generate the copy-pasteable JSON block
-function generateOutputJSON() {
-  const select = document.getElementById('dtUnitSelect');
-  const unitId = select.value;
-  const output = document.getElementById('dtOutputJson');
-  
-  if (!unitId || tracePoints.length === 0) {
-    output.value = "";
-    return;
-  }
-  
-  // Create output JS format
-  const jsonStr = `"${unitId}": ${JSON.stringify(tracePoints)}`;
-  output.value = jsonStr;
-}
-
-// Copy JSON to clipboard and apply immediately to local view memory
-document.getElementById('dtCopyBtn').addEventListener('click', () => {
-  const output = document.getElementById('dtOutputJson');
-  if (!output.value) {
-    alert("Nothing to copy! Please select a unit and place points first.");
-    return;
-  }
-  
-  output.select();
-  navigator.clipboard.writeText(output.value)
-    .then(() => {
-      // Temporarily change button style to show success feedback
-      const btn = document.getElementById('dtCopyBtn');
-      const oldText = btn.textContent;
-      btn.textContent = "Copied & Applied!";
-      btn.style.background = "#4fe090";
-      btn.style.color = "#04080c";
-      
-      setTimeout(() => {
-        btn.textContent = oldText;
-        btn.style.background = "";
-        btn.style.color = "";
-      }, 1500);
-      
-      // Instantly inject the traced coordinates into local memory so it renders in real-time in the browser!
-      const select = document.getElementById('dtUnitSelect');
-      const unitId = select.value;
-      if (!UNIT_POLYGONS[S.selected]) {
-        UNIT_POLYGONS[S.selected] = {};
-      }
-      UNIT_POLYGONS[S.selected][unitId] = JSON.parse(JSON.stringify(tracePoints));
-      
-      // Re-render SVG to show local updates immediately!
-      renderSVGFloorPlan(S.selected);
-      populateTracerUnits(); // refresh dropdown names to show (Traced)
-      select.value = unitId; // preserve selection
-      updateDevTraceOverlay(); // draw current trace points overlay
-    })
-    .catch(err => {
-      console.error("Could not copy text: ", err);
-    });
-});
-
-// Undo last point
-document.getElementById('dtUndoBtn').addEventListener('click', () => {
-  if (tracePoints.length > 0) {
-    tracePoints.pop();
-    updatePointsList();
-    updateDevTraceOverlay();
-    generateOutputJSON();
-  }
-});
-
-// Clear all points
-document.getElementById('dtClearBtn').addEventListener('click', () => {
-  if (confirm("Are you sure you want to clear all points for the current unit?")) {
-    tracePoints = [];
-    updatePointsList();
-    updateDevTraceOverlay();
-    generateOutputJSON();
-  }
-});
-
-// Hook Toggle Button Click
-document.getElementById('devTracerToggle').onclick = (e) => {
-  e.stopPropagation();
-  toggleDevTracer();
-};
-
-// Hook click events on the blueprint SVG canvas to add vertices
-document.getElementById('blueprintSvg').addEventListener('click', (e) => {
-  if (!isTracerMode) return;
-  
-  // Stop propagation to prevent card/selection reset
-  e.stopPropagation();
-  
-  const select = document.getElementById('dtUnitSelect');
-  const unitId = select.value;
-  
-  if (!unitId) {
-    alert("Please select a target unit from the dropdown first before placing points!");
-    return;
-  }
-  
-  const svg = document.getElementById('blueprintSvg');
-  const rect = svg.getBoundingClientRect();
-  
-  // Calculate exact coordinates in 800x645 coordinate box
-  const x = Math.round(((e.clientX - rect.left) / rect.width) * 800);
-  const y = Math.round(((e.clientY - rect.top) / rect.height) * 645);
-  
-  tracePoints.push([x, y]);
-  
-  updatePointsList();
-  updateDevTraceOverlay();
-  generateOutputJSON();
-});
-
-// Render active traced overlay vertices & context outlines of other traced units
-function updateDevTraceOverlay() {
-  let g = document.getElementById('svgDevTraceGroup');
-  if (!g) return;
-  g.innerHTML = '';
-  
-  if (!isTracerMode) return;
-  
-  // Render active traced points
-  if (tracePoints.length > 0) {
-    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    const ptsStr = tracePoints.map(p => `${p[0]},${p[1]}`).join(' ');
-    poly.setAttribute('points', ptsStr);
-    poly.setAttribute('fill', 'rgba(79, 224, 144, 0.18)');
-    poly.setAttribute('stroke', '#4fe090');
-    poly.setAttribute('stroke-width', '2.2');
-    poly.setAttribute('stroke-dasharray', '4,3');
-    g.appendChild(poly);
-    
-    // Add dots at each vertex
-    tracePoints.forEach((p, idx) => {
-      const circ = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circ.setAttribute('cx', p[0]);
-      circ.setAttribute('cy', p[1]);
-      circ.setAttribute('r', idx === 0 ? '5.5' : '4');
-      circ.setAttribute('fill', idx === 0 ? '#ff63c4' : '#4fe090'); // Highlight starting node in pink
-      circ.setAttribute('stroke', '#fff');
-      circ.setAttribute('stroke-width', '1.2');
-      g.appendChild(circ);
-      
-      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      txt.setAttribute('x', p[0]);
-      txt.setAttribute('y', p[1] - 8);
-      txt.setAttribute('fill', '#fff');
-      txt.setAttribute('font-size', '9px');
-      txt.setAttribute('font-family', 'Outfit, sans-serif');
-      txt.setAttribute('font-weight', '700');
-      txt.setAttribute('text-anchor', 'middle');
-      txt.textContent = idx + 1;
-      g.appendChild(txt);
-    });
-  }
-  
-  // Draw outlines of other already-traced units on this floor for context
-  const floorPolys = UNIT_POLYGONS[S.selected] || {};
-  const activeUnit = document.getElementById('dtUnitSelect').value;
-  
-  for (const [uId, pts] of Object.entries(floorPolys)) {
-    if (uId === activeUnit) continue; // Skip editing unit
-    
-    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    const ptsStr = pts.map(p => `${p[0]},${p[1]}`).join(' ');
-    poly.setAttribute('points', ptsStr);
-    poly.setAttribute('fill', 'rgba(201, 168, 120, 0.05)');
-    poly.setAttribute('stroke', 'rgba(201, 168, 120, 0.35)');
-    poly.setAttribute('stroke-width', '1');
-    g.appendChild(poly);
-  }
-}
+/* ===== DEVELOPER BLUEPRINT TRACER TOOL LOGIC (REMOVED) ===== */
+function toggleDevTracer() {}
+function populateTracerUnits() {}
+function updateDevTraceOverlay() {}
 
 /* ===== tooltip ===== */
 const tip=document.getElementById('tip');
@@ -6018,9 +6792,33 @@ function openUnitDetail(u){
   CUR=u; pickUnits.forEach(m=>{if(m.userData.unit===u){pulseUnit=m;pulseT=1;}});
   liftTargetY=BASE_Y[u.f]+FH[u.f]/2; showBalcony(u);   // lift rises to this unit's floor
   
-  // 1. Hero text fields
-  document.getElementById('umHeroUnitName').textContent = 'Unit ' + u.u;
-  document.getElementById('umHeroUnitSub').textContent = unitClass(u).toUpperCase() + ' • ' + FLOOR_NAMES[u.f].split('·')[0].trim();
+  // 1. Left Branding Sidebar
+  const floorLabel = FLOOR_NAMES[u.f].split('·')[0].trim();
+  document.getElementById('umLeftFloorName').textContent = floorLabel;
+  const fl = DATA.floors[u.f] || { units: 0, suite: 0 };
+  document.getElementById('umLeftUnits').textContent = fl.units;
+  document.getElementById('umLeftArea').textContent = fl.suite.toLocaleString() + ' sq ft';
+  
+  // Render Left Floors Grid Grid Switcher
+  const flGrid = document.getElementById('umLeftFloorsGrid');
+  if (flGrid) {
+    flGrid.innerHTML = '';
+    for (let i = 1; i <= 8; i++) {
+      const btn = document.createElement('button');
+      btn.style.cssText = `background:transparent; border:1px solid var(--line); border-radius:6px; color:#fff; font-size:10px; font-weight:700; height:28px; cursor:pointer; transition:0.15s;`;
+      btn.textContent = i === 1 ? 'G' : '0' + (i - 1);
+      if (i === u.f) {
+        btn.style.background = 'var(--gold)';
+        btn.style.color = '#1a1205';
+        btn.style.borderColor = 'var(--gold)';
+      }
+      btn.onclick = () => {
+        closeModal('unitModal');
+        selectFloor(i);
+      };
+      flGrid.appendChild(btn);
+    }
+  }
   
   // 2. Quick stats chips
   document.getElementById('umChipArea').textContent = u.s.toLocaleString() + ' sqft';
@@ -6028,14 +6826,25 @@ function openUnitDetail(u){
   document.getElementById('umChipAspect').textContent = aspectOf(u);
   document.getElementById('umChipStatus').innerHTML = `<span class="um-status-dot">●</span> ${statusOf(u)}`;
   
-  // 3. Price readouts
-  document.getElementById('umPriceReadout').textContent = fmtAED(priceOf(u));
-  document.getElementById('umRateReadout').textContent = fmtAED(psfOf(u)) + ' / sqft';
+  // 3. Right Column Headers
+  document.getElementById('umRightUnitName').textContent = 'UNIT ' + u.u;
+  document.getElementById('umRightUnitSub').textContent = unitClass(u);
+  
+  const rightStatus = document.getElementById('umRightUnitStatus');
+  if (rightStatus) {
+    rightStatus.textContent = '● ' + statusOf(u).toUpperCase();
+    const statusLower = statusOf(u).toLowerCase();
+    rightStatus.className = 'status-' + statusLower + '-color';
+    if (statusLower === 'available') {
+      rightStatus.style.cssText = 'font-size:10px; font-weight:700; border:1px solid #4fe090; background:rgba(79,224,144,0.08); padding:4px 8px; border-radius:12px; text-transform:uppercase; color:#4fe090;';
+    } else {
+      rightStatus.style.cssText = 'font-size:10px; font-weight:700; border:1px solid var(--gold); background:rgba(201,168,120,0.08); padding:4px 8px; border-radius:12px; text-transform:uppercase; color:var(--gold);';
+    }
+  }
   
   // 4. Specs Grid
   const W=Math.round(Math.sqrt(u.s/1.4)), L=Math.round(W*1.4);
   const specs = [
-    ['Level', u.u + ' · ' + (u.f === 1 ? 'Ground (G+1)' : (u.f === 2 ? 'Level 01' : 'Level 0' + (u.f - 1))), `<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 9h6M9 13h6M9 17h6"/></svg>`],
     ['Unit Type', unitClass(u), `<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>`],
     ['Built-up Area', u.s.toLocaleString() + ' sqft', `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>`],
     ['Dimensions (approx)', `${W} × ${L} ft (${(W*0.3048).toFixed(1)} × ${(L*0.3048).toFixed(1)} m)`, `<svg viewBox="0 0 24 24"><path d="M5 3v18M19 3v18M5 12h14"/></svg>`],
@@ -6043,15 +6852,18 @@ function openUnitDetail(u){
     ['Status', statusOf(u), `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>`]
   ];
   document.getElementById('umSpecsList').innerHTML = specs.map(r => `
-    <div class="um-spec-row">
-      <span class="um-spec-label">${r[2]} ${r[0]}</span>
-      <span class="um-spec-value">${r[1]}</span>
+    <div class="um-spec-row" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(201,168,120,0.08); padding-bottom:10px;">
+      <span class="um-spec-label" style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted);">${r[2]} ${r[0]}</span>
+      <span class="um-spec-value" style="font-size:12px; font-weight:700; color:#fff;">${r[1]}</span>
     </div>
   `).join('');
   
   // 5. Drawing display defaults
-  document.getElementById('umPlan').src = PLAN_BASE + FLOOR_PLAN[u.f];
-  document.getElementById('umPlan').style.transform = 'scale(1)';
+  document.getElementById('umPlan').src = `aurum_assets/unit_plans/unit_${u.u}.png`;
+  umPanX = 0;
+  umPanY = 0;
+  umZoom = 1.0;
+  updateUmPlanTransform();
   document.getElementById('umPlan').style.display = 'block';
   document.getElementById('umInteractiveFitout').style.display = 'none';
   document.querySelectorAll('.um-tab').forEach(t => t.classList.remove('active'));
@@ -6090,6 +6902,10 @@ document.getElementById('tabPlan').onclick = (e) => {
   e.target.classList.add('active');
   document.getElementById('umPlan').style.display = 'block';
   document.getElementById('umInteractiveFitout').style.display = 'none';
+  umPanX = 0;
+  umPanY = 0;
+  umZoom = 1.0;
+  updateUmPlanTransform();
 };
 document.getElementById('tabFurnished').onclick = (e) => {
   document.querySelectorAll('.um-tab').forEach(t => t.classList.remove('active'));
@@ -6108,24 +6924,81 @@ document.getElementById('tabShell').onclick = (e) => {
   fitout.innerHTML = officeSVG('Cellular');
 };
 // Back to Orbit navigation link
-document.getElementById('umBackToOrbitLink').onclick = () => {
-  closeModal('unitModal');
-  clearSelection();
-};
+const backToOrbit = document.getElementById('umBackToOrbitLink');
+if (backToOrbit) {
+  backToOrbit.onclick = () => {
+    closeModal('unitModal');
+    clearSelection();
+  };
+}
 
 // Left zoom controls simulation (makes the architectural gold plan responsive)
 let umZoom = 1;
+let umPanX = 0;
+let umPanY = 0;
+let umIsDragging = false;
+let umStartX = 0;
+let umStartY = 0;
+
+function updateUmPlanTransform() {
+  const planEl = document.getElementById('umPlan');
+  if (planEl) {
+    planEl.style.transform = `translate(${umPanX}px, ${umPanY}px) scale(${umZoom})`;
+  }
+}
+
+const umContainer = document.getElementById('umDrawingContainer');
+if (umContainer) {
+  umContainer.style.cursor = 'grab';
+
+  umContainer.addEventListener('mousedown', (e) => {
+    umIsDragging = true;
+    umStartX = e.clientX - umPanX;
+    umStartY = e.clientY - umPanY;
+    umContainer.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!umIsDragging) return;
+    umPanX = e.clientX - umStartX;
+    umPanY = e.clientY - umStartY;
+    updateUmPlanTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!umIsDragging) return;
+    umIsDragging = false;
+    umContainer.style.cursor = 'grab';
+  });
+
+  umContainer.addEventListener('wheel', (e) => {
+    const planEl = document.getElementById('umPlan');
+    if (planEl && planEl.style.display !== 'none') {
+      e.preventDefault();
+      const zoomFactor = 0.06;
+      if (e.deltaY < 0) {
+        umZoom = Math.min(4.0, umZoom + zoomFactor);
+      } else {
+        umZoom = Math.max(0.4, umZoom - zoomFactor);
+      }
+      updateUmPlanTransform();
+    }
+  }, { passive: false });
+}
+
 document.getElementById('umZoomIn').onclick = () => {
-  umZoom = Math.min(2.5, umZoom + 0.15);
-  document.getElementById('umPlan').style.transform = `scale(${umZoom})`;
+  umZoom = Math.min(4.0, umZoom + 0.2);
+  updateUmPlanTransform();
 };
 document.getElementById('umZoomOut').onclick = () => {
-  umZoom = Math.max(0.5, umZoom - 0.15);
-  document.getElementById('umPlan').style.transform = `scale(${umZoom})`;
+  umZoom = Math.max(0.4, umZoom - 0.2);
+  updateUmPlanTransform();
 };
 document.getElementById('umZoomReset').onclick = () => {
-  umZoom = 1;
-  document.getElementById('umPlan').style.transform = 'scale(1)';
+  umZoom = 1.0;
+  umPanX = 0;
+  umPanY = 0;
+  updateUmPlanTransform();
 };
 document.getElementById('umBtn3D').onclick = () => {
   closeModal('unitModal');
@@ -6361,17 +7234,7 @@ function openPlans(f){
   const tabs=document.getElementById('fpTabs'); tabs.innerHTML='';
   for(let i=8;i>=1;i--){const fl=DATA.floors[i];const t=document.createElement('div');t.className='fptab'+(i===f?' on':'');
     t.innerHTML=(i===1?'GROUND':(i===2?'LEVEL 01':'LEVEL 0'+(i-1)))+'<b>'+fl.units+' units</b>'; t.onclick=()=>openPlans(i); tabs.appendChild(t);}
-  const planMap = {
-    1: 'aurum_assets/plan_view/floor_1.png',
-    2: 'aurum_assets/plan_view/floor_1.png',
-    3: 'aurum_assets/plan_view/floor_2.png',
-    4: 'aurum_assets/plan_view/floor_3.png',
-    5: 'aurum_assets/plan_view/floor_4.png',
-    6: 'aurum_assets/plan_view/floor_5.png',
-    7: 'aurum_assets/plan_view/floor_6.png',
-    8: 'aurum_assets/plan_view/floor_7.png'
-  };
-  document.getElementById('fpImg').src = planMap[f] || 'aurum_assets/plan_view/floor_1.png';
+  document.getElementById('fpImg').src = FLOOR_PLAN_COLORED[f] || 'aurum_assets/plan_view/floor_1.png';
   const fl=DATA.floors[f], side=document.getElementById('fpSide');
   const types=fl.types.map(t=>`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted)"><span>${t.name}</span><span>×${t.count}</span></div>`).join('');
   const sampleUnit = DATA.units.find(u=>u.f===f) || DATA.units.find(u=>u.f===1);
@@ -6391,6 +7254,7 @@ document.getElementById('bLoc').onclick=()=>{const w=document.getElementById('ma
   document.getElementById('mapModal').classList.add('show');};
 document.getElementById('eye').onclick=()=>document.body.classList.toggle('clean');
 function closeModal(id){document.getElementById(id).classList.remove('show');}
+window.closeModal = closeModal;
 document.querySelectorAll('[data-close]').forEach(x=>x.onclick=()=>closeModal(x.dataset.close));
 document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove('show');});
 
@@ -6432,21 +7296,21 @@ meetModalDiv.innerHTML = `
         <p style="margin:0;font-size:13px;color:var(--muted);line-height:1.5">Schedule a private viewing or video call with our senior investment advisor. Please fill in your details below.</p>
         <div style="display:flex;flex-direction:column;gap:6px">
           <label style="font-size:10px;letter-spacing:.08em;color:var(--gold);font-weight:700">YOUR NAME</label>
-          <input type="text" placeholder="John Doe" style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px">
+          <input type="text" placeholder="John Doe" style="background:rgba(11, 30, 26, 0.88);border:1px solid rgba(201, 168, 120, 0.28);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px;outline:none;">
         </div>
         <div style="display:flex;flex-direction:column;gap:6px">
           <label style="font-size:10px;letter-spacing:.08em;color:var(--gold);font-weight:700">EMAIL ADDRESS</label>
-          <input type="email" placeholder="john@example.com" style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px">
+          <input type="email" placeholder="john@example.com" style="background:rgba(11, 30, 26, 0.88);border:1px solid rgba(201, 168, 120, 0.28);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px;outline:none;">
         </div>
         <div style="display:flex;flex-direction:column;gap:6px">
           <label style="font-size:10px;letter-spacing:.08em;color:var(--gold);font-weight:700">PHONE NUMBER</label>
-          <input type="tel" placeholder="+971 50 123 4567" style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px">
+          <input type="tel" placeholder="+971 50 123 4567" style="background:rgba(11, 30, 26, 0.88);border:1px solid rgba(201, 168, 120, 0.28);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px;outline:none;">
         </div>
         <div style="display:flex;flex-direction:column;gap:6px">
           <label style="font-size:10px;letter-spacing:.08em;color:var(--gold);font-weight:700">PREFERRED DATE & TIME</label>
-          <input type="datetime-local" style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px">
+          <input type="datetime-local" style="background:rgba(11, 30, 26, 0.88);border:1px solid rgba(201, 168, 120, 0.28);border-radius:8px;padding:10px;color:#fff;font:inherit;font-size:13px;outline:none;">
         </div>
-        <button class="fi-cta" id="meetingSubmit" style="margin-top:8px">Submit Request</button>
+        <button class="fi-cta" id="meetingSubmit" style="margin-top:8px;background:var(--gold);color:#1a1205;border:none;border-radius:8px;padding:12px;font-weight:700;cursor:pointer;">Submit Request</button>
       </div>
     </div>
   </div>
@@ -6469,9 +7333,8 @@ const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let downXY=null;
 renderer.domElement.addEventListener('pointerdown',e=>downXY=[e.clientX,e.clientY]);
 renderer.domElement.addEventListener('pointermove',e=>{
   if(S.selected===null){mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight*2-1));ray.setFromCamera(mouse,camera);
-    const hLmk=pickLandmarks.length?ray.intersectObjects(pickLandmarks,false)[0]:null;
     const h=ray.intersectObjects([...pickDoors,...pickFloors],false)[0];
-    renderer.domElement.style.cursor=(h||hLmk)?'pointer':'grab';return;}
+    renderer.domElement.style.cursor=h?'pointer':'grab';return;}
   mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight*2-1));ray.setFromCamera(mouse,camera);
   const h=ray.intersectObjects(unitGroups[S.selected].children,false)[0];
   if(h){showTip(e,h.object.userData.unit);renderer.domElement.style.cursor='pointer';}else{hideTip();renderer.domElement.style.cursor='grab';}});
@@ -6480,8 +7343,6 @@ renderer.domElement.addEventListener('pointerup',e=>{
   mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight*2-1));ray.setFromCamera(mouse,camera);
   if(S.courts){const h=ray.intersectObjects(courtyards.map(c=>c.mesh),false)[0];if(h){const c=courtyards.find(c=>c.mesh===h.object);openLightbox(c.render,c.name+' · render');return;}}
   if(S.selected===null&&!S.courts){const dh=ray.intersectObjects(pickDoors,false)[0];if(dh){if(e.stopPropagation)e.stopPropagation();walkUnit(dh.object.userData.unitWalk);return;}}   // ground office door → unit walkthrough (priority over floor pick)
-  // Landmark building click → open editor for that building
-  if(S.selected===null&&pickLandmarks.length){const lh=ray.intersectObjects(pickLandmarks,false)[0];if(lh&&lh.object.userData.landmarkIndex!==undefined){openBuildingEditor(lh.object.userData.landmarkIndex);return;}}
   if(S.selected!==null){const h=ray.intersectObjects(unitGroups[S.selected].children,false)[0];if(h){openUnitDetail(h.object.userData.unit);return;}}
   const picks=ray.intersectObjects([bridgeDeck,...pickFloors],false);
   if(picks.length){const o=picks[0].object; if(o.userData.bridge)flyTo('bridge'); else if(o.userData.floor!==undefined)playFloorSelectionCinematic(o.userData.floor);}});
@@ -6734,6 +7595,15 @@ document.addEventListener('click', (e) => {
     }
   }
 });
+
+/* Toggle collapse/expand on unifiedBuildingCard when clicked anywhere on it */
+const ubc = document.getElementById('unifiedBuildingCard');
+if (ubc) {
+  ubc.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ubc.classList.toggle('collapsed');
+  });
+}
 
 /* live Dubai clock (intro + top bar) */
 function tickClock(){const d=new Date(),t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
