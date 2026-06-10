@@ -368,6 +368,37 @@
   .g-attr{position:fixed;bottom:10px;right:10px;z-index:15;font-size:10px;color:rgba(255,255,255,0.4);pointer-events:none;}
   @media(max-width:640px){ .g-attr{bottom:60px;} }
 
+  /* ===== 3D VIEW EXIT BUTTON ===== */
+  #glb3dExit {
+    display: none;
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 200;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(15, 25, 20, 0.85);
+    border: 1px solid rgba(193, 160, 98, 0.55);
+    border-radius: 40px;
+    color: #c1a062;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  }
+  #glb3dExit:hover {
+    background: rgba(193, 160, 98, 0.18);
+    border-color: #c1a062;
+    transform: translateY(-1px);
+  }
+  body.glb-active #glb3dExit { display: flex; }
+
   /* ============================================================== */
   /* ===== PREMIUM FLOOR VIEW MODE OVERLAYS (MOCKUP STYLE) ===== */
   /* ============================================================== */
@@ -1945,6 +1976,10 @@
   <div class="btn gold" id="bLoc"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg><span>Location</span></div>
   
   <!-- Hiding unwanted buttons -->
+  <div class="btn" id="bBlender">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    <span>3D View</span>
+  </div>
   <div class="btn" data-view="site"><svg viewBox="0 0 24 24"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg><span>Site</span></div>
   <div class="btn" id="bExplode"><svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg><span>Explode</span></div>
   <div class="btn" id="bColumns"><svg viewBox="0 0 24 24"><path d="M6 3v18M12 3v18M18 3v18M4 3h16M4 21h16"/></svg><span>Structure</span></div>
@@ -1963,6 +1998,11 @@
     Fullscreen
   </button>
 </div>
+
+<button id="glb3dExit">
+  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+  Exit 3D View
+</button>
 <div id="hint" class="ui">Drag <b>orbit</b> · scroll <b>zoom</b> · click a <b>floor</b> → units → <b>offer</b></div>
 
 <div id="unitbar"><span id="unitName">OFFICE</span><span id="unitLayout">Layout A · Open plan</span><button id="unitSwap">⇄ Swap layout</button><button id="unitExit">✕ Exit</button></div>
@@ -3806,6 +3846,7 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {TilesRenderer, WGS84_ELLIPSOID} from '3d-tiles-renderer';
 
 /* ===== DATA ===== */
@@ -7619,6 +7660,293 @@ if(enterBtn) enterBtn.onclick=()=>{document.getElementById('intro').classList.ad
   flyTo('site'); setTimeout(()=>flyTo('orbit'),2900);};
 
 /* Road brush tool removed — roads are now permanently mapped */
+
+// ===== GLB 3D VIEW =====
+let glbModel = null;
+let glbLoaded = false;
+let glbActive = false;
+
+function createSunsetGradient() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 512, 128, 0); // diagonal bottom-left to top-right
+  grad.addColorStop(0, '#ffd0a8'); // warm soft peach/orange horizon glow
+  grad.addColorStop(0.25, '#ebdccb'); // soft warm beige-gray transition
+  grad.addColorStop(0.6, '#b3c5d7'); // cool blue-gray sky
+  grad.addColorStop(1.0, '#768ca3'); // cool slate blue-gray upper sky
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+const sunsetBg = createSunsetGradient();
+
+document.getElementById('bBlender').addEventListener('click', () => {
+  if (!glbActive) {
+    // Snapshot the full scene state (visibilities)
+    const sceneSnapshot = [];
+    scene.traverse((obj) => {
+      sceneSnapshot.push({ obj, visible: obj.visible });
+    });
+
+    // Hide procedural building objects only
+    scene.traverse((obj) => {
+      if (obj === glbModel || (glbModel && glbModel.children.includes(obj))) return;
+      if (obj.isMesh || obj.isLineSegments || obj.isLine) {
+        const n = (obj.name || '').toLowerCase();
+        const hasFloor = obj.userData.floor !== undefined;
+        const hasBuilding = obj.userData.isBuilding || obj.userData.type === 'building';
+        const nameMatch = [
+          'floor','slab','band','facade','column','core','roof',
+          'balcony','parapet','window','glass','frame','panel',
+          'curtain','lobby','canopy','atrium','fin','mullion',
+          'spandrel','soffit','cornice','plinth','podium',
+          'penthouse','screen','wall','stair','lift','wire',
+          'holograph','building_mesh','unit_mesh','structure'
+        ].some(k => n.includes(k));
+        
+        if (hasFloor || hasBuilding || nameMatch) {
+          obj.visible = false;
+        }
+      }
+    });
+
+    // Hide tiles renderer (OSM 3D buildings)
+    if (typeof tilesRenderer !== 'undefined' && tilesRenderer && tilesRenderer.group) {
+      tilesRenderer.group.visible = false;
+    }
+
+    // Also hide any object that is a Line, LineSegments, or wireframe
+    scene.traverse((obj) => {
+      if (obj === glbModel) return;
+      if (glbModel && obj.isDescendantOf && obj.isDescendantOf(glbModel)) return;
+      if (obj.isLine || obj.isLineSegments || obj.isLineLoop) {
+        obj.visible = false;
+      }
+      // Hide any mesh with wireframe material
+      if (obj.isMesh && obj.material && obj.material.wireframe) {
+        obj.visible = false;
+      }
+    });
+
+    // Save environment settings
+    scene.userData.originalBg = scene.background;
+    scene.userData.originalFog = scene.fog;
+
+    // Apply sunset background gradient and linear fog (clear foreground, hazy background)
+    scene.background = sunsetBg;
+    scene.fog = new THREE.Fog(0xd0c8be, 280, 950);
+
+    // Setup warm directional sunset light and ambient fill (balanced to avoid color tinting)
+    let sunsetSun = scene.getObjectByName('sunset_sun');
+    let sunsetAmbient = scene.getObjectByName('sunset_ambient');
+    if (!sunsetSun) {
+      sunsetSun = new THREE.DirectionalLight(0xffebd8, 1.8); // brighter warm directional for building presence
+      sunsetSun.position.set(-300, 120, -200);
+      sunsetSun.name = 'sunset_sun';
+      scene.add(sunsetSun);
+
+      sunsetAmbient = new THREE.AmbientLight(0xa0b5d0, 1.3); // stronger fill so building reads clearly
+      sunsetAmbient.name = 'sunset_ambient';
+      scene.add(sunsetAmbient);
+    } else {
+      sunsetSun.visible = true;
+      sunsetAmbient.visible = true;
+    }
+
+    // Dim original scene lights to isolate sunset look
+    scene.traverse((obj) => {
+      if (obj.isLight && obj !== sunsetSun && obj !== sunsetAmbient && !obj.name.includes('sunset')) {
+        obj.visible = false;
+      }
+    });
+
+    // Apply material swaps to surrounding elements to match reference palette (grayish-beige/charcoal)
+    const materialSnapshot = [];
+    scene.traverse((obj) => {
+      if (obj.isMesh && obj.material && obj !== glbModel && !(glbModel && glbModel.children.includes(obj))) {
+        const mat = obj.material;
+        if (mat.color) {
+          materialSnapshot.push({
+            mat,
+            color: mat.color.getHex(),
+            roughness: mat.roughness,
+            metalness: mat.metalness
+          });
+          const hex = mat.color.getHex();
+          // Ground (0x0b1315) or Parks (0x12241e) -> Light gray-beige
+          if (hex === 0x0b1315 || hex === 0x12241e) {
+            mat.color.setHex(0xbfb9ae);
+            mat.roughness = 0.95;
+            mat.metalness = 0.0;
+          }
+          // Roads (0x181c20, 0x2c353d, 0x1a1714) -> Dark charcoal
+          else if (hex === 0x181c20 || hex === 0x2c353d || hex === 0x1a1714) {
+            mat.color.setHex(0x1e1d1c);
+            mat.roughness = 0.8;
+          }
+          // Background buildings (0x06111a) or other dark background blocks -> Muted grayish-beige
+          else if (hex === 0x06111a || (hex < 0x202020 && hex > 0x000000)) {
+            mat.color.setHex(0xb5b0a6);
+            mat.roughness = 0.95;
+            mat.metalness = 0.0;
+          }
+        }
+      }
+    });
+
+    // Animate camera to the sunset hero angle looking down at centered building
+    camTween = {
+      fromP: camera.position.clone(),
+      toP: new THREE.Vector3(125, 75, 125),
+      fromT: controls.target.clone(),
+      toT: new THREE.Vector3(0, 12, 0),
+      t: 0,
+      dur: 1.25
+    };
+
+    const processGLB = (model) => {
+      model.userData.sceneSnapshot = sceneSnapshot;
+      model.userData.materialSnapshot = materialSnapshot;
+
+      model.traverse((child) => {
+        if (child.isMesh) {
+          // Fix depth/transparency settings only — do NOT override colors
+          child.material.transparent = false;
+          child.material.opacity = 1.0;
+          child.material.depthWrite = true;
+          child.renderOrder = 999;
+
+          // --- Fully remove reflections for a clean matte architectural look ---
+          child.material.metalness = 0;        // no mirror-like reflections
+          child.material.roughness = Math.max(child.material.roughness, 0.7); // minimum matte finish
+          child.material.envMapIntensity = 0;  // disable environment map reflections
+
+          // Cap any runaway emissive so nothing glows excessively
+          if (child.material.emissiveIntensity > 0.35) {
+            child.material.emissiveIntensity = 0.35;
+          }
+
+          child.material.needsUpdate = true;
+        }
+      });
+    };
+
+    if (!glbLoaded) {
+      const loader = new GLTFLoader();
+      loader.load('aurum_assets/aurum_building_only.glb', (gltf) => {
+        glbModel = gltf.scene;
+        processGLB(glbModel);
+
+        // Scale and position to match procedural building
+        const box = new THREE.Box3().setFromObject(glbModel);
+        const centre = box.getCenter(new THREE.Vector3());
+        const glbHeight = box.getSize(new THREE.Vector3()).y;
+        const scaleFactor = 50 / glbHeight;
+        glbModel.scale.setScalar(scaleFactor);
+        glbModel.position.set(
+          -centre.x * scaleFactor,
+          -box.min.y * scaleFactor,
+          -centre.z * scaleFactor
+        );
+
+        scene.add(glbModel);
+        glbLoaded = true;
+        glbActive = true;
+        document.getElementById('bBlender').classList.add('active');
+        glbHideUI();
+      });
+    } else {
+      processGLB(glbModel);
+      glbModel.visible = true;
+      glbActive = true;
+      document.getElementById('bBlender').classList.add('active');
+      glbHideUI();
+    }
+
+  } else {
+    // Restore scene state from snapshots
+    if (glbModel && glbModel.userData.sceneSnapshot) {
+      glbModel.userData.sceneSnapshot.forEach(({ obj, visible }) => {
+        obj.visible = visible;
+      });
+    }
+    if (glbModel && glbModel.userData.materialSnapshot) {
+      glbModel.userData.materialSnapshot.forEach(({ mat, color, roughness, metalness }) => {
+        mat.color.setHex(color);
+        mat.roughness = roughness;
+        mat.metalness = metalness;
+      });
+    }
+
+    if (glbModel) glbModel.visible = false;
+    if (typeof tilesRenderer !== 'undefined' && tilesRenderer && tilesRenderer.group) {
+      tilesRenderer.group.visible = true;
+    }
+
+    // Deactivate sunset lighting
+    const sunsetSun = scene.getObjectByName('sunset_sun');
+    const sunsetAmbient = scene.getObjectByName('sunset_ambient');
+    if (sunsetSun) sunsetSun.visible = false;
+    if (sunsetAmbient) sunsetAmbient.visible = false;
+
+    // Restore environment background and fog
+    scene.background = scene.userData.originalBg || new THREE.Color(0x000000);
+    scene.fog = scene.userData.originalFog || null;
+
+    // Smoothly animate camera back to original orbit target position
+    camTween = {
+      fromP: camera.position.clone(),
+      toP: VIEWS.orbit.pos.clone(),
+      fromT: controls.target.clone(),
+      toT: VIEWS.orbit.tgt.clone(),
+      t: 0,
+      dur: 1.15
+    };
+
+    glbActive = false;
+    document.getElementById('bBlender').classList.remove('active');
+    glbRestoreUI();
+  }
+});
+
+// ===== 3D VIEW UI HELPERS =====
+const GLB_HIDE_IDS = ['stats', 'leftSidebar', 'rail', 'topRight'];
+
+function glbHideUI() {
+  document.body.classList.add('glb-active');
+  GLB_HIDE_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.dataset.glbWasDisplay = el.style.display || '';
+      el.style.transition = 'opacity 0.3s';
+      el.style.opacity = '0';
+      el.style.pointerEvents = 'none';
+      setTimeout(() => { el.style.display = 'none'; }, 300);
+    }
+  });
+}
+
+function glbRestoreUI() {
+  document.body.classList.remove('glb-active');
+  GLB_HIDE_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = el.dataset.glbWasDisplay || '';
+      requestAnimationFrame(() => {
+        el.style.opacity = '1';
+        el.style.pointerEvents = '';
+      });
+    }
+  });
+}
+
+document.getElementById('glb3dExit').addEventListener('click', () => {
+  document.getElementById('bBlender').click();
+});
 
 </script>
 </body>
