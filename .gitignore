@@ -24,3 +24,5 @@ aurum_assets/render_candidates/Aurum_by_Meteora_Investment_Overview/
 # building_render_front.jpg, render_candidates/3D_revised_render/*.png, pricing_data.json
 
 .vercel
+dist/
+scratch/

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurum Digital Twin - Experience the Asset</title>
+  <meta name="description" content="Explore Aurum through a cinematic, interactive layer of real estate intelligence. Experience the future of asset representation.">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Floating Nav Bar -->
+  <nav class="aurum-nav">
+    <div class="nav-brand" data-scroll-to="overview" style="cursor: pointer;">Realco / Aurum</div>
+    <ul class="nav-links">
+      <li><a class="active" data-scroll-to="overview">Overview</a></li>
+      <li><a data-scroll-to="digital-twin">Digital Twin</a></li>
+      <li><a data-scroll-to="location">Location</a></li>
+      <li><a data-scroll-to="contact">Contact</a></li>
+    </ul>
+    <button class="nav-cta" onclick="window.location.href='/?enter=true'">Launch 3D Twin</button>
+    
+    <!-- Mobile Menu Toggle Button -->
+    <button class="mobile-menu-toggle" aria-label="Toggle Menu" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+    
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-dropdown">
+      <ul class="mobile-nav-links">
+        <li><a data-scroll-to="overview">Overview</a></li>
+        <li><a data-scroll-to="digital-twin">Digital Twin</a></li>
+        <li><a data-scroll-to="location">Location</a></li>
+        <li><a data-scroll-to="contact">Contact</a></li>
+      </ul>
+      <button class="mobile-nav-cta" onclick="window.location.href='/?enter=true'">Launch 3D Twin</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section (pinned canvas content) -->
+  <section class="hero" id="hero-section">
+    <!-- Cinema Canvas -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- Visual Overlays -->
+    <div class="hero-overlay-dark"></div>
+    <div class="hero-overlay-gradient"></div>
+    <canvas id="hero-grid"></canvas>
+
+    <!-- Main Content layout -->
+    <div class="hero-content luxury-title-card">
+      <p class="hero-brand-present-kicker">REALCO <span class="gold-text">CAPITAL</span> PRESENTS</p>
+      
+      <h1 class="hero-main-title">
+        AURUM <span class="hero-signature">by <span class="gold-text">Meteora</span></span>
+      </h1>
+      
+      <p class="hero-metadata">
+        COMMERCIAL &middot; G+7 &middot; AL SUFOUH 1 &middot; SHEIKH ZAYED ROAD &middot; DUBAI
+      </p>
+      <p class="hero-finance-note">
+        Handover September 2026 &middot; 20% down, 80% over 4 months or bank-financed
+      </p>
+      <div class="hero-cta-wrap">
+        <button class="hero-cta-btn" onclick="window.location.href='/?enter=true'">ENTER THE TWIN &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Scroll Cue -->
+    <div class="hero-scroll-cue">
+      <span class="scroll-label">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Unified Pinned Feature Walkthrough Section -->
+  <section class="feature-walkthrough" id="digital-twin">
+    <div class="feature-grid"></div>
+
+    <aside class="feature-nav">
+      <button class="active" data-state="0">CORE CONCEPT</button>
+      <button data-state="1">CORPORATE ECOSYSTEM</button>
+      <button data-state="2">LOCATION INTELLIGENCE</button>
+      <button data-state="3">COURTYARD</button>
+    </aside>
+
+    <div class="feature-stage">
+      <!-- State 0: CORE CONCEPT -->
+      <article class="feature-state active" data-state="0">
+        <div class="state-media-wrap centered-media">
+          <video class="state-video" autoplay muted loop playsinline poster="assets/images/aurum-exploded-poster.png">
+            <source src="assets/videos/aurum-exploded-building.mp4" type="video/mp4">
+          </video>
+          <!-- Floating labels for State 0 -->
+          <div class="tech-label label-envelope visible">
+            <span class="tech-dot"></span>BUILDING ENVELOPE
+            <div class="tech-line line-envelope"></div>
+          </div>
+          <div class="tech-label label-glass visible">
+            <span class="tech-dot"></span>GLASS FACADE SYSTEM
+            <div class="tech-line line-glass"></div>
+          </div>
+          <div class="tech-label label-balcony visible">
+            <span class="tech-dot"></span>BALCONY + TERRACE ZONES
+            <div class="tech-line line-balcony"></div>
+          </div>
+          <div class="tech-label label-core visible">
+            <span class="tech-dot"></span>VERTICAL CORE
+            <div class="tech-line line-core"></div>
+          </div>
+          <div class="tech-label label-access visible">
+            <span class="tech-dot"></span>GROUND LEVEL ACCESS
+            <div class="tech-line line-access"></div>
+          </div>
+          <div class="tech-label label-layers visible">
+            <span class="tech-dot"></span>DIGITAL TWIN LAYERS
+            <div class="tech-line line-layers"></div>
+          </div>
+        </div>
+        <div class="state-headline-wrap">
+          <p class="feature-kicker">CORE CONCEPT</p>
+          <h2 class="state-headline-bottom">
+            A digital twin that opens the building into layers of architecture, data, and commercial intelligence.
+          </h2>
+        </div>
+      </article>
+
+      <!-- State 1: CORPORATE ECOSYSTEM -->
+      <article class="feature-state standard-split-state" data-state="1">
+        <div class="state-split-container">
+          <!-- Left side: Media Card -->
+          <div class="standard-media-card">
+            <span class="media-tag">A COMPLETE CORPORATE ECOSYSTEM</span>
+            <div class="media-video-wrap">
+              <video class="feature-media-video" autoplay muted loop playsinline>
+                <source src="assets/videos/aurum-corporate-amenities.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="media-caption">
+              <h3>AMENITIES</h3>
+              <p>Concierge, executive offices, lounges, courtyard, pantry, and premium facilities.</p>
+            </div>
+          </div>
+          <!-- Right side: Content Block -->
+          <div class="standard-content">
+            <p class="feature-kicker">CORPORATE ECOSYSTEM</p>
+            <h2 class="standard-headline">
+              A complete corporate ecosystem designed for modern business performance.
+            </h2>
+            <p class="standard-support">
+              Aurum brings together premium office spaces, hospitality-inspired amenities, secure access, executive facilities, and long-term commercial value in one corporate address.
+            </p>
+            <ul class="standard-bullets">
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Concierge desk and 24/7 security</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Smart access control for a secure working environment</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Business lounge, meeting rooms, and prayer rooms</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Ample parking with EV charging station</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Executive offices with pantry and restroom facilities</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- State 2: LOCATION INTELLIGENCE -->
+      <article class="feature-state standard-split-state" data-state="2">
+        <div class="state-split-container">
+          <!-- Left side: Media Card -->
+          <div class="standard-media-card">
+            <span class="media-tag">LOCATION INTELLIGENCE</span>
+            <div class="media-video-wrap">
+              <video class="feature-media-video" autoplay muted loop playsinline>
+                <source src="assets/videos/aurum-location-transition.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="media-caption">
+              <h3>CONNECTIVITY</h3>
+              <p>From Al Sufouh to Dubai’s key business, lifestyle, and transport destinations.</p>
+            </div>
+          </div>
+          <!-- Right side: Content Block -->
+          <div class="standard-content">
+            <p class="feature-kicker">LOCATION INTELLIGENCE</p>
+            <h2 class="standard-headline">
+              A strategically connected address in the heart of Dubai’s commercial corridor.
+            </h2>
+            <p class="standard-support">
+              Positioned in Al Sufouh, Aurum connects business, lifestyle, education, hospitality, and transport destinations within minutes.
+            </p>
+            <ul class="standard-bullets">
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Internet City Metro Stations — 2 mins</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Dubai Internet and Media City — 5 mins</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">American University of Dubai — 5 mins</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Dubai Marina — 7 mins</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Sufouh Beach — 10 mins</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Dubai Mall — 15 mins</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Dubai International Airport — 25 mins</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- State 3: COURTYARD -->
+      <article class="feature-state standard-split-state" data-state="3">
+        <div class="state-split-container">
+          <!-- Left side: Media Card -->
+          <div class="standard-media-card">
+            <span class="media-tag">COURTYARD</span>
+            <div class="media-video-wrap">
+              <video class="feature-media-video" autoplay muted loop playsinline>
+                <source src="assets/videos/aurum-courtyard.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="media-caption">
+              <h3>OUTDOOR AMENITY</h3>
+              <p>Landscaped corners, seating, lighting, and water features within the corporate setting.</p>
+            </div>
+          </div>
+          <!-- Right side: Content Block -->
+          <div class="standard-content">
+            <p class="feature-kicker">COURTYARD</p>
+            <h2 class="standard-headline">
+              A signature open-to-sky courtyard brings nature into the corporate environment.
+            </h2>
+            <p class="standard-support">
+              Aurum’s landscaped courtyard creates a calm arrival experience with planted corners, refined paving, outdoor seating, soft lighting, and water features designed for a premium workplace atmosphere.
+            </p>
+            <ul class="standard-bullets">
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Open-to-sky landscaped courtyard</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Outdoor seating and calm arrival zones</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Integrated lighting and water features</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">Greenery woven into the corporate environment</span>
+              </li>
+              <li>
+                <span class="bullet-arrow"></span>
+                <span class="bullet-text">A refined outdoor amenity for visitors and occupiers</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- WHY AURUM Editorial Section -->
+  <section class="editorial-section why-aurum" id="why-aurum">
+    <div class="editorial-container">
+      <div class="editorial-header">
+        <div class="editorial-label-col">
+          <span class="editorial-label">WHY AURUM</span>
+        </div>
+        <div class="editorial-content-col">
+          <h2 class="editorial-headline">A landmark address designed to stand out <span class="softer-text">from day to night.</span></h2>
+          <p class="editorial-support">
+            Aurum brings together architectural presence, premium office spaces, and a connected Dubai location in one distinctive commercial address.
+          </p>
+        </div>
+      </div>
+      <div class="editorial-video-wrap">
+        <video class="editorial-video" autoplay muted loop playsinline>
+          <source src="video/Aurum_building_day-to-night_tran…_202606120151 (1).mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVENTORY INTELLIGENCE Section -->
+  <section class="inventory-section" id="inventory-intelligence">
+    <div class="inventory-container">
+      <div class="inventory-header">
+        <span class="inventory-label">INVENTORY INTELLIGENCE</span>
+        <h2 class="inventory-headline">Find the right Aurum unit by size, floor, value, and investment profile.</h2>
+        <p class="inventory-support">
+          Explore available commercial units, compare pricing, estimate monthly payments, and understand potential rental yield in one interactive view.
+        </p>
+      </div>
+      
+      <div class="dashboard-wrapper">
+        <!-- Column 1: visual building / floor selector -->
+        <div class="dashboard-col floor-selector-col">
+          <h3 class="col-title">Building Stack</h3>
+          <div class="floor-stack-container" id="ii-floor-stack">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+        
+        <!-- Column 2: search & filter & units list -->
+        <div class="dashboard-col unit-explorer-col">
+          <div class="filter-controls">
+            <div class="search-wrap">
+              <input type="text" id="ii-search" placeholder="Search by Unit / Type..." />
+            </div>
+            
+            <div class="filter-dropdowns">
+              <div class="filter-group">
+                <label for="ii-filter-class">Class</label>
+                <select id="ii-filter-class">
+                  <option value="">All Classes</option>
+                  <option value="G+1 Duplex Unit">G+1 Duplex Unit</option>
+                  <option value="Full-Floor Suite">Full-Floor Suite</option>
+                  <option value="Premium Suite">Premium Suite</option>
+                  <option value="Standard Suite">Standard Suite</option>
+                  <option value="Boutique Suite">Boutique Suite</option>
+                </select>
+              </div>
+              
+              <div class="filter-group">
+                <label for="ii-filter-status">Status</label>
+                <select id="ii-filter-status">
+                  <option value="">All Status</option>
+                  <option value="Available">Available</option>
+                  <option value="Reserved">Reserved</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="sliders-wrap">
+              <div class="filter-group slider-group">
+                <div class="slider-labels">
+                  <span>Max Price:</span>
+                  <span id="ii-price-val" class="highlight-val">12M AED</span>
+                </div>
+                <input type="range" id="ii-filter-price" min="2000000" max="12000000" step="500000" value="12000000" />
+              </div>
+              
+              <div class="filter-group slider-group">
+                <div class="slider-labels">
+                  <span>Max Size:</span>
+                  <span id="ii-size-val" class="highlight-val">5,000 sqft</span>
+                </div>
+                <input type="range" id="ii-filter-size" min="800" max="5000" step="100" value="5000" />
+              </div>
+            </div>
+          </div>
+          
+          <div class="unit-grid-container" id="ii-unit-grid">
+            <!-- Dynamically populated cards -->
+          </div>
+        </div>
+        
+        <!-- Column 3: selected unit details + calculators -->
+        <div class="dashboard-col unit-details-col">
+          <div class="details-card-panel" id="ii-detail-panel">
+            <div class="details-empty-state" id="ii-details-empty">
+              <div class="empty-icon"></div>
+              <p>Select a unit from the explorer to view detailed asset intelligence, ROI projections, and customize mortgage options.</p>
+            </div>
+            
+            <div class="details-content-state" id="ii-details-content" style="display: none;">
+              <div class="detail-header-info">
+                <h4 id="ii-detail-id">ARM-101</h4>
+                <span id="ii-detail-status" class="status-badge">Available</span>
+              </div>
+              
+              <div class="details-specs-grid">
+                <div class="spec-item">
+                  <span class="spec-lbl">Classification</span>
+                  <span class="detail-val" id="ii-detail-class">-</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-lbl">Built-Up Area</span>
+                  <span class="detail-val" id="ii-detail-size">-</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-lbl">PSF Rate</span>
+                  <span class="detail-val" id="ii-detail-psf">-</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-lbl">Aspect / View</span>
+                  <span class="detail-val" id="ii-detail-aspect">-</span>
+                </div>
+              </div>
+              
+              <div class="detail-price-wrap">
+                <span class="price-lbl">Purchase Value</span>
+                <span class="price-val" id="ii-detail-price">-</span>
+              </div>
+              
+              <!-- Action Button Row -->
+              <div class="details-actions">
+                <button class="btn-compare-action" id="ii-btn-compare">Add to Compare</button>
+                <button class="btn-3d-placeholder" onclick="window.location.href='/?enter=true'">View in 3D Twin</button>
+              </div>
+
+              <!-- ROI Section -->
+              <div class="metrics-block roi-block">
+                <h5 class="block-title">Rental Yield (ROI) Model</h5>
+                <div class="roi-flex-grid">
+                  <div class="roi-card">
+                    <span class="roi-lbl">Conservative Yield</span>
+                    <span class="roi-val-pct" id="ii-roi-pct-low">-</span>
+                    <span class="roi-val-rent" id="ii-roi-rent-low">-</span>
+                  </div>
+                  <div class="roi-card">
+                    <span class="roi-lbl">Optimistic Yield</span>
+                    <span class="roi-val-pct" id="ii-roi-pct-high">-</span>
+                    <span class="roi-val-rent" id="ii-roi-rent-high">-</span>
+                  </div>
+                </div>
+                <span class="doc-disclaimer">Rent rates projected at 280-350 AED/sqft/yr.</span>
+              </div>
+
+              <!-- Mortgage / EMI Calculator -->
+              <div class="metrics-block mortgage-block">
+                <h5 class="block-title">Amortized Mortgage Calculator</h5>
+                <div class="calculator-inputs-grid">
+                  <div class="calc-input-group">
+                    <label>Down Payment (%)</label>
+                    <input type="number" id="ii-calc-dp-pct" min="10" max="90" step="5" value="20" />
+                  </div>
+                  <div class="calc-input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="ii-calc-ir" min="1.0" max="15.0" step="0.1" value="6.5" />
+                  </div>
+                  <div class="calc-input-group">
+                    <label>Tenure (Years)</label>
+                    <input type="number" id="ii-calc-tenure" min="5" max="30" step="1" value="25" />
+                  </div>
+                </div>
+                
+                <div class="calculator-outputs">
+                  <div class="calc-out-item">
+                    <span>Down Payment Value</span>
+                    <strong id="ii-calc-dp-val">-</strong>
+                  </div>
+                  <div class="calc-out-item">
+                    <span>Loan Financed Amount</span>
+                    <strong id="ii-calc-loan">-</strong>
+                  </div>
+                  <div class="calc-out-item total-emi">
+                    <span>Estimated EMI</span>
+                    <strong id="ii-calc-emi">-</strong>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Payment Plan -->
+              <div class="payment-plan-note">
+                <h6>Milestone & Handover Timeline</h6>
+                <p>20% booking down payment. 80% balance due within 4 months (mortgage-eligible). Estimated handover September 2026.</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Unit Comparison Dock -->
+      <div class="comparison-dock" id="ii-comparison-dock">
+        <div class="dock-container">
+          <span class="dock-title">Selected for Comparison:</span>
+          <div class="dock-slots" id="ii-comparison-slots">
+            <!-- Slot tags added dynamically -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Comparison Fullscreen Modal/Overlay -->
+      <div class="comparison-overlay" id="ii-comparison-overlay">
+        <div class="comparison-modal">
+          <div class="modal-header">
+            <h3>Unit Comparison Matrix</h3>
+            <button class="close-modal-btn" id="ii-close-comparison">&times;</button>
+          </div>
+          <div class="modal-body table-responsive">
+            <table class="comparison-table">
+              <tbody id="ii-comparison-table-body">
+                <!-- Rows dynamically added here -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer-note">
+            <p>* EMI calculated based on standard defaults (20% Down Payment, 6.5% interest, 25 years tenure).</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SPACES & AMENITIES Cinematic Gallery Section -->
+  <section class="gallery-section" id="spaces-amenities">
+    <div class="gallery-scroller">
+      <!-- Slide 1: Lounge -->
+      <div class="gallery-slide" data-index="0">
+        <video class="gallery-video" autoplay muted loop playsinline>
+          <source src="assets/videos/gallery-lounge.mp4" type="video/mp4">
+        </video>
+        <div class="gallery-overlay"></div>
+        <div class="gallery-info">
+          <span class="gallery-kicker">AMENITY</span>
+          <h3 class="gallery-title">Lounge</h3>
+          <p class="gallery-desc">A calm arrival setting shaped by warm materials, soft seating, and natural light.</p>
+        </div>
+      </div>
+      
+      <!-- Slide 2: Executive Offices -->
+      <div class="gallery-slide" data-index="1">
+        <video class="gallery-video" autoplay muted loop playsinline>
+          <source src="assets/videos/gallery-executive-office.mp4" type="video/mp4">
+        </video>
+        <div class="gallery-overlay"></div>
+        <div class="gallery-info">
+          <span class="gallery-kicker">WORKSPACE</span>
+          <h3 class="gallery-title">Executive Offices</h3>
+          <p class="gallery-desc">Private workspaces designed for focus, presence, and premium business performance.</p>
+        </div>
+      </div>
+      
+      <!-- Slide 3: Executive Restrooms -->
+      <div class="gallery-slide" data-index="2">
+        <video class="gallery-video" autoplay muted loop playsinline>
+          <source src="assets/videos/gallery-executive-restrooms.mp4" type="video/mp4">
+        </video>
+        <div class="gallery-overlay"></div>
+        <div class="gallery-info">
+          <span class="gallery-kicker">DETAILS</span>
+          <h3 class="gallery-title">Executive Restrooms</h3>
+          <p class="gallery-desc">Hospitality-inspired finishes with warm lighting, stone textures, and refined detailing.</p>
+        </div>
+      </div>
+      
+      <!-- Slide 4: Courtyard -->
+      <div class="gallery-slide" data-index="3">
+        <video class="gallery-video" autoplay muted loop playsinline>
+          <source src="assets/videos/gallery-courtyard.mp4" type="video/mp4">
+        </video>
+        <div class="gallery-overlay"></div>
+        <div class="gallery-info">
+          <span class="gallery-kicker">OUTDOOR AMENITY</span>
+          <h3 class="gallery-title">Courtyard</h3>
+          <p class="gallery-desc">An open-to-sky landscaped retreat with seating, greenery, water features, and soft lighting.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery UI overlay controls -->
+    <div class="gallery-controls">
+      <div class="gallery-progress-bar">
+        <div class="gallery-progress-fill" id="gallery-progress-fill"></div>
+      </div>
+      <div class="gallery-indicators">
+        <button class="gallery-indicator active" data-slide="0">
+          <span class="indicator-num">01</span>
+          <span class="indicator-label">Lounge</span>
+        </button>
+        <button class="gallery-indicator" data-slide="1">
+          <span class="indicator-num">02</span>
+          <span class="indicator-label">Offices</span>
+        </button>
+        <button class="gallery-indicator" data-slide="2">
+          <span class="indicator-num">03</span>
+          <span class="indicator-label">Restrooms</span>
+        </button>
+        <button class="gallery-indicator" data-slide="3">
+          <span class="indicator-num">04</span>
+          <span class="indicator-label">Courtyard</span>
+        </button>
+      </div>
+      <div class="gallery-counter">
+        <span id="current-slide-num">01</span><span class="counter-divider">/</span><span>04</span>
+      </div>
+  </section>
+
+  <!-- PREMIUM BRAND FOOTER -->
+  <footer class="aurum-footer">
+    <div class="footer-container">
+      
+      <!-- Top Section -->
+      <div class="footer-top">
+        <div class="footer-brand-block">
+          <span class="footer-brand-kicker">REALCO CAPITAL</span>
+          <h2 class="footer-brand-title">REALCO / AURUM</h2>
+          <p class="footer-brand-desc">
+            A premium commercial address in Al Sufouh, Dubai — presented through cinematic digital intelligence.
+          </p>
+        </div>
+        <div class="footer-cta-block">
+          <button class="footer-cta-btn btn-gold" onclick="window.location.href='/?enter=true'">Launch 3D Twin</button>
+          <a class="footer-cta-btn btn-outline" href="#footer-contact" data-scroll-to="contact">Contact Realco</a>
+        </div>
+      </div>
+      
+      <!-- Gold Divider -->
+      <div class="footer-divider divider-gold"></div>
+      
+      <!-- Middle Area Columns -->
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h3 class="footer-col-title"><span class="footer-col-bullet"></span>Explore</h3>
+          <ul class="footer-nav-links">
+            <li><a href="#" data-scroll-to="overview">Overview</a></li>
+            <li><a href="#" data-scroll-to="digital-twin">Digital Twin</a></li>
+            <li><a href="#" data-scroll-to="location">Location</a></li>
+            <li><a href="#" data-scroll-to="inventory">Inventory</a></li>
+            <li><a href="#" data-scroll-to="spaces-amenities">Spaces & Amenities</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3 class="footer-col-title"><span class="footer-col-bullet"></span>Project</h3>
+          <ul class="footer-nav-links">
+            <li><a href="#" data-scroll-to="corporate-ecosystem">Corporate Ecosystem</a></li>
+            <li><a href="#" data-scroll-to="courtyard-walkthrough">Courtyard</a></li>
+            <li><a href="#" data-scroll-to="executive-offices">Executive Offices</a></li>
+            <li><a href="#" data-scroll-to="investment-intelligence">Investment Intelligence</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column" id="footer-contact">
+          <h3 class="footer-col-title"><span class="footer-col-bullet"></span>Location</h3>
+          <div class="footer-location-details">
+            <p class="loc-text-main">Aurum / Al Wahaibi Building</p>
+            <p class="loc-text-sub">Al Sufouh 1, Dubai, UAE</p>
+            <a href="https://www.google.com/maps/place/456H%2B6WG+Al+Wahaibi+Building+-+Al+Sufouh+-+Al+Sufouh+1+-+Dubai/@25.110429,55.1789154,902m/data=!3m1!1e3!4m6!3m5!1s0x3e5f6b0a9534ec07:0x6fe4745a492c3eb!8m2!3d25.1105188!4d55.1802741!16s%2Fg%2F11bvtc604d?entry=ttu&g_ep=EgoyMDI2MDYwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="footer-map-link">
+              View on Google Maps <span class="footer-map-arrow">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Muted Divider -->
+      <div class="footer-divider divider-muted"></div>
+      
+      <!-- Bottom Row -->
+      <div class="footer-bottom">
+        <span class="footer-copyright">&copy; 2026 Realco Capital Real Estate. All rights reserved.</span>
+        <span class="footer-experience">Aurum Digital Twin Experience</span>
+        <span class="footer-presentation-note">Built for interactive property presentation</span>
+      </div>
+      
+    </div>
+  </footer>
+
+  <!-- Libraries: GSAP and GSAP ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  
+  <!-- Main Scripts -->
+  <script src="js/hero-sequence.js"></script>
+  <script src="js/inventory-intelligence.js"></script>
+  <script src="js/spaces-amenities.js"></script>
+</body>
+</html>
