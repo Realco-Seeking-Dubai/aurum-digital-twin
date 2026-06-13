@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AURUM · Digital Sales Twin · Al Sufouh, Dubai</title>
 <link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="preload" href="aurum_assets/aurum_building_only.glb" as="fetch" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@300;400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -4229,7 +4230,9 @@ const ground=new THREE.Group(); scene.add(ground);
   createBlock(100, -320, 200, 120);
 
   // plot boundary
-  ground.add(ringLine(HALF+10,CHAM+4,0.05,0xc9a878,.35));
+  const plotBoundary = ringLine(HALF+10,CHAM+4,0.05,0xc9a878,.35);
+  plotBoundary.name = "plot_boundary";
+  ground.add(plotBoundary);
   
   // location pin
   const pin=new THREE.Group(); ground.add(pin);
@@ -4595,6 +4598,9 @@ tower.add(brandLabel);
 const neighbors = new THREE.Group(); scene.add(neighbors);
 const osmGroup = new THREE.Group(); scene.add(osmGroup);
 let trafficFlows = [];
+
+
+
 
 
 
@@ -5586,7 +5592,21 @@ function renderOSM(data) {
 
   
   // 4. Elevated 3D Dubai Metro Viaduct Track (permanent site-specific model)
-  buildMetroTrack(osmGroup);
+  const motorwayPaths = [];
+  data.roads.forEach(road => {
+    if (road.class === 'motorway') {
+      motorwayPaths.push(road.path);
+    }
+  });
+
+  if (motorwayPaths.length > 0) {
+    motorwayPaths.forEach(path => {
+      const metroPath = getOffsetPath(path, 53);
+      buildMetroTrack(osmGroup, metroPath);
+    });
+  } else {
+    buildMetroTrack(osmGroup);
+  }
 
   // Add Sheikh Zayed Road 3D Label
   const szrLabel = makeLabel("SHEIKH ZAYED ROAD", '#c9a878', 34);
@@ -5595,33 +5615,124 @@ function renderOSM(data) {
   osmGroup.add(szrLabel);
 }
 
-function buildMetroTrack(parentGroup) {
+function getOffsetPath(pathPoints, offsetDist) {
+  const offsetPoints = [];
+  for (let i = 0; i < pathPoints.length; i++) {
+    const p = pathPoints[i];
+    let normal = new THREE.Vector3(0, 0, 1);
+    if (i < pathPoints.length - 1) {
+      const pNext = pathPoints[i + 1];
+      const dir = new THREE.Vector2(pNext[0] - p[0], pNext[1] - p[1]).normalize();
+      normal.set(-dir.y, 0, dir.x);
+    } else if (i > 0) {
+      const pPrev = pathPoints[i - 1];
+      const dir = new THREE.Vector2(p[0] - pPrev[0], p[1] - pPrev[1]).normalize();
+      normal.set(-dir.y, 0, dir.x);
+    }
+    offsetPoints.push(new THREE.Vector3(p[0] + normal.x * offsetDist, 0, p[1] + normal.z * offsetDist));
+  }
+  return offsetPoints;
+}
+
+function buildMetroTrack(parentGroup, points) {
   const metroGroup = new THREE.Group();
   parentGroup.add(metroGroup);
   
-  const deckGeo = new THREE.BoxGeometry(2400, 0.8, 4);
-  const deck = new THREE.Mesh(deckGeo, glassMat(0x1d4a72, 0.55));
-  deck.position.set(0, 4.4, -120);
-  deck.add(new THREE.LineSegments(new THREE.EdgesGeometry(deckGeo), lineMat(0x5c7a74, 0.6, false)));
-  metroGroup.add(deck);
-
-  for (let x = -1200; x <= 1200; x += 45) {
-    const pilGeo = new THREE.CylinderGeometry(0.5, 0.8, 4.4, 6);
-    const pil = new THREE.Mesh(pilGeo, glassMat(0x1d4a72, 0.6));
-    pil.position.set(x, 2.2, -120);
-    pil.add(new THREE.LineSegments(new THREE.EdgesGeometry(pilGeo), lineMat(0x5c7a74, 0.5, false)));
-    metroGroup.add(pil);
+  // Apply permanent shift coordinates and rotation (aligned by user)
+  metroGroup.position.set(123, 0, 200);
+  metroGroup.rotation.y = 37 * (Math.PI / 180);
+  
+  // Default fallback points if no path is provided (aligned with fallback SZR road centerlines)
+  if (!points || points.length < 2) {
+    points = [];
+    const roadC = [
+      [-400, 161], [-240, 111], [-180, 91], [-120, 75], [-60, 55], [0, 41], [45, 45], [57, 12], [73, -22], [103, -48], [300, -130]
+    ];
+    roadC.forEach(p => {
+      points.push(new THREE.Vector3(p[0], 0, p[1]));
+    });
   }
 
-  const railGeo1 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1200, 4.9, -121.2), new THREE.Vector3(1200, 4.9, -121.2)]);
-  const railGeo2 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1200, 4.9, -118.8), new THREE.Vector3(1200, 4.9, -118.8)]);
-  metroGroup.add(new THREE.Line(railGeo1, lineMat(0x2A3545, 0.4, false)));
-  metroGroup.add(new THREE.Line(railGeo2, lineMat(0x2A3545, 0.4, false)));
+  // Elevate points to track deck level (Y = 4.4)
+  const trackPoints = points.map(pt => new THREE.Vector3(pt.x, 4.4, pt.y !== undefined ? pt.y : pt.z));
 
-  const ml = makeLabel("DUBAI METRO", '#8aa6a0', 30);
-  ml.position.set(-120, 7, -120);
-  ml.scale.set(24, 3, 1);
-  metroGroup.add(ml);
+  const deckMat = glassMat(0x1d4a72, 0.55);
+  const deckEdgeMat = lineMat(0x5c7a74, 0.6, false);
+  const pilMat = glassMat(0x1d4a72, 0.6);
+  const pilEdgeMat = lineMat(0x5c7a74, 0.5, false);
+
+  const railPts1 = [];
+  const railPts2 = [];
+
+  let lastPillarDist = 9999; // force first pillar placement
+
+  for (let i = 0; i < trackPoints.length - 1; i++) {
+    const p1 = trackPoints[i];
+    const p2 = trackPoints[i + 1];
+
+    const dir = new THREE.Vector3().subVectors(p2, p1);
+    const dist = dir.length();
+    if (dist < 0.1) continue;
+
+    dir.normalize();
+
+    // Midpoint position for deck segment
+    const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+
+    // Deck geometry segment
+    const segGeo = new THREE.BoxGeometry(dist, 0.8, 4);
+    const segMesh = new THREE.Mesh(segGeo, deckMat);
+    segMesh.position.copy(mid);
+
+    // Align the box segment along the direction vector
+    const alignAxis = new THREE.Vector3(1, 0, 0); // Box is created along X axis
+    const quaternion = new THREE.Quaternion().setFromUnitVectors(alignAxis, dir);
+    segMesh.quaternion.copy(quaternion);
+
+    segMesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(segGeo), deckEdgeMat));
+    metroGroup.add(segMesh);
+
+    // Calculate normal vector perpendicular to direction in XZ plane for rails
+    const normal = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
+    
+    // Add rail vertices
+    railPts1.push(new THREE.Vector3().copy(mid).addScaledVector(normal, 1.1));
+    railPts2.push(new THREE.Vector3().copy(mid).addScaledVector(normal, -1.1));
+
+    // Place pillars along the track at regular intervals
+    let d = 0;
+    while (d < dist) {
+      if (lastPillarDist >= 40) {
+        const pillarPos = new THREE.Vector3().copy(p1).addScaledVector(dir, d);
+        const pillarH = pillarPos.y; // Height of pillar down to ground
+        const pilGeo = new THREE.CylinderGeometry(0.5, 0.8, pillarH, 6);
+        const pil = new THREE.Mesh(pilGeo, pilMat);
+        pil.position.set(pillarPos.x, pillarH / 2, pillarPos.z);
+        pil.add(new THREE.LineSegments(new THREE.EdgesGeometry(pilGeo), pilEdgeMat));
+        metroGroup.add(pil);
+        lastPillarDist = 0;
+      }
+      d += 5;
+      lastPillarDist += 5;
+    }
+  }
+
+  // Render rail lines
+  if (railPts1.length > 1) {
+    const railGeo1 = new THREE.BufferGeometry().setFromPoints(railPts1.map(p => new THREE.Vector3(p.x, p.y + 0.5, p.z)));
+    const railGeo2 = new THREE.BufferGeometry().setFromPoints(railPts2.map(p => new THREE.Vector3(p.x, p.y + 0.5, p.z)));
+    metroGroup.add(new THREE.Line(railGeo1, lineMat(0x2a3545, 0.4, false)));
+    metroGroup.add(new THREE.Line(railGeo2, lineMat(0x2a3545, 0.4, false)));
+  }
+
+  // Label position: near the middle of the track points
+  const midIndex = Math.floor(trackPoints.length / 2);
+  if (trackPoints[midIndex]) {
+    const ml = makeLabel("DUBAI METRO", '#8aa6a0', 30);
+    ml.position.copy(trackPoints[midIndex]).add(new THREE.Vector3(0, 2.6, 0));
+    ml.scale.set(24, 3, 1);
+    metroGroup.add(ml);
+  }
 }
 
 function drawFallbackSurroundings() {
@@ -7682,6 +7793,155 @@ if (urlParams.has('enter')) {
 let glbModel = null;
 let glbLoaded = false;
 let glbActive = false;
+let sceneSnapshotGlobal = [];
+let materialSnapshotGlobal = [];
+
+const processGLB = (model) => {
+  model.userData.sceneSnapshot = sceneSnapshotGlobal;
+  model.userData.materialSnapshot = materialSnapshotGlobal;
+
+  model.traverse((child) => {
+    if (child.isMesh) {
+      // Clone material to avoid modifying original shared materials
+      if (!child.userData.originalMaterial) {
+        child.userData.originalMaterial = child.material;
+      }
+      child.material = child.userData.originalMaterial.clone();
+      const mat = child.material;
+
+      mat.transparent = false;
+      mat.opacity = 1.0;
+      mat.depthWrite = true;
+      child.renderOrder = 999;
+
+      const meshName = child.name || '';
+      const matName = mat.name || '';
+
+      if (meshName.includes('RoofSlab') || meshName.includes('RoofProjSlab') || meshName.includes('RParapet') || meshName.includes('RoofProj')) {
+        // Roof slab: matte warm light stone/cream with zero emissive glow, darker color to prevent blowout/bloom
+        mat.color.setHex(0xa8a398); 
+        mat.roughness = 0.95;
+        mat.metalness = 0.0;
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0.0;
+      } 
+      else if (meshName.includes('ULight') || meshName.includes('CanopyLight') || meshName.includes('RoofLtStrip')) {
+        // Elegant warm gold architectural lights
+        mat.color.setHex(0xffdfa9);
+        mat.emissive.setHex(0xff9e33);
+        if (meshName.includes('RoofLtStrip')) {
+          mat.emissiveIntensity = 0.8; // Controlled roof-edge highlight
+        } else {
+          mat.emissiveIntensity = 3.0; // Controlled vertical uplights and canopy lights
+        }
+      }
+      else if (meshName === 'Front_Lobby' || meshName === 'Rear_Lobby') {
+        // Lobby glass: warm interior glow shining through
+        mat.color.setHex(0x2c251e); // dark base
+        mat.emissive.setHex(0xffa850); // warm interior glow
+        mat.emissiveIntensity = 0.65;
+        mat.roughness = 0.2;
+        mat.metalness = 0.1;
+        mat.transparent = true;
+        mat.opacity = 0.85;
+      }
+      else if (matName === 'MAT_Stone') {
+        // Façade: warm cream / ivory / off-white
+        mat.color.setHex(0xf5eedc); // warm cream/ivory
+        mat.roughness = 0.45; // slightly smooth to catch highlights
+        mat.metalness = 0.05;
+        // Add a very subtle warm ambient glow to the facade to keep it readable, clear and dominant
+        mat.emissive.setHex(0x22180e);
+        mat.emissiveIntensity = 0.3; 
+      }
+      else if (matName === 'M_Glass') {
+        // Glass: dark charcoal-blue reflective glass
+        mat.color.setHex(0x0c0f12); 
+        mat.roughness = 0.05; // highly polished
+        mat.metalness = 0.95; // metallic reflectivity
+        mat.envMapIntensity = 2.5;
+      }
+      else if (matName === 'M_Mullion') {
+        // Accent panels: deep graphite / dark gray
+        mat.color.setHex(0x1e2022);
+        mat.roughness = 0.3;
+        mat.metalness = 0.7;
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0.0;
+      }
+      else if (matName === 'M_Gold') {
+        // Gold details
+        mat.color.setHex(0xc9a878);
+        mat.roughness = 0.25;
+        mat.metalness = 0.9;
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0.0;
+      }
+      else if (matName === 'M_Green') {
+        mat.color.setHex(0x1a261c);
+        mat.roughness = 0.9;
+        mat.metalness = 0.0;
+      }
+      else if (matName === 'MAT_Wood_Accent') {
+        mat.color.setHex(0x544638);
+        mat.roughness = 0.7;
+        mat.metalness = 0.0;
+      }
+      else if (matName === 'M_Emit') {
+        // Fallback for general emissive
+        mat.color.setHex(0xffdfa9);
+        mat.emissive.setHex(0xff9e33);
+        mat.emissiveIntensity = 2.5;
+      }
+      else {
+        // Default matte setup
+        mat.metalness = 0;
+        mat.roughness = Math.max(mat.roughness, 0.7);
+        mat.envMapIntensity = 0;
+        if (mat.emissiveIntensity > 0.35) {
+          mat.emissiveIntensity = 0.35;
+        }
+      }
+
+      mat.needsUpdate = true;
+    }
+  });
+};
+
+const preloadGLB = () => {
+  const loader = new GLTFLoader();
+  loader.load('aurum_assets/aurum_building_only.glb', (gltf) => {
+    glbModel = gltf.scene;
+    glbModel.visible = false;
+
+    // Scale and position to match procedural building
+    const box = new THREE.Box3().setFromObject(glbModel);
+    const centre = box.getCenter(new THREE.Vector3());
+    const glbHeight = box.getSize(new THREE.Vector3()).y;
+    const scaleFactor = 50 / glbHeight;
+    glbModel.scale.setScalar(scaleFactor);
+    glbModel.position.set(
+      -centre.x * scaleFactor,
+      -box.min.y * scaleFactor,
+      -centre.z * scaleFactor
+    );
+
+    scene.add(glbModel);
+    glbLoaded = true;
+
+    // Reset button text
+    const btnSpan = document.querySelector('#bBlender span');
+    if (btnSpan) btnSpan.innerText = '3D View';
+
+    if (glbActive) {
+      processGLB(glbModel);
+      glbModel.visible = true;
+    }
+  }, undefined, (error) => {
+    console.error('Error preloading GLB model:', error);
+  });
+};
+preloadGLB();
 
 function createSunsetGradient() {
   const canvas = document.createElement('canvas');
@@ -7689,10 +7949,10 @@ function createSunsetGradient() {
   canvas.height = 512;
   const ctx = canvas.getContext('2d');
   const grad = ctx.createLinearGradient(0, 512, 128, 0); // diagonal bottom-left to top-right
-  grad.addColorStop(0, '#ffd0a8'); // warm soft peach/orange horizon glow
-  grad.addColorStop(0.25, '#ebdccb'); // soft warm beige-gray transition
-  grad.addColorStop(0.6, '#b3c5d7'); // cool blue-gray sky
-  grad.addColorStop(1.0, '#768ca3'); // cool slate blue-gray upper sky
+  grad.addColorStop(0, '#302312');      // subtle warm gold horizon glow (darker, premium)
+  grad.addColorStop(0.25, '#14221f');    // warm transition to teal
+  grad.addColorStop(0.65, '#05181c');    // rich deep teal atmosphere
+  grad.addColorStop(1.0, '#020b0d');     // dark teal-blue upper sky
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 512, 512);
   const tex = new THREE.CanvasTexture(canvas);
@@ -7704,9 +7964,9 @@ const sunsetBg = createSunsetGradient();
 document.getElementById('bBlender').addEventListener('click', () => {
   if (!glbActive) {
     // Snapshot the full scene state (visibilities)
-    const sceneSnapshot = [];
+    sceneSnapshotGlobal = [];
     scene.traverse((obj) => {
-      sceneSnapshot.push({ obj, visible: obj.visible });
+      sceneSnapshotGlobal.push({ obj, visible: obj.visible });
     });
 
     // Hide procedural building objects only
@@ -7736,12 +7996,23 @@ document.getElementById('bBlender').addEventListener('click', () => {
       tilesRenderer.group.visible = false;
     }
 
-    // Also hide any object that is a Line, LineSegments, or wireframe
+    // Also hide any object that is a Line, LineSegments, or wireframe (except plot_boundary)
     scene.traverse((obj) => {
       if (obj === glbModel) return;
       if (glbModel && obj.isDescendantOf && obj.isDescendantOf(glbModel)) return;
       if (obj.isLine || obj.isLineSegments || obj.isLineLoop) {
-        obj.visible = false;
+        if (obj.name === 'plot_boundary') {
+          obj.visible = true;
+          if (!obj.userData.originalMat) {
+            obj.userData.originalMat = obj.material;
+          }
+          obj.material = obj.userData.originalMat.clone();
+          obj.material.color.setHex(0xffa840);
+          obj.material.opacity = 0.8;
+          obj.material.transparent = true;
+        } else {
+          obj.visible = false;
+        }
       }
       // Hide any mesh with wireframe material
       if (obj.isMesh && obj.material && obj.material.wireframe) {
@@ -7755,127 +8026,118 @@ document.getElementById('bBlender').addEventListener('click', () => {
 
     // Apply sunset background gradient and linear fog (clear foreground, hazy background)
     scene.background = sunsetBg;
-    scene.fog = new THREE.Fog(0xd0c8be, 280, 950);
+    scene.fog = new THREE.Fog(0x081d22, 280, 1100);
 
-    // Setup warm directional sunset light and ambient fill (balanced to avoid color tinting)
+    // Setup warm directional sunset light, secondary fill, and hemisphere fill (balanced lighting)
     let sunsetSun = scene.getObjectByName('sunset_sun');
-    let sunsetAmbient = scene.getObjectByName('sunset_ambient');
+    let sunsetFill = scene.getObjectByName('sunset_fill');
+    let sunsetHemi = scene.getObjectByName('sunset_hemi');
     if (!sunsetSun) {
-      sunsetSun = new THREE.DirectionalLight(0xffebd8, 1.8); // brighter warm directional for building presence
-      sunsetSun.position.set(-300, 120, -200);
+      sunsetSun = new THREE.DirectionalLight(0xffebd8, 0.45); // soft warm directional key light
+      sunsetSun.position.set(-200, 100, -150);
       sunsetSun.name = 'sunset_sun';
       scene.add(sunsetSun);
 
-      sunsetAmbient = new THREE.AmbientLight(0xa0b5d0, 1.3); // stronger fill so building reads clearly
-      sunsetAmbient.name = 'sunset_ambient';
-      scene.add(sunsetAmbient);
+      sunsetFill = new THREE.DirectionalLight(0xa5c5d0, 0.35); // cool teal-blue fill light
+      sunsetFill.position.set(200, 80, 150);
+      sunsetFill.name = 'sunset_fill';
+      scene.add(sunsetFill);
+
+      sunsetHemi = new THREE.HemisphereLight(0x0f343a, 0x221c15, 0.95); // sky-to-ground ambient fill
+      sunsetHemi.name = 'sunset_hemi';
+      scene.add(sunsetHemi);
     } else {
+      sunsetSun.color.setHex(0xffebd8);
+      sunsetSun.intensity = 0.45;
       sunsetSun.visible = true;
-      sunsetAmbient.visible = true;
+
+      sunsetFill.color.setHex(0xa5c5d0);
+      sunsetFill.intensity = 0.35;
+      sunsetFill.visible = true;
+
+      sunsetHemi.color.setHex(0x0f343a);
+      sunsetHemi.groundColor.setHex(0x221c15);
+      sunsetHemi.intensity = 0.95;
+      sunsetHemi.visible = true;
+    }
+
+    // Add warm gold PointLights at lobby entrances
+    let lobbyLight1 = scene.getObjectByName('lobby_light_1');
+    let lobbyLight2 = scene.getObjectByName('lobby_light_2');
+    if (!lobbyLight1) {
+      lobbyLight1 = new THREE.PointLight(0xffb860, 8.0, 25, 1.5);
+      lobbyLight1.position.set(-30.5, 2.5, 0);
+      lobbyLight1.name = 'lobby_light_1';
+      scene.add(lobbyLight1);
+    } else {
+      lobbyLight1.visible = true;
+    }
+    if (!lobbyLight2) {
+      lobbyLight2 = new THREE.PointLight(0xffb860, 8.0, 25, 1.5);
+      lobbyLight2.position.set(30.5, 2.5, 0);
+      lobbyLight2.name = 'lobby_light_2';
+      scene.add(lobbyLight2);
+    } else {
+      lobbyLight2.visible = true;
     }
 
     // Dim original scene lights to isolate sunset look
     scene.traverse((obj) => {
-      if (obj.isLight && obj !== sunsetSun && obj !== sunsetAmbient && !obj.name.includes('sunset')) {
+      if (obj.isLight && obj !== sunsetSun && obj !== sunsetFill && obj !== sunsetHemi && !obj.name.includes('sunset') && !obj.name.includes('lobby_light')) {
         obj.visible = false;
       }
     });
 
     // Apply material swaps to surrounding elements to match reference palette (grayish-beige/charcoal)
-    const materialSnapshot = [];
+    materialSnapshotGlobal = [];
     scene.traverse((obj) => {
       if (obj.isMesh && obj.material && obj !== glbModel && !(glbModel && glbModel.children.includes(obj))) {
         const mat = obj.material;
         if (mat.color) {
-          materialSnapshot.push({
+          materialSnapshotGlobal.push({
             mat,
             color: mat.color.getHex(),
             roughness: mat.roughness,
             metalness: mat.metalness
           });
           const hex = mat.color.getHex();
-          // Ground (0x0b1315) or Parks (0x12241e) -> Light gray-beige
+          // Ground (0x0b1315) or Parks (0x12241e) -> Muted dark gray-beige
           if (hex === 0x0b1315 || hex === 0x12241e) {
-            mat.color.setHex(0xbfb9ae);
+            mat.color.setHex(0x44403a); // readable muted gray-beige
             mat.roughness = 0.95;
             mat.metalness = 0.0;
           }
-          // Roads (0x181c20, 0x2c353d, 0x1a1714) -> Dark charcoal
+          // Roads (0x181c20, 0x2c353d, 0x1a1714) -> Dark charcoal with subtle reflections
           else if (hex === 0x181c20 || hex === 0x2c353d || hex === 0x1a1714) {
-            mat.color.setHex(0x1e1d1c);
-            mat.roughness = 0.8;
+            mat.color.setHex(0x1c1d1e); // dark charcoal asphalt
+            mat.roughness = 0.28;       // highly reflective/polished curves
+            mat.metalness = 0.6;        // metallic specular highlight
           }
-          // Background buildings (0x06111a) or other dark background blocks -> Muted grayish-beige
+          // Background buildings (0x06111a) or other dark background blocks -> Subdued dark blue-gray
           else if (hex === 0x06111a || (hex < 0x202020 && hex > 0x000000)) {
-            mat.color.setHex(0xb5b0a6);
-            mat.roughness = 0.95;
-            mat.metalness = 0.0;
+            mat.color.setHex(0x262b2e); // subdued dark blue-gray
+            mat.roughness = 0.85;
+            mat.metalness = 0.1;
           }
         }
       }
     });
 
-    // Animate camera to the sunset hero angle looking down at centered building
+    // Animate camera to the sunset hero angle looking down at centered building (slightly lower for dominance)
     camTween = {
       fromP: camera.position.clone(),
-      toP: new THREE.Vector3(125, 75, 125),
+      toP: new THREE.Vector3(125, 70, 125),
       fromT: controls.target.clone(),
       toT: new THREE.Vector3(0, 12, 0),
       t: 0,
       dur: 1.25
     };
 
-    const processGLB = (model) => {
-      model.userData.sceneSnapshot = sceneSnapshot;
-      model.userData.materialSnapshot = materialSnapshot;
-
-      model.traverse((child) => {
-        if (child.isMesh) {
-          // Fix depth/transparency settings only — do NOT override colors
-          child.material.transparent = false;
-          child.material.opacity = 1.0;
-          child.material.depthWrite = true;
-          child.renderOrder = 999;
-
-          // --- Fully remove reflections for a clean matte architectural look ---
-          child.material.metalness = 0;        // no mirror-like reflections
-          child.material.roughness = Math.max(child.material.roughness, 0.7); // minimum matte finish
-          child.material.envMapIntensity = 0;  // disable environment map reflections
-
-          // Cap any runaway emissive so nothing glows excessively
-          if (child.material.emissiveIntensity > 0.35) {
-            child.material.emissiveIntensity = 0.35;
-          }
-
-          child.material.needsUpdate = true;
-        }
-      });
-    };
-
     if (!glbLoaded) {
-      const loader = new GLTFLoader();
-      loader.load('aurum_assets/aurum_building_only.glb', (gltf) => {
-        glbModel = gltf.scene;
-        processGLB(glbModel);
-
-        // Scale and position to match procedural building
-        const box = new THREE.Box3().setFromObject(glbModel);
-        const centre = box.getCenter(new THREE.Vector3());
-        const glbHeight = box.getSize(new THREE.Vector3()).y;
-        const scaleFactor = 50 / glbHeight;
-        glbModel.scale.setScalar(scaleFactor);
-        glbModel.position.set(
-          -centre.x * scaleFactor,
-          -box.min.y * scaleFactor,
-          -centre.z * scaleFactor
-        );
-
-        scene.add(glbModel);
-        glbLoaded = true;
-        glbActive = true;
-        document.getElementById('bBlender').classList.add('active');
-        glbHideUI();
-      });
+      glbActive = true;
+      const btnSpan = document.querySelector('#bBlender span');
+      if (btnSpan) btnSpan.innerText = 'Loading...';
+      glbHideUI();
     } else {
       processGLB(glbModel);
       glbModel.visible = true;
@@ -7904,11 +8166,26 @@ document.getElementById('bBlender').addEventListener('click', () => {
       tilesRenderer.group.visible = true;
     }
 
-    // Deactivate sunset lighting
+    // Restore plot boundary line material
+    const plotBoundary = scene.getObjectByName('plot_boundary');
+    if (plotBoundary && plotBoundary.userData.originalMat) {
+      plotBoundary.material = plotBoundary.userData.originalMat;
+    }
+
+    // Deactivate sunset lighting and lobby lights
     const sunsetSun = scene.getObjectByName('sunset_sun');
+    const sunsetFill = scene.getObjectByName('sunset_fill');
+    const sunsetHemi = scene.getObjectByName('sunset_hemi');
     const sunsetAmbient = scene.getObjectByName('sunset_ambient');
     if (sunsetSun) sunsetSun.visible = false;
+    if (sunsetFill) sunsetFill.visible = false;
+    if (sunsetHemi) sunsetHemi.visible = false;
     if (sunsetAmbient) sunsetAmbient.visible = false;
+
+    const lobbyLight1 = scene.getObjectByName('lobby_light_1');
+    const lobbyLight2 = scene.getObjectByName('lobby_light_2');
+    if (lobbyLight1) lobbyLight1.visible = false;
+    if (lobbyLight2) lobbyLight2.visible = false;
 
     // Restore environment background and fog
     scene.background = scene.userData.originalBg || new THREE.Color(0x000000);
