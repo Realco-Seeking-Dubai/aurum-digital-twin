@@ -1622,6 +1622,11 @@
 <!-- Global JS Error Diagnostic Overlay -->
 <script>
   window.onerror = function(message, source, lineno, colno, error) {
+    // Ignore harmless third-party cross-origin/injected script errors
+    if (message === 'Script error.' || message === 'Script error') {
+      console.warn("Ignored cross-origin script error:", message);
+      return false;
+    }
     console.error("Global Catch - Error:", message, "at", source, ":", lineno);
     const errDiv = document.createElement('div');
     errDiv.id = 'jsGlobalErrorBanner';
