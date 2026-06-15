@@ -23,6 +23,6 @@
   "license": "MIT",
   "dependencies": {
     "3d-tiles-renderer": "^0.4.4",
-    "three": "^0.164.1"
+    "three": "^0.166.1"
   }
 }

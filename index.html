@@ -12,9 +12,9 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/",
-    "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/",
+    "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/",
+    "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/",
     "3d-tiles-renderer": "https://cdn.jsdelivr.net/npm/3d-tiles-renderer@0.3.46/src/index.js"
   }
 }
@@ -177,6 +177,7 @@
   .btn span{font-size:8.5px;letter-spacing:.08em;font-weight:600}
   .sep{width:1px;height:32px;background:var(--line);margin:0 4px}
   .btn.gold{color:var(--gold)}.btn.gold:hover{background:rgba(201,168,120,.2)}
+  #mfv-dock, #mfvMoreMenu, #bMore { display: none; }
 
   /* dockExtra styles */
   .dock-icon{width:46px;height:46px;border-radius:10px;border:1px solid var(--line);background:var(--glass);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.25s ease;box-shadow:0 8px 24px rgba(0,0,0,.3)}
@@ -351,7 +352,23 @@
     .brand{font-size:16px;letter-spacing:.18em}
     .brand-sub{font-size:9px}
     .brand-loc{display:none}
-    #bookMeeting{display:none}
+    #bookMeeting {
+      display: flex;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 0 !important;
+      line-height: 0 !important;
+      color: var(--gold);
+    }
+    #bookMeeting svg {
+      width: 18px !important;
+      height: 18px !important;
+      margin: 0 !important;
+    }
     #stats{display:none}#hint{display:none}#eye{top:10px;right:10px;width:34px;height:34px}
     #rail{right:8px;gap:6px}
     .frow .flabel{display:none}
@@ -363,7 +380,7 @@
     .fi-thumbs{display:none}
     .fi-cta{padding:8px;font-size:12px}
     #dock{bottom:8px;padding:5px 6px;gap:2px;max-width:97vw;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;border-radius:12px}
-    #dock::-webkit-scrollbar{height:0}.btn{min-width:40px;padding:6px 6px}.btn svg{width:16px;height:16px}.btn span{font-size:7px}
+    #dock::-webkit-scrollbar{height:3px}#dock::-webkit-scrollbar-track{background:rgba(255,255,255,0.02)}#dock::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}.btn{min-width:40px;padding:6px 6px}.btn svg{width:16px;height:16px}.btn span{font-size:7px}
     #dockExtra{display:none !important}
     #detail{left:10px;right:10px;width:auto;bottom:60px}
     .sheet{width:96vw;max-height:90vh}.udetail{grid-template-columns:1fr}.fpwrap{flex-direction:column}.fpside{width:auto}.fptabs{flex-direction:row;flex-wrap:wrap}
@@ -452,14 +469,14 @@
   
   /* Left Sidebar Overlay */
   #floorLeftSidebar {
-    left: 24px;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    width: 290px;
-    padding: 24px;
+    width: 250px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 14px;
   }
   
   .fls-brand {
@@ -469,24 +486,24 @@
   }
   .fls-brand-title {
     font-family: 'Cinzel', var(--serif);
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 0.18em;
-    color: var(--ink);
+    letter-spacing: 0.14em;
+    color: var(--gold);
     line-height: 1;
   }
   .fls-brand-title b {
     color: var(--gold);
   }
   .fls-brand-sub {
-    font-size: 11px;
-    letter-spacing: 0.14em;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
     color: var(--muted);
     font-style: italic;
   }
   .fls-brand-loc {
-    font-size: 10px;
-    letter-spacing: 0.12em;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
     color: var(--muted);
     line-height: 1.4;
     margin-top: 4px;
@@ -498,17 +515,17 @@
   
   .fls-header {
     border-top: 1px solid rgba(201, 168, 120, 0.15);
-    padding-top: 16px;
+    padding-top: 12px;
   }
   .fls-level {
     font-family: 'Cinzel', var(--serif);
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--ink);
     letter-spacing: 0.05em;
   }
   .fls-type {
-    font-size: 11px;
+    font-size: 9.5px;
     color: var(--muted);
     display: flex;
     align-items: center;
@@ -526,25 +543,25 @@
   
   .fls-stats {
     display: flex;
-    gap: 12px;
+    gap: 10px;
   }
   .fls-stat-box {
     flex: 1;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(201, 168, 120, 0.15);
     border-radius: 10px;
-    padding: 10px;
+    padding: 8px;
     text-align: left;
   }
   .fls-stat-box .v {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--ink);
   }
   .fls-stat-box .v.g { color: var(--gold); }
   .fls-stat-box .k {
-    font-size: 9px;
-    letter-spacing: 0.12em;
+    font-size: 8px;
+    letter-spacing: 0.1em;
     color: var(--muted);
     text-transform: uppercase;
     margin-top: 2px;
@@ -552,14 +569,14 @@
   
   .fls-legend {
     border-top: 1px solid rgba(201, 168, 120, 0.15);
-    padding-top: 16px;
+    padding-top: 12px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
   .fls-legend-title {
-    font-size: 9px;
-    letter-spacing: 0.16em;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
     color: var(--gold);
     font-weight: 700;
     text-transform: uppercase;
@@ -567,13 +584,13 @@
   .fls-legend-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 12px;
+    gap: 8px;
+    font-size: 10.5px;
     color: var(--muted);
   }
   .fls-legend-badge {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -611,15 +628,15 @@
   
   /* Scrollable Units List Sidebar */
   #floorUnitsSidebar {
-    right: 100px;
+    right: 76px;
     top: 50%;
     transform: translateY(-50%);
-    width: 320px;
+    width: 270px;
     max-height: 65vh;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 24px 20px;
+    gap: 12px;
+    padding: 16px 14px;
     border-radius: 18px;
     z-index: 25;
     box-shadow: 0 16px 40px rgba(0,0,0,0.6);
@@ -627,7 +644,7 @@
   
   .fus-header {
     border-bottom: 1px solid rgba(201, 168, 120, 0.15);
-    padding-bottom: 12px;
+    padding-bottom: 8px;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -635,23 +652,23 @@
   
   .fus-title {
     font-family: 'Cinzel', var(--serif);
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: 0.12em;
     color: var(--ink);
   }
   
   .fus-subtitle {
-    font-size: 11px;
+    font-size: 9.5px;
     color: var(--muted);
     letter-spacing: 0.05em;
-    margin-top: 4px;
+    margin-top: 2px;
   }
   
   .fus-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     overflow-y: auto;
     padding-right: 6px;
   }
@@ -672,7 +689,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 14px;
+    padding: 8px 10px;
     border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.04);
     background: rgba(255,255,255,0.02);
@@ -694,30 +711,30 @@
   
   .fus-item-name {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px;
     color: var(--ink);
     letter-spacing: 0.05em;
   }
   
   .fus-item-meta {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--muted);
   }
   
   .fus-item-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
   
   .fus-item-price {
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--ink);
   }
   
   .fus-status-badge {
-    padding: 3px 8px;
+    padding: 2px 6px;
     border-radius: 6px;
     font-size: 8px;
     font-weight: 800;
@@ -751,27 +768,27 @@
   
   /* Right Slider Sidebar */
   #floorRightSidebar {
-    right: 24px;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
-    width: 60px;
+    width: 50px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 12px 8px;
+    gap: 6px;
+    padding: 10px 6px;
     border-radius: 18px;
     align-items: center;
   }
   .frs-item {
-    width: 42px;
-    height: 42px;
+    width: 34px;
+    height: 34px;
     border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.06);
     background: rgba(255,255,255,0.03);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--muted);
     cursor: pointer;
@@ -1080,6 +1097,25 @@
   #unitDetailCard.show {
     display: flex;
   }
+  .udc-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+  .udc-close-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--gold);
+  }
   @keyframes fadeSlideIn {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1216,14 +1252,113 @@
       font-size: 11px;
     }
     #unitDetailCard {
-      position: fixed !important;
-      left: 10px !important;
-      right: 10px !important;
+      position: absolute !important;
+      left: 12px !important;
+      right: 12px !important;
       top: auto !important;
-      bottom: 60px !important;
+      bottom: 12px !important;
       width: auto !important;
-      padding: 14px !important;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.6) !important;
+      padding: 10px 14px !important;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.7) !important;
+      z-index: 300 !important;
+      gap: 8px !important;
+    }
+    #unitDetailCard .udc-header {
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: baseline !important;
+      gap: 8px !important;
+    }
+    #unitDetailCard .udc-title {
+      font-size: 18px !important;
+    }
+    #unitDetailCard .udc-sub {
+      font-size: 9px !important;
+      margin-left: auto !important;
+    }
+    #unitDetailCard .udc-specs {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      gap: 12px !important;
+      padding-top: 6px !important;
+      margin-top: 0 !important;
+    }
+    #unitDetailCard .udc-row {
+      flex: 1 !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      font-size: 10px !important;
+      gap: 1px !important;
+    }
+    #unitDetailCard .udc-row .k {
+      font-size: 8.5px !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+    }
+    #unitDetailCard .udc-row .v {
+      font-size: 10.5px !important;
+    }
+    #unitDetailCard .udc-btn {
+      padding: 6px 12px !important;
+      height: 32px !important;
+      font-size: 11px !important;
+      margin-top: 2px !important;
+      border-radius: 6px !important;
+    }
+    #unitDetailCard .udc-btn svg {
+      width: 14px !important;
+      height: 14px !important;
+    }
+    #mfvMoreMenu {
+      display: none;
+      position: absolute !important;
+      bottom: 74px !important;
+      right: 12px !important;
+      z-index: 400 !important;
+      width: 150px !important;
+      background: rgba(8, 42, 41, 0.9) !important;
+      border: 1px solid rgba(201, 168, 120, 0.3) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border-radius: 12px !important;
+      padding: 6px !important;
+      flex-direction: column !important;
+      gap: 4px !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+      animation: fadeSlideUpMenu 0.2s ease !important;
+    }
+    #mfvMoreMenu.show {
+      display: flex !important;
+    }
+    @keyframes fadeSlideUpMenu {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .mfv-menu-item {
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      width: 100% !important;
+      background: transparent !important;
+      border: none !important;
+      color: var(--muted) !important;
+      font-size: 12.5px !important;
+      padding: 10px 12px !important;
+      border-radius: 8px !important;
+      cursor: pointer !important;
+      text-align: left !important;
+      font-family: 'Outfit', sans-serif !important;
+      transition: all 0.2s ease !important;
+    }
+    .mfv-menu-item:hover, .mfv-menu-item.active {
+      background: rgba(201, 168, 120, 0.15) !important;
+      color: var(--gold) !important;
+    }
+    .mfv-menu-item svg {
+      width: 16px !important;
+      height: 16px !important;
+      stroke: currentColor !important;
     }
   }
 
@@ -1562,6 +1697,9 @@
 
     
     <div id="unitDetailCard" class="glass-card">
+      <button id="udcCloseBtn" class="udc-close-btn" aria-label="Close details">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
       <div class="udc-header">
         <div class="udc-title" id="udcTitle">402</div>
         <div class="udc-sub" id="udcSub">Standard Suite</div>
@@ -1818,35 +1956,28 @@
       <!-- Populated by JS -->
     </div>
   </div>
-
-  <!-- Bottom Dock Navigation -->
-  <div id="mfv-dock">
-    <button class="mfv-dock-btn" data-view="orbit">
-      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-      <span>Orbit</span>
-    </button>
-    <button class="mfv-dock-btn" data-view="street">
-      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-      <span>Entrance</span>
-    </button>
-    <button class="mfv-dock-btn" data-view="parking">
-      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 16V8h3a3 3 0 010 6H9"/></svg>
-      <span>Parking</span>
-    </button>
-    <button class="mfv-dock-btn" id="mfvLocBtn">
-      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
-      <span>Location</span>
-    </button>
-    <button class="mfv-dock-btn mfv-dock-active" id="mfvStructureBtn">
-      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M6 3v18M12 3v18M18 3v18M4 3h16M4 21h16"/></svg>
-      <span>Structure</span>
-    </button>
-    <button class="mfv-dock-btn" id="mfvMoreBtn">
-      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>
-      <span>More</span>
-    </button>
-  </div>
 </div>
+
+<!-- Universal Mobile Dock -->
+<div id="mfvMoreMenu">
+  <button class="mfv-menu-item" id="mfvMenuSpin">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 11-3-6.7M21 4v4h-4"/></svg>
+    <span>Auto-Spin</span>
+  </button>
+  <button class="mfv-menu-item" id="mfvMenuExplode">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+    <span>Explode</span>
+  </button>
+  <button class="mfv-menu-item" id="mfvMenuInv">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <span>Prices</span>
+  </button>
+  <button class="mfv-menu-item" id="mfvMenuWebsite" onclick="window.location.href='/aurum-website'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    <span>Website</span>
+  </button>
+</div>
+
 <div id="neon">
   <div class="ncard" style="left:84%;top:84%;animation-duration:30s;animation-delay:3s"><div class="k">HANDOVER</div><div class="v g">SEPTEMBER 2026</div></div>
   <div class="ncard" style="left:7%;top:90%;animation-duration:34s;animation-delay:13s"><div class="k">PAYMENT PLAN</div><div class="v c">20% · 80% / 4 MO</div></div>
@@ -1997,6 +2128,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
     <span>Website</span>
   </div>
+  <div class="btn" id="bMore">
+    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>
+    <span>More</span>
+  </div>
 
   <div id="compassIcon">
     <svg viewBox="0 0 24 24"><polygon points="12 2 15 12 12 22 9 12 12 2"/><polygon class="n" points="12 2 15 12 12 12 12 2"/></svg>
@@ -2098,10 +2233,10 @@
           <img src="aurum_assets/building_render_front.jpg" style="width:100%; height:90px; object-fit:cover; border-radius:8px;" alt="Promo">
           <div style="font-size:11px; font-weight:700; color:#fff;">Premium Commercial Spaces</div>
           <div style="font-size:9px; color:var(--muted); line-height:1.3;">Designed for success. Built for the future.</div>
-          <button class="um-brochure-btn" style="width:100%; height:32px; border-radius:16px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:10px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <a href="aurum_assets/Aurum%20Brochure.pdf" download="Aurum Brochure.pdf" class="um-brochure-btn" style="text-decoration:none; width:100%; height:32px; border-radius:16px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:10px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
             <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
             Download Brochure
-          </button>
+          </a>
         </div>
       </div>
       
@@ -3195,7 +3330,21 @@
       gap: 8px !important;
     }
     #bookMeeting {
-      display: none !important;
+      display: flex !important;
+      width: 36px !important;
+      height: 36px !important;
+      padding: 0 !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+      font-size: 0 !important;
+      line-height: 0 !important;
+      color: var(--gold) !important;
+    }
+    #bookMeeting svg {
+      width: 18px !important;
+      height: 18px !important;
+      margin: 0 !important;
     }
     #menuBtn {
       display: flex !important;
@@ -3226,13 +3375,35 @@
       transform: scale(1) !important;
     }
     #dock {
+      position: fixed !important;
       bottom: 12px !important;
       left: 50% !important;
       transform: translateX(-50%) !important;
-      max-width: 95vw !important;
-      width: max-content !important;
-      padding: 4px !important;
-      border-radius: 12px !important;
+      width: 95vw !important;
+      max-width: 480px !important;
+      background: rgba(10, 22, 19, 0.98) !important;
+      border: 1px solid rgba(201, 168, 120, 0.15) !important;
+      z-index: 500 !important;
+      display: flex !important;
+      justify-content: space-around !important;
+      border-radius: 16px !important;
+      padding: 4px 8px !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+    }
+    #dock #bPlans,
+    #dock #bCourt,
+    #dock [data-view="roof"],
+    #dock #bBlender,
+    #dock [data-view="site"],
+    #dock #bExplode,
+    #dock #bSpin,
+    #dock #bReset,
+    #dock #bInv,
+    #dock .btn[onclick*="aurum-website"] {
+      display: none !important;
+    }
+    #bMore {
+      display: flex !important;
     }
     .btn {
       min-width: 50px !important;
@@ -3273,10 +3444,16 @@
   /* Show the mobile view ONLY on mobile when floor-view-active */
   @media (max-width: 768px) {
     body.floor-view-active #mobileFloorView {
-      display: flex !important;
+      display: block !important;
+      position: absolute !important;
+      inset: 0 !important;
+      height: auto !important;
+      min-height: 100% !important;
+      overflow-y: auto !important;
+      background: #0d1a18 !important;
+      clip-path: none !important;
     }
     /* Hide all desktop floor UI elements on mobile */
-    body.floor-view-active #blueprintViewport,
     body.floor-view-active #floorLeftSidebar,
     body.floor-view-active #floorRightSidebar,
     body.floor-view-active #floorUnitsSidebar,
@@ -3288,16 +3465,173 @@
     body.floor-view-active #devTracerToggle {
       display: none !important;
     }
-    /* Blueprint viewport stays visible on mobile floor view, shown below the UI overlay */
     body.floor-view-active #blueprintViewport {
       display: block !important;
-      position: fixed !important;
+      position: absolute !important;
       inset: 0 !important;
-      z-index: 245 !important;
+      width: 100% !important;
+      height: 100% !important;
+      z-index: 2 !important;
+      background: #082a29 !important;
     }
-    /* Ensure dock is hidden under mobile floor view */
-    body.floor-view-active #dock {
+    
+    #mfv-canvas-wrap {
+      position: relative !important;
+      height: 72vw !important;
+      min-height: 380px !important;
+      max-height: 500px !important;
+      border-bottom: 1px solid rgba(201,168,120,0.15) !important;
+      pointer-events: auto !important;
+    }
+    
+    #mfv-canvas-placeholder {
+      position: absolute !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    #mfv-bottom-panel {
+      display: flex !important;
+      flex-direction: column !important;
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+      flex: none !important;
+      background: #0e1e1b !important;
+    }
+    #mfv-inventory-wrap {
+      display: block !important;
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+      flex: none !important;
+      padding: 14px 14px 24px !important;
+      order: 2 !important;
+    }
+    #mfv-unit-list {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+      max-height: none !important;
+      overflow-y: visible !important;
+    }
+    @media (max-width: 480px) {
+      #mfv-unit-list {
+        grid-template-columns: 1fr !important;
+      }
+    }
+    #mfv-floor-tabs {
+      position: relative !important;
+      top: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      width: 100% !important;
+      height: auto !important;
+      max-height: none !important;
       z-index: 10 !important;
+      background: #0b1a1c !important;
+      border: none !important;
+      border-bottom: 1px solid rgba(201,168,120,0.15) !important;
+      border-radius: 0 !important;
+      padding: 12px 14px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 6px !important;
+      box-shadow: none !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      order: 1 !important;
+      flex-shrink: 0 !important;
+    }
+    #mfv-compass-arrow {
+      position: absolute !important;
+      bottom: 10px !important;
+      right: 12px !important;
+      left: auto !important;
+      z-index: 10 !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #unitModal {
+      z-index: 1000 !important;
+    }
+    /* Optimize workspace layout */
+    #unitModal .um-workspace {
+      flex-direction: column !important;
+      overflow-y: auto !important;
+    }
+    #unitModal .um-left-sidebar {
+      display: none !important;
+    }
+    #unitModal .um-center-content {
+      width: 100% !important;
+      flex: none !important;
+      padding: 16px 12px !important;
+      overflow-y: visible !important;
+    }
+    #unitModal .um-right-sidebar {
+      width: 100% !important;
+      flex: none !important;
+      padding: 16px 12px !important;
+      border-left: none !important;
+      border-top: 1px solid var(--line) !important;
+      overflow-y: visible !important;
+    }
+    
+    /* Stats chips body */
+    #unitModal .um-stats-chips {
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+    #unitModal .um-stats-chips .um-chip {
+      flex: 1 1 calc(50% - 4px) !important;
+      padding: 8px 12px !important;
+      gap: 8px !important;
+    }
+    
+    /* Blueprint viewport height */
+    #unitModal .um-canvas-card {
+      min-height: 300px !important;
+      height: 300px !important;
+    }
+    
+    /* Action & Blueprint Tabs */
+    #unitModal .um-tabs-actions-row {
+      flex-direction: column !important;
+      gap: 12px !important;
+      align-items: stretch !important;
+    }
+    #unitModal .um-blueprint-tabs {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+    #unitModal .um-blueprint-tabs .um-tab {
+      flex: 1 !important;
+      text-align: center !important;
+      padding: 8px 4px !important;
+      font-size: 9px !important;
+    }
+    #unitModal .um-ctas-row {
+      width: 100% !important;
+      display: flex !important;
+      gap: 8px !important;
+    }
+    #unitModal .um-ctas-row button {
+      flex: 1 !important;
+      min-height: 44px !important;
+      font-size: 11px !important;
+      justify-content: center !important;
+      margin: 0 !important;
+    }
+    #unitModal .um-navbar {
+      padding: 0 12px !important;
+    }
+    #unitModal .um-nav-meeting-btn {
+      display: none !important;
     }
   }
 
@@ -3785,6 +4119,11 @@
   /* Bottom Dock */
   #mfv-dock {
     display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 500;
     align-items: center;
     justify-content: space-around;
     height: 62px;
@@ -6324,8 +6663,8 @@ let tracePoints = [];
 const viewport = document.getElementById('blueprintViewport');
 const canvas = document.getElementById('blueprintCanvas');
 
-// Mouse drag-to-pan & wheel-to-zoom event handlers
-viewport.addEventListener('mousedown', (e) => {
+// Pointer drag-to-pan & wheel-to-zoom event handlers
+viewport.addEventListener('pointerdown', (e) => {
   if (e.target.closest('#unitDetailCard') || e.target.closest('.udc-btn') || e.target.closest('#devTracerPanel') || e.target.closest('#devTracerToggle')) return; // ignore clicks on UI cards/panels
   if (isTracerMode && (e.target === document.getElementById('blueprintSvg') || e.target.closest('#blueprintSvg'))) {
     return; // do not pan if actively placing coordinates in Tracer Mode
@@ -6336,14 +6675,14 @@ viewport.addEventListener('mousedown', (e) => {
   viewport.style.cursor = 'grabbing';
 });
 
-window.addEventListener('mousemove', (e) => {
+window.addEventListener('pointermove', (e) => {
   if (!isDragging) return;
   panX = e.clientX - startX;
   panY = e.clientY - startY;
   updateCanvasTransform();
 });
 
-window.addEventListener('mouseup', () => {
+window.addEventListener('pointerup', () => {
   if (!isDragging) return;
   isDragging = false;
   viewport.style.cursor = 'grab';
@@ -6369,7 +6708,17 @@ function centerCanvas() {
   const vh = viewport.clientHeight;
   panX = (vw - 800) / 2;
   panY = (vh - 645) / 2;
-  zoom = vw < 768 ? 0.70 : 1.20;
+  if (vw < 768) {
+    zoom = 0.70;
+  } else {
+    // Left: 250px + Right: 270px + Slider: 50px + margins & padding buffers = 670px
+    const availableWidth = vw - 670;
+    const availableHeight = vh - 150;
+    const scaleX = availableWidth / 800;
+    const scaleY = availableHeight / 645;
+    zoom = Math.min(1.10, scaleX, scaleY);
+    if (zoom < 0.55) zoom = 0.55;
+  }
   updateCanvasTransform();
 }
 
@@ -6746,6 +7095,14 @@ function clearSelection(){
   liftTargetY=BASE_Y[1]+FH[1]/2;
   hideBigFloorLabel();
 
+  // Hide unit details card and reset SVG connector/selection states
+  const card = document.getElementById('unitDetailCard');
+  if (card) card.classList.remove('show');
+  document.querySelectorAll('.unit-path').forEach(p => p.classList.remove('active'));
+  const svgConnector = document.getElementById('svgConnectorGroup');
+  if (svgConnector) svgConnector.innerHTML = '';
+  selectedFloorUnit = null;
+
   // Deactivate dev tracer tool if active when exiting floor page
   if (isTracerMode) {
     toggleDevTracer(false);
@@ -6758,6 +7115,19 @@ function clearSelection(){
 }
 
 // Hook actions
+const closeBtn = document.getElementById('udcCloseBtn');
+if (closeBtn) {
+  closeBtn.onclick = (e) => {
+    e.stopPropagation();
+    const card = document.getElementById('unitDetailCard');
+    if (card) card.classList.remove('show');
+    document.querySelectorAll('.unit-path').forEach(p => p.classList.remove('active'));
+    const svgConnector = document.getElementById('svgConnectorGroup');
+    if (svgConnector) svgConnector.innerHTML = '';
+    selectedFloorUnit = null;
+  };
+}
+
 document.getElementById('floorBackButton').onclick = () => {
   clearSelection();
   flyTo('orbit');
@@ -6790,6 +7160,19 @@ function updateMobileClipPath() {
 
 function renderMobileFloorView(f) {
   if (!f || !DATA) return;
+
+  // Append blueprintViewport to mobile placeholder
+  const viewport = document.getElementById('blueprintViewport');
+  const placeholder = document.getElementById('mfv-canvas-placeholder');
+  if (viewport && placeholder && viewport.parentElement !== placeholder) {
+    placeholder.appendChild(viewport);
+  }
+
+  // Move unitDetailCard to blueprintViewport so it is not clipped by blueprintCanvas overflow and transform
+  const card = document.getElementById('unitDetailCard');
+  if (card && viewport && card.parentElement !== viewport) {
+    viewport.appendChild(card);
+  }
 
   const fl = DATA.floors[f];
   if (!fl) return;
@@ -6842,8 +7225,10 @@ function renderMobileFloorView(f) {
       card.onclick = () => {
         // Highlight on blueprint & open detail
         const path = document.getElementById(`svg-unit-${u.u}`);
-        if (path) path.dispatchEvent(new Event('click'));
-        else openUnitDetail(u);
+        if (path) {
+          path.dispatchEvent(new Event('click'));
+        }
+        openUnitDetail(u);
         // Mark active card
         document.querySelectorAll('.mfv-unit-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
@@ -6852,11 +7237,11 @@ function renderMobileFloorView(f) {
     });
   }
 
-  // 5. Floor tabs (right column)
+  // 5. Floor tabs (horizontal row)
   const tabsEl = document.getElementById('mfv-floor-tabs');
   if (tabsEl) {
     tabsEl.innerHTML = '';
-    for (let i = 8; i >= 1; i--) {
+    for (let i = 1; i <= 8; i++) {
       const label = i === 1 ? 'G' : (i === 2 ? '01' : '0' + (i - 1));
       const tab = document.createElement('button');
       tab.className = 'mfv-floor-tab' + (i === f ? ' active' : '');
@@ -6872,8 +7257,35 @@ function renderMobileFloorView(f) {
   // 6. Re-center the canvas blueprint in the viewport
   requestAnimationFrame(() => {
     centerCanvas();
+    updateMobileClipPath();
   });
 }
+
+function syncDockActive(viewName) {
+  const dock = document.getElementById('dock');
+  if (!dock) return;
+  if (window.innerWidth > 768) return;
+  dock.querySelectorAll('.btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  if (viewName === 'floor' || document.body.classList.contains('floor-view-active')) {
+    const btn = document.getElementById('bColumns');
+    if (btn) btn.classList.add('active');
+  } else if (viewName === 'location') {
+    const btn = document.getElementById('bLoc');
+    if (btn) btn.classList.add('active');
+  } else {
+    const btn = dock.querySelector(`.btn[data-view="${viewName}"]`);
+    if (btn) btn.classList.add('active');
+  }
+}
+
+// Wrap flyTo to sync mobile dock
+const _origFlyTo = flyTo;
+window.flyTo = function(name) {
+  _origFlyTo(name);
+  syncDockActive(name);
+};
 
 // Hook: patch selectFloor to also update mobile view
 const _origSelectFloor = selectFloor;
@@ -6882,6 +7294,7 @@ function selectFloorWithMobile(f) {
   if (window.innerWidth <= 768) {
     setTimeout(() => renderMobileFloorView(f), 50);
   }
+  syncDockActive('floor');
 }
 // Override globally
 window.selectFloor = selectFloorWithMobile;
@@ -6890,6 +7303,20 @@ window.selectFloor = selectFloorWithMobile;
 const _origClearSelection = clearSelection;
 function clearSelectionWithMobile() {
   _origClearSelection();
+  // Restore blueprintViewport back to body
+  const viewport = document.getElementById('blueprintViewport');
+  const mfv = document.getElementById('mobileFloorView');
+  if (viewport && mfv && viewport.parentElement !== document.body) {
+    document.body.insertBefore(viewport, mfv);
+  }
+  // Restore unitDetailCard back to blueprintCanvas
+  const card = document.getElementById('unitDetailCard');
+  const canvas = document.getElementById('blueprintCanvas');
+  if (card && canvas && card.parentElement !== canvas) {
+    canvas.appendChild(card);
+  }
+  // Exiting floor view returns to Orbit
+  syncDockActive('orbit');
 }
 window.clearSelection = clearSelectionWithMobile;
 
@@ -6912,17 +7339,97 @@ document.getElementById('mfvZoomOut').onclick = () => {
   updateCanvasTransform();
 };
 
-// Mobile dock navigation buttons
-document.querySelectorAll('#mfv-dock .mfv-dock-btn[data-view]').forEach(btn => {
-  btn.onclick = () => {
-    clearSelectionWithMobile();
-    flyTo(btn.dataset.view);
+// Intercept #bColumns (Structure) and #bLoc (Location) click actions on mobile
+const bColBtn = document.getElementById('bColumns');
+if (bColBtn) {
+  const _origBColOnClick = bColBtn.onclick;
+  bColBtn.onclick = (e) => {
+    if (window.innerWidth <= 768) {
+      if (!document.body.classList.contains('floor-view-active')) {
+        selectFloorWithMobile(4); // Select level 04 by default
+      }
+      syncDockActive('floor');
+    } else {
+      if (_origBColOnClick) _origBColOnClick(e);
+    }
+  };
+}
+
+const bLocBtn = document.getElementById('bLoc');
+if (bLocBtn) {
+  const _origBLocOnClick = bLocBtn.onclick;
+  bLocBtn.onclick = (e) => {
+    if (window.innerWidth <= 768) {
+      clearSelectionWithMobile();
+    }
+    if (_origBLocOnClick) _origBLocOnClick(e);
+    if (window.innerWidth <= 768) {
+      const w = document.getElementById('mapWrap');
+      const active = w.style.display === 'block';
+      syncDockActive(active ? 'location' : 'orbit');
+    }
+  };
+}
+
+// Mobile dock click overrides for view buttons in original #dock
+document.querySelectorAll('#dock .btn[data-view]').forEach(btn => {
+  const _origBtnOnClick = btn.onclick;
+  btn.onclick = (e) => {
+    if (window.innerWidth <= 768) {
+      clearSelectionWithMobile();
+    }
+    if (_origBtnOnClick) _origBtnOnClick(e);
+    if (window.innerWidth <= 768) {
+      syncDockActive(btn.dataset.view);
+    }
   };
 });
 
-document.getElementById('mfvLocBtn').onclick = () => {
-  document.getElementById('bLoc').click();
-};
+// Toggle mobile "More" menu via #bMore
+const bMoreBtn = document.getElementById('bMore');
+const mfvMoreMenu = document.getElementById('mfvMoreMenu');
+const menuSpin = document.getElementById('mfvMenuSpin');
+const menuExplode = document.getElementById('mfvMenuExplode');
+
+if (bMoreBtn && mfvMoreMenu) {
+  bMoreBtn.onclick = (e) => {
+    e.stopPropagation();
+    if (menuSpin) menuSpin.classList.toggle('active', !!S.spin);
+    if (menuExplode) menuExplode.classList.toggle('active', S.explodeT > 0.5);
+    mfvMoreMenu.classList.toggle('show');
+  };
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!mfvMoreMenu.contains(e.target) && e.target !== bMoreBtn && !bMoreBtn.contains(e.target)) {
+      mfvMoreMenu.classList.remove('show');
+    }
+  });
+}
+
+if (menuSpin) {
+  menuSpin.onclick = () => {
+    document.getElementById('bSpin').click();
+    menuSpin.classList.toggle('active', !!S.spin);
+    mfvMoreMenu.classList.remove('show');
+  };
+}
+
+if (menuExplode) {
+  menuExplode.onclick = () => {
+    document.getElementById('bExplode').click();
+    menuExplode.classList.toggle('active', S.explodeT > 0.5);
+    mfvMoreMenu.classList.remove('show');
+  };
+}
+
+const menuInv = document.getElementById('mfvMenuInv');
+if (menuInv) {
+  menuInv.onclick = () => {
+    document.getElementById('bInv').click();
+    mfvMoreMenu.classList.remove('show');
+  };
+}
 
 /* =====================================================
    END MOBILE FLOOR PLAN VIEW
@@ -7113,21 +7620,21 @@ const umContainer = document.getElementById('umDrawingContainer');
 if (umContainer) {
   umContainer.style.cursor = 'grab';
 
-  umContainer.addEventListener('mousedown', (e) => {
+  umContainer.addEventListener('pointerdown', (e) => {
     umIsDragging = true;
     umStartX = e.clientX - umPanX;
     umStartY = e.clientY - umPanY;
     umContainer.style.cursor = 'grabbing';
   });
 
-  window.addEventListener('mousemove', (e) => {
+  window.addEventListener('pointermove', (e) => {
     if (!umIsDragging) return;
     umPanX = e.clientX - umStartX;
-    umPanY = e.clientY - umStartY;
+    umPanY = e.clientY - umPanY;
     updateUmPlanTransform();
   });
 
-  window.addEventListener('mouseup', () => {
+  window.addEventListener('pointerup', () => {
     if (!umIsDragging) return;
     umIsDragging = false;
     umContainer.style.cursor = 'grab';
@@ -7623,6 +8130,7 @@ addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);
   if (S.selected !== null) centerCanvas();
+  updateMobileClipPath();
 });
 
 /* ===== init ===== */
