@@ -3393,7 +3393,6 @@
     #dock #bPlans,
     #dock #bCourt,
     #dock [data-view="roof"],
-    #dock #bBlender,
     #dock [data-view="site"],
     #dock #bExplode,
     #dock #bSpin,
@@ -7277,6 +7276,10 @@ function syncDockActive(viewName) {
   } else {
     const btn = dock.querySelector(`.btn[data-view="${viewName}"]`);
     if (btn) btn.classList.add('active');
+  }
+  if (typeof glbActive !== 'undefined' && glbActive) {
+    const blenderBtn = document.getElementById('bBlender');
+    if (blenderBtn) blenderBtn.classList.add('active');
   }
 }
 
