@@ -8333,40 +8333,35 @@ const processGLB = (model) => {
 
       if (meshName.includes('RoofSlab') || meshName.includes('RoofProjSlab') || meshName.includes('RParapet') || meshName.includes('RoofProj')) {
         // Roof slab: matte warm light stone/cream with zero emissive glow, darker color to prevent blowout/bloom
-        mat.color.setHex(0xa8a398); 
-        mat.roughness = 0.95;
+        mat.color.setHex(0xcbc7bd); 
+        mat.roughness = 0.9;
         mat.metalness = 0.0;
         mat.emissive.setHex(0x000000);
         mat.emissiveIntensity = 0.0;
       } 
       else if (meshName.includes('ULight') || meshName.includes('CanopyLight') || meshName.includes('RoofLtStrip')) {
-        // Elegant warm gold architectural lights
+        // Architectural lights turned off/very subtle in daylight
         mat.color.setHex(0xffdfa9);
-        mat.emissive.setHex(0xff9e33);
-        if (meshName.includes('RoofLtStrip')) {
-          mat.emissiveIntensity = 0.8; // Controlled roof-edge highlight
-        } else {
-          mat.emissiveIntensity = 3.0; // Controlled vertical uplights and canopy lights
-        }
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0.0;
       }
       else if (meshName === 'Front_Lobby' || meshName === 'Rear_Lobby') {
-        // Lobby glass: warm interior glow shining through
-        mat.color.setHex(0x2c251e); // dark base
-        mat.emissive.setHex(0xffa850); // warm interior glow
-        mat.emissiveIntensity = 0.65;
+        // Lobby glass: subtle transparency with extremely light interior feel (no bright night glow)
+        mat.color.setHex(0x2c251e); 
+        mat.emissive.setHex(0xffa850); 
+        mat.emissiveIntensity = 0.15;
         mat.roughness = 0.2;
         mat.metalness = 0.1;
         mat.transparent = true;
         mat.opacity = 0.85;
       }
       else if (matName === 'MAT_Stone') {
-        // Façade: warm cream / ivory / off-white
-        mat.color.setHex(0xf5eedc); // warm cream/ivory
-        mat.roughness = 0.45; // slightly smooth to catch highlights
-        mat.metalness = 0.05;
-        // Add a very subtle warm ambient glow to the facade to keep it readable, clear and dominant
-        mat.emissive.setHex(0x22180e);
-        mat.emissiveIntensity = 0.3; 
+        // Façade: matte warm stone/cream (no emissive glow)
+        mat.color.setHex(0xf5eedc); 
+        mat.roughness = 0.65; 
+        mat.metalness = 0.0;
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0.0; 
       }
       else if (matName === 'M_Glass') {
         // Glass: dark charcoal-blue reflective glass
@@ -8378,8 +8373,8 @@ const processGLB = (model) => {
       else if (matName === 'M_Mullion') {
         // Accent panels: deep graphite / dark gray
         mat.color.setHex(0x1e2022);
-        mat.roughness = 0.3;
-        mat.metalness = 0.7;
+        mat.roughness = 0.5;
+        mat.metalness = 0.2;
         mat.emissive.setHex(0x000000);
         mat.emissiveIntensity = 0.0;
       }
@@ -8398,23 +8393,21 @@ const processGLB = (model) => {
       }
       else if (matName === 'MAT_Wood_Accent') {
         mat.color.setHex(0x544638);
-        mat.roughness = 0.7;
+        mat.roughness = 0.8;
         mat.metalness = 0.0;
       }
       else if (matName === 'M_Emit') {
-        // Fallback for general emissive
+        // General emissive disabled in daylight
         mat.color.setHex(0xffdfa9);
-        mat.emissive.setHex(0xff9e33);
-        mat.emissiveIntensity = 2.5;
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0.0;
       }
       else {
         // Default matte setup
         mat.metalness = 0;
         mat.roughness = Math.max(mat.roughness, 0.7);
         mat.envMapIntensity = 0;
-        if (mat.emissiveIntensity > 0.35) {
-          mat.emissiveIntensity = 0.35;
-        }
+        mat.emissiveIntensity = 0.0;
       }
 
       mat.needsUpdate = true;
@@ -8457,23 +8450,22 @@ const preloadGLB = () => {
 };
 preloadGLB();
 
-function createSunsetGradient() {
+function createDaylightGradient() {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 512;
   const ctx = canvas.getContext('2d');
-  const grad = ctx.createLinearGradient(0, 512, 128, 0); // diagonal bottom-left to top-right
-  grad.addColorStop(0, '#302312');      // subtle warm gold horizon glow (darker, premium)
-  grad.addColorStop(0.25, '#14221f');    // warm transition to teal
-  grad.addColorStop(0.65, '#05181c');    // rich deep teal atmosphere
-  grad.addColorStop(1.0, '#020b0d');     // dark teal-blue upper sky
+  const grad = ctx.createLinearGradient(0, 512, 0, 0); // vertical gradient
+  grad.addColorStop(0.0, '#eaf2f8');    // bright horizon (light gray-blue-white)
+  grad.addColorStop(0.35, '#aed6f1');   // soft daylight blue
+  grad.addColorStop(1.0, '#5499c7');    // premium architectural sky blue
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 512, 512);
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
 }
-const sunsetBg = createSunsetGradient();
+const daylightBg = createDaylightGradient();
 
 document.getElementById('bBlender').addEventListener('click', () => {
   if (!glbActive) {
@@ -8538,66 +8530,68 @@ document.getElementById('bBlender').addEventListener('click', () => {
     scene.userData.originalBg = scene.background;
     scene.userData.originalFog = scene.fog;
 
-    // Apply sunset background gradient and linear fog (clear foreground, hazy background)
-    scene.background = sunsetBg;
-    scene.fog = new THREE.Fog(0x081d22, 280, 1100);
+    // Apply daylight background gradient and linear fog (clear foreground, hazy background)
+    scene.background = daylightBg;
+    scene.fog = new THREE.Fog(0xeaf2f8, 380, 1400);
 
-    // Setup warm directional sunset light, secondary fill, and hemisphere fill (balanced lighting)
-    let sunsetSun = scene.getObjectByName('sunset_sun');
-    let sunsetFill = scene.getObjectByName('sunset_fill');
-    let sunsetHemi = scene.getObjectByName('sunset_hemi');
-    if (!sunsetSun) {
-      sunsetSun = new THREE.DirectionalLight(0xffebd8, 0.45); // soft warm directional key light
-      sunsetSun.position.set(-200, 100, -150);
-      sunsetSun.name = 'sunset_sun';
-      scene.add(sunsetSun);
+    // Setup warm directional daylight light, secondary fill, and hemisphere fill (balanced lighting)
+    let daylightSun = scene.getObjectByName('daylight_sun');
+    let daylightFill = scene.getObjectByName('daylight_fill');
+    let daylightHemi = scene.getObjectByName('daylight_hemi');
+    if (!daylightSun) {
+      daylightSun = new THREE.DirectionalLight(0xfffdf6, 1.8); // bright warm sunlight
+      daylightSun.position.set(120, 200, 80);
+      daylightSun.name = 'daylight_sun';
+      scene.add(daylightSun);
 
-      sunsetFill = new THREE.DirectionalLight(0xa5c5d0, 0.35); // cool teal-blue fill light
-      sunsetFill.position.set(200, 80, 150);
-      sunsetFill.name = 'sunset_fill';
-      scene.add(sunsetFill);
+      daylightFill = new THREE.DirectionalLight(0xd6eaf8, 0.9); // cool blue sky fill light
+      daylightFill.position.set(-120, 100, -80);
+      daylightFill.name = 'daylight_fill';
+      scene.add(daylightFill);
 
-      sunsetHemi = new THREE.HemisphereLight(0x0f343a, 0x221c15, 0.95); // sky-to-ground ambient fill
-      sunsetHemi.name = 'sunset_hemi';
-      scene.add(sunsetHemi);
+      daylightHemi = new THREE.HemisphereLight(0xebf5fb, 0xe5e0d8, 1.2); // sky-to-ground ambient fill
+      daylightHemi.name = 'daylight_hemi';
+      scene.add(daylightHemi);
     } else {
-      sunsetSun.color.setHex(0xffebd8);
-      sunsetSun.intensity = 0.45;
-      sunsetSun.visible = true;
+      daylightSun.color.setHex(0xfffdf6);
+      daylightSun.intensity = 1.8;
+      daylightSun.visible = true;
 
-      sunsetFill.color.setHex(0xa5c5d0);
-      sunsetFill.intensity = 0.35;
-      sunsetFill.visible = true;
+      daylightFill.color.setHex(0xd6eaf8);
+      daylightFill.intensity = 0.9;
+      daylightFill.visible = true;
 
-      sunsetHemi.color.setHex(0x0f343a);
-      sunsetHemi.groundColor.setHex(0x221c15);
-      sunsetHemi.intensity = 0.95;
-      sunsetHemi.visible = true;
+      daylightHemi.color.setHex(0xebf5fb);
+      daylightHemi.groundColor.setHex(0xe5e0d8);
+      daylightHemi.intensity = 1.2;
+      daylightHemi.visible = true;
     }
 
-    // Add warm gold PointLights at lobby entrances
+    // Add warm gold PointLights at lobby entrances (subtle daytime fill)
     let lobbyLight1 = scene.getObjectByName('lobby_light_1');
     let lobbyLight2 = scene.getObjectByName('lobby_light_2');
     if (!lobbyLight1) {
-      lobbyLight1 = new THREE.PointLight(0xffb860, 8.0, 25, 1.5);
+      lobbyLight1 = new THREE.PointLight(0xffb860, 1.5, 25, 1.5);
       lobbyLight1.position.set(-30.5, 2.5, 0);
       lobbyLight1.name = 'lobby_light_1';
       scene.add(lobbyLight1);
     } else {
+      lobbyLight1.intensity = 1.5;
       lobbyLight1.visible = true;
     }
     if (!lobbyLight2) {
-      lobbyLight2 = new THREE.PointLight(0xffb860, 8.0, 25, 1.5);
+      lobbyLight2 = new THREE.PointLight(0xffb860, 1.5, 25, 1.5);
       lobbyLight2.position.set(30.5, 2.5, 0);
       lobbyLight2.name = 'lobby_light_2';
       scene.add(lobbyLight2);
     } else {
+      lobbyLight2.intensity = 1.5;
       lobbyLight2.visible = true;
     }
 
-    // Dim original scene lights to isolate sunset look
+    // Dim original scene lights to isolate daylight look
     scene.traverse((obj) => {
-      if (obj.isLight && obj !== sunsetSun && obj !== sunsetFill && obj !== sunsetHemi && !obj.name.includes('sunset') && !obj.name.includes('lobby_light')) {
+      if (obj.isLight && obj !== daylightSun && obj !== daylightFill && obj !== daylightHemi && !obj.name.includes('daylight') && !obj.name.includes('lobby_light')) {
         obj.visible = false;
       }
     });
@@ -8615,21 +8609,21 @@ document.getElementById('bBlender').addEventListener('click', () => {
             metalness: mat.metalness
           });
           const hex = mat.color.getHex();
-          // Ground (0x0b1315) or Parks (0x12241e) -> Muted dark gray-beige
+          // Ground (0x0b1315) or Parks (0x12241e) -> Premium daylight gray-beige
           if (hex === 0x0b1315 || hex === 0x12241e) {
-            mat.color.setHex(0x44403a); // readable muted gray-beige
+            mat.color.setHex(0xd2cbc0); // premium light gray-beige concrete/sand
             mat.roughness = 0.95;
             mat.metalness = 0.0;
           }
-          // Roads (0x181c20, 0x2c353d, 0x1a1714) -> Dark charcoal with subtle reflections
+          // Roads (0x181c20, 0x2c353d, 0x1a1714) -> Dark charcoal asphalt without wet reflections
           else if (hex === 0x181c20 || hex === 0x2c353d || hex === 0x1a1714) {
-            mat.color.setHex(0x1c1d1e); // dark charcoal asphalt
-            mat.roughness = 0.28;       // highly reflective/polished curves
-            mat.metalness = 0.6;        // metallic specular highlight
+            mat.color.setHex(hex === 0x181c20 ? 0x1f2022 : 0x28292b); // shoulder vs main road contrast
+            mat.roughness = 0.8;       // slight material roughness, no wet reflections
+            mat.metalness = 0.0;        // non-metallic
           }
-          // Background buildings (0x06111a) or other dark background blocks -> Subdued dark blue-gray
+          // Background buildings (0x06111a) or other dark background blocks -> Subdued premium blue-gray
           else if (hex === 0x06111a || (hex < 0x202020 && hex > 0x000000)) {
-            mat.color.setHex(0x262b2e); // subdued dark blue-gray
+            mat.color.setHex(0x505a61); // subdued blue-gray (fades into horizon fog)
             mat.roughness = 0.85;
             mat.metalness = 0.1;
           }
@@ -8637,7 +8631,7 @@ document.getElementById('bBlender').addEventListener('click', () => {
       }
     });
 
-    // Animate camera to the sunset hero angle looking down at centered building (slightly lower for dominance)
+    // Animate camera to the hero angle looking down at centered building (slightly lower for dominance)
     camTween = {
       fromP: camera.position.clone(),
       toP: new THREE.Vector3(125, 70, 125),
@@ -8686,15 +8680,13 @@ document.getElementById('bBlender').addEventListener('click', () => {
       plotBoundary.material = plotBoundary.userData.originalMat;
     }
 
-    // Deactivate sunset lighting and lobby lights
-    const sunsetSun = scene.getObjectByName('sunset_sun');
-    const sunsetFill = scene.getObjectByName('sunset_fill');
-    const sunsetHemi = scene.getObjectByName('sunset_hemi');
-    const sunsetAmbient = scene.getObjectByName('sunset_ambient');
-    if (sunsetSun) sunsetSun.visible = false;
-    if (sunsetFill) sunsetFill.visible = false;
-    if (sunsetHemi) sunsetHemi.visible = false;
-    if (sunsetAmbient) sunsetAmbient.visible = false;
+    // Deactivate daylight lighting and lobby lights
+    const daylightSun = scene.getObjectByName('daylight_sun');
+    const daylightFill = scene.getObjectByName('daylight_fill');
+    const daylightHemi = scene.getObjectByName('daylight_hemi');
+    if (daylightSun) daylightSun.visible = false;
+    if (daylightFill) daylightFill.visible = false;
+    if (daylightHemi) daylightHemi.visible = false;
 
     const lobbyLight1 = scene.getObjectByName('lobby_light_1');
     const lobbyLight2 = scene.getObjectByName('lobby_light_2');
